@@ -215,6 +215,7 @@
     .vscol .nm{font-weight:900; font-size:14px;} .vscol .gr{color:var(--muted); font-size:11px; margin-bottom:6px;}
     .stat{border-top:1px solid var(--line); padding:7px 0 2px; margin-top:5px;} .stat .lab{color:var(--muted); font-size:11px;} .stat .val{font-weight:900; font-size:15px;} .stat .val.lead{color:var(--gold);}
     .verdict{background:linear-gradient(180deg,var(--card2),var(--card)); border:1px solid var(--gold); border-radius:14px; padding:14px; text-align:center; font-weight:800; margin-top:10px;} .verdict b{color:var(--gold);}
+    .cmp-period{text-align:center; color:var(--muted); font-size:13px; font-weight:700; margin:14px 0 8px;} .cmp-period b{color:var(--gold);}
 
     /* סקירה */
     .ov-sec{margin-top:16px;} .ov-sec:first-child{margin-top:6px;}
@@ -265,7 +266,7 @@
   <div class="sheet" id="ovSheet"><div class="box"><button class="x" id="ovX" aria-label="סגירה">✕</button><h2>📊 סקירה כללית</h2><p class="hint">כל הרייטינג במבט אחד · <span id="ovDate"></span></p><div id="ovBody"></div></div></div>
   <div class="sheet" id="brSheet"><div class="box"><button class="x" id="brX" aria-label="סגירה">✕</button><h2>🔎 עיון לפי קטגוריה</h2><p class="hint">לחצו על דמות לנתונים מלאים.</p><div id="brBody"></div></div></div>
   <div class="sheet" id="cmpSheet"><div class="box"><button class="x" id="cmpX" aria-label="סגירה">✕</button>
-    <h2>⚔️ יצירת השוואה משלך</h2><p class="hint">בחרו 2–4 דמויות מכל הקטגוריות, והשוו ביניהן ראש בראש.</p>
+    <h2>⚔️ יצירת השוואה משלך</h2><p class="hint">בחרו 2–4 דמויות והשוו ראש בראש · הנתונים על <b>7 הימים האחרונים</b>.</p>
     <input class="search" id="cmpSearch" placeholder="חיפוש לפי שם… (למשל: ליאור סושרד, אדוה דדון, ביבי)">
     <div class="chips" id="cmpChips"></div><div class="pool" id="cmpPool"></div>
     <button class="go" id="cmpGo" disabled>השוו עכשיו</button><div id="cmpRes"></div>
@@ -303,14 +304,18 @@
       const norm=(k,v)=>{if(v==null||!isFinite(v))return .5;const{min,max}=rng[k];return max>min?(v-min)/(max-min):.5;};
       rows.forEach(c=>{let s=0;const parts={};keys.forEach(k=>{const nv=norm(k,c._m[k]);parts[k]=nv;s+=WEIGHTS[k]*nv;});c.rating=+(s*100).toFixed(1);c.ratingParts=parts;delete c._m;});
       [...rows].sort((a,b)=>b.rating-a.rating).forEach((c,i)=>c.ratingRank=i+1);
-      C=rows; byH=Object.fromEntries(rows.map(c=>[c.h,c]));
+      return rows;
     }
     function setWindow(key,cf,ct){
       const end=(key==='custom'&&ct)?Date.parse(ct+'T23:59:59Z'):Date.parse((ANALYSIS.asOf||'2026-08-05')+'T23:59:59Z');
       const start=(key==='custom'&&cf)?Date.parse(cf+'T00:00:00Z'):end-(({today:1,'7d':7,'30d':30})[key]||7)*86400000;
-      computeAnalysis(start,end); buildHome();
+      C=computeAnalysis(start,end); byH=Object.fromEntries(C.map(c=>[c.h,c])); buildHome();
       document.querySelectorAll('#timebar .tb-chips button').forEach(b=>b.classList.toggle('on',b.dataset.win===key));
     }
+    // דאטה קבוע ל-7 ימים אחרונים — משמש תמיד בהשוואות (ללא קשר לתקופת הבית)
+    const __end7=Date.parse((ANALYSIS.asOf||'2026-08-05')+'T23:59:59Z');
+    const cmpRows=computeAnalysis(__end7-7*86400000,__end7);
+    const cmpByH=Object.fromEntries(cmpRows.map(c=>[c.h,c]));
     const fmt = n => (n==null?"—":Number(n).toLocaleString("en-US"));
     const kfmt = n => n==null?"—":(n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,"")+"M":n>=1e3?Math.round(n/1e3)+"K":""+n);
     const esc = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -475,20 +480,20 @@
       else setTimeout(()=>document.getElementById("cmpSearch").focus(),50);}
     function renderCmp(){
       const q=document.getElementById("cmpSearch").value.trim();
-      document.getElementById("cmpChips").innerHTML=picks.map(h=>{const c=byH[h];return `<span class="chip">${ava(c)} ${esc(c.n)} <button onclick="Radar.unpick('${h}')" aria-label="הסר">✕</button></span>`;}).join("");
-      const list=C.filter(c=>!picks.includes(c.h)&&(!q||c.n.includes(q)||c.h.includes(q.toLowerCase())));
+      document.getElementById("cmpChips").innerHTML=picks.map(h=>{const c=cmpByH[h];return `<span class="chip">${ava(c)} ${esc(c.n)} <button onclick="Radar.unpick('${h}')" aria-label="הסר">✕</button></span>`;}).join("");
+      const list=cmpRows.filter(c=>!picks.includes(c.h)&&(!q||c.n.includes(q)||c.h.includes(q.toLowerCase())));
       document.getElementById("cmpPool").innerHTML=sortR(list).slice(0,60).map(c=>`<button ${picks.length>=4?"disabled":""} onclick="Radar.pick('${c.h}')">${ava(c)}<div style="min-width:0"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.he||""} · מדד ${c.rating}</div></div></button>`).join("")||'<div style="color:var(--muted);padding:10px">לא נמצאו תוצאות</div>';
       document.getElementById("cmpGo").disabled=picks.length<2;
     }
     function renderResult(){
-      const cs=picks.map(h=>byH[h]); if(cs.length<2)return;
+      const cs=picks.map(h=>cmpByH[h]); if(cs.length<2)return;
       const metrics=[{k:"rating",lab:"מדד רייטינג",f:v=>v},{k:"growthDelta",lab:"שינוי עוקבים (24ש')",f:v=>v==null?"—":(v>=0?"+":"")+fmt(v)},{k:"engageRate",lab:"מעורבות",f:v=>(v*100).toFixed(2)+"%"},{k:"avgViews7",lab:"צפיות ממוצעות",f:v=>v==null?"—":kfmt(v)},{k:"f",lab:"עוקבים",f:fmt},{k:"topLikes",lab:"פוסט חזק",f:kfmt}];
       const wins={}; picks.forEach(h=>wins[h]=0);
       metrics.forEach(m=>{let best=-Infinity,bh=null; cs.forEach(c=>{const v=c[m.k]; if(v!=null&&v>best){best=v;bh=c.h;}}); if(bh)wins[bh]++; m._bh=bh;});
       let champ=picks[0]; picks.forEach(h=>{if(wins[h]>wins[champ])champ=h;});
-      let H=`<div class="vscols" style="--n:${cs.length}">`;
+      let H=`<div class="cmp-period">📊 ההשוואה מחושבת על <b>7 הימים האחרונים</b></div><div class="vscols" style="--n:${cs.length}">`;
       cs.forEach(c=>{H+=`<div class="vscol ${c.h===champ?'win':''}">${c.h===champ?'<div class="crown">👑</div>':''}${ava(c)}<div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''}</div>`+metrics.map(m=>`<div class="stat"><div class="lab">${m.lab}</div><div class="val ${m._bh===c.h?'lead':''}">${m.f(c[m.k])}</div></div>`).join("")+`</div>`;});
-      H+=`</div><div class="verdict">🏆 המנצח/ת: <b>${esc(byH[champ].n)}</b> — מוביל/ה ב-${wins[champ]} מתוך ${metrics.length} מדדים</div>`;
+      H+=`</div><div class="verdict">🏆 המנצח/ת: <b>${esc(cmpByH[champ].n)}</b> — מוביל/ה ב-${wins[champ]} מתוך ${metrics.length} מדדים</div>`;
       document.getElementById("cmpRes").innerHTML=H;
     }
 
