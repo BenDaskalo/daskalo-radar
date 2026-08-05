@@ -137,6 +137,16 @@
     .soon-card .ic{font-size:34px;} .soon-card .tx{flex:1;} .soon-card .tx b{font-size:15px;} .soon-card .tx p{margin:4px 0 0; color:var(--muted); font-size:13px; line-height:1.5;}
     .soon-card .badge{font-size:11px; font-weight:900; color:var(--gold); border:1px solid rgba(235,200,104,.4); border-radius:100px; padding:5px 10px; white-space:nowrap;}
 
+    /* הפתעות השבוע */
+    .surp-grid{display:grid; grid-template-columns:1fr; gap:12px;} @media(min-width:640px){ .surp-grid{grid-template-columns:repeat(3,1fr);} }
+    .surp{position:relative; border-radius:var(--r); overflow:hidden; aspect-ratio:16/10; cursor:pointer; border:1.5px solid var(--gold); box-shadow:0 0 0 1px rgba(235,200,104,.18),0 16px 40px -22px rgba(235,200,104,.55); transition:transform .18s;}
+    .surp:hover{transform:translateY(-3px);}
+    .surp .ava{position:absolute; inset:0; border-radius:0; font-size:34px;}
+    .surp .sh{position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.93) 14%,rgba(0,0,0,.15) 66%),linear-gradient(90deg,rgba(0,0,0,.55),transparent 62%);}
+    .surp .c{position:absolute; inset:0; padding:14px; display:flex; flex-direction:column; justify-content:space-between; z-index:2;}
+    .surp .badge{align-self:flex-start; background:var(--gold); color:#0B0B0F; font-weight:900; font-size:12px; padding:5px 10px; border-radius:100px;}
+    .surp .nm{font-weight:900; font-size:17px;} .surp .why{color:var(--gold); font-weight:800; font-size:13px; margin-top:2px;} .surp .sub{color:var(--muted); font-size:12px;}
+
     /* מודל כללי (sheet) */
     .sheet{position:fixed; inset:0; z-index:120; background:rgba(6,6,10,.74); backdrop-filter:blur(6px); display:none; align-items:flex-start; justify-content:center; padding:16px; overflow:auto;}
     .sheet.on{display:flex;}
@@ -243,6 +253,9 @@
     function grad(str){let s=0;for(const ch of (str||"x"))s=(s*31+ch.charCodeAt(0))>>>0;const a=s%360,b=(a+48)%360;return `linear-gradient(145deg,hsl(${a} 70% 58%),hsl(${b} 74% 44%))`;}
     function ava(c){return `<div class="ava" style="background:${grad(c.n)}"><span class="ini">${esc(initials(c.n))}</span><img src="${esc(c.pic)}" alt="${esc(c.n)}" loading="lazy" onerror="this.remove()"></div>`;}
     const vb=v=>v?'<span class="vb">✔</span>':'';
+    // מיקום אנכי של הפנים בביל-בורד (0=למעלה/מצח, גבוה=למטה). ברירת מחדל 34%.
+    const FOCUS={gal_gadot:"24%","b.netanyahu":"30%",yairlapid:"30%",naftalibennett:"30%",gantzbe:"28%","avigdor.liberman":"30%",bezalel_smotrich:"32%",adva_dadon:"36%",noakirel:"30%",annazak12:"32%",yaelshelbia:"30%",rotemsela1:"30%",edenben_zaken:"32%",omeradam:"30%"};
+    const focusOf=h=>FOCUS[h]||"34%";
     const GRP={singers:{he:"זמרים",ic:"🎤"},famous:{he:"מפורסמים",ic:"🎬"},politicians:{he:"פוליטיקאים",ic:"🏛️"},media:{he:"ערוצי תקשורת",ic:"📺"}};
     const sortF=a=>[...a].sort((x,y)=>y.f-x.f);
     const sortR=a=>[...a].sort((x,y)=>y.rating-x.rating);
@@ -257,7 +270,7 @@
 
     // ===== שקופיות ביל-בורד =====
     function slP(c,tag,statBig,statSub){
-      return `<div class="slide__A__"><div class="bg" style="background-image:url('${esc(c.pic)}')"></div><div class="shade"></div>
+      return `<div class="slide__A__"><div class="bg" style="background-image:url('${esc(c.pic)}');background-position:center ${focusOf(c.h)}"></div><div class="shade"></div>
         <div class="c" style="cursor:pointer" onclick="Radar.profile('${c.h}')">
           <span class="tag">${tag} · ${ANALYSIS.asOf||""}</span>
           <h1>${esc(c.n)}${vb(c.v)}</h1>
@@ -266,7 +279,7 @@
         </div></div>`;
     }
     function slC(a,b,label){
-      return `<div class="slide__A__"><div class="bg" style="background-image:url('${esc(a.pic)}')"></div><div class="shade"></div>
+      return `<div class="slide__A__"><div class="bg" style="background-image:url('${esc(a.pic)}');background-position:center ${focusOf(a.h)}"></div><div class="shade"></div>
         <div class="c" style="cursor:pointer" onclick="Radar.compare(['${a.h}','${b.h}'])">
           <span class="tag">🔥 ההשוואה הכי חמה</span>
           <h1 style="font-size:clamp(24px,5.5vw,44px)">${esc(a.n)} <span style="color:var(--red)">🆚</span> ${esc(b.n)}</h1>
@@ -314,6 +327,16 @@
       H+=`<div class="row-sec"><div class="row-h"><h2>🏆 מדד הרייטינג — 10 הגדולים</h2><span class="sub">הציון החם של השבוע</span></div><div class="rail">`;
       top.slice(0,10).forEach((c,i)=>{H+=`<div class="poster" onclick="Radar.profile('${c.h}')"><div class="img">${ava(c)}<div class="grad"></div><div class="rankbig num">${i+1}</div><div class="rtbadge num">${c.rating}</div><div class="cap"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="st">מדד ${c.rating}</div></div></div></div>`;});
       H+=`</div></div>`;
+
+      // 2.5) ההפתעות של השבוע — מי שזינק השבוע (מומנטום חיובי) ואינו מהגדולים
+      const folRank={}; sortF(C).forEach((c,i)=>folRank[c.h]=i+1); const N=C.length;
+      const surprises=C.filter(c=>c.momentum!=null&&c.momentum>0&&folRank[c.h]>2)
+        .map(c=>({c,score:c.momentum+(folRank[c.h]/N)*60})).sort((a,b)=>b.score-a.score).slice(0,3).map(x=>x.c);
+      if(surprises.length){
+        H+=`<div class="row-sec"><div class="row-h"><h2>🎉 ההפתעות של השבוע</h2><span class="sub">מי שהיה רדום — וזינק השבוע</span></div><div class="surp-grid">`;
+        surprises.forEach(c=>{H+=`<div class="surp" onclick="Radar.profile('${c.h}')">${ava(c)}<div class="sh"></div><div class="c"><span class="badge">🎉 הפתעת השבוע</span><div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="why">🔥 זינק/ה ▲ ${c.momentum}% במעורבות</div><div class="sub">מדד ${c.rating} · רק ${kfmt(c.f)} עוקבים · ${GRP[c.grp]?.he||''}</div></div></div></div>`;});
+        H+=`</div></div>`;
+      }
 
       // 3) מי הוריד עוקב ממי (בהקמה)
       H+=`<div class="row-sec"><div class="row-h"><h2>💔 מי הוריד עוקב ממי</h2></div>
@@ -376,7 +399,9 @@
 
     // ===== בונה השוואות =====
     let picks=[];
-    function openCmp(pre){picks=pre?pre.slice(0,4):[]; document.getElementById("cmpSheet").classList.add("on"); document.getElementById("cmpRes").innerHTML=""; renderCmp(); setTimeout(()=>document.getElementById("cmpSearch").focus(),50);}
+    function openCmp(pre,auto){picks=pre?pre.slice(0,4):[]; document.getElementById("cmpSheet").classList.add("on"); document.getElementById("cmpRes").innerHTML=""; renderCmp();
+      if(auto&&picks.length>=2){renderResult(); setTimeout(()=>document.getElementById("cmpRes").scrollIntoView({behavior:reduce?"auto":"smooth",block:"nearest"}),60);}
+      else setTimeout(()=>document.getElementById("cmpSearch").focus(),50);}
     function renderCmp(){
       const q=document.getElementById("cmpSearch").value.trim();
       document.getElementById("cmpChips").innerHTML=picks.map(h=>{const c=byH[h];return `<span class="chip">${ava(c)} ${esc(c.n)} <button onclick="Radar.unpick('${h}')" aria-label="הסר">✕</button></span>`;}).join("");
@@ -400,7 +425,7 @@
       profile:(h)=>{buildProfile(h); document.getElementById("pfSheet").classList.add("on");},
       openCmp:()=>openCmp(), overview:()=>{buildOverview();document.getElementById("ovSheet").classList.add("on");},
       browse:()=>{buildBrowse();document.getElementById("brSheet").classList.add("on");},
-      compare:(arr)=>openCmp(arr), compareWith:(h)=>openCmp([h]),
+      compare:(arr)=>openCmp(arr,true), compareWith:(h)=>openCmp([h]),
       pick:(h)=>{if(picks.length<4&&!picks.includes(h))picks.push(h); renderCmp();},
       unpick:(h)=>{picks=picks.filter(x=>x!==h); renderCmp(); document.getElementById("cmpRes").innerHTML="";},
     };
