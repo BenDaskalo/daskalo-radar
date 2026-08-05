@@ -28,359 +28,368 @@
 </head>
 <body>
 <div class="app" dir="rtl" lang="he">
-  <title>המרכז הישראלי לרייטינג בדיגיטל</title>
+  <title>המרכז הישראלי לרייטינג ברשתות</title>
   <style>
     :root{
-      --ink:#0A0A0F; --surface:#14141C; --surface2:#1C1C28; --surface3:#23232F;
-      --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
-      --gold:#F2CE6B; --gold-deep:#C99B3A;
-      --rose:#FF3E74; --rose-soft:#FF6B93;
-      --up:#37D67A; --down:#FF5470; --hot:#FF8A3D;
-      --text:#F6F4EF; --muted:#9C99AD; --violet:#6C4BF0; --r:18px;
+      --ink:#0B0B0F; --surface:#15151C; --card:#1B1B24; --card2:#22222D;
+      --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+      --gold:#EBC868; --gold-deep:#B8892E;
+      --red:#E4344F; --red-soft:#FF5C74;
+      --up:#3AD17E; --down:#FF5470;
+      --text:#F5F3EE; --muted:#9E9BAC; --r:16px;
     }
-    html,body,:root[data-theme="light"],:root[data-theme="dark"]{background:var(--ink);}
+    html,body,:root[data-theme]{background:var(--ink);}
     *{box-sizing:border-box;}
-    .app{
-      background:
-        radial-gradient(1200px 700px at 78% -8%, rgba(108,75,240,.18), transparent 60%),
-        radial-gradient(900px 600px at 10% 108%, rgba(255,62,116,.12), transparent 55%),
-        var(--ink);
-      color:var(--text); min-height:100vh; width:100%; overflow-x:hidden;
-      font-family:"SF Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif;
-      -webkit-font-smoothing:antialiased; position:relative;
-    }
-    canvas.stars{position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:.5;}
-    .wrap{position:relative; z-index:2; max-width:820px; margin:0 auto; padding:0 20px;}
+    .app{background:var(--ink); color:var(--text); min-height:100vh; width:100%; overflow-x:hidden;
+      font-family:"SF Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased;}
     .num{font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate;}
-    .hide{display:none!important;}
+    img{display:block;}
+    .wrap{max-width:1180px; margin:0 auto; padding:0 clamp(14px,3.5vw,34px);}
 
-    /* ===== פתיחה + בחירת זירה ===== */
-    .hero{min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:22px; padding:56px 20px;}
-    .brand-chip{display:inline-flex; align-items:center; gap:9px; padding:8px 16px; border:1px solid var(--line2); border-radius:100px; background:rgba(255,255,255,.03); font-size:13px; letter-spacing:.12em; color:var(--muted);}
-    .brand-chip b{color:var(--gold); font-weight:800;}
-    .dot{width:7px; height:7px; border-radius:50%; background:var(--up); box-shadow:0 0 10px var(--up);}
-    h1.title{margin:0; font-weight:900; line-height:1.02; letter-spacing:-.02em; font-size:clamp(34px,8vw,68px); text-wrap:balance;}
-    h1.title .grad{background:linear-gradient(100deg,#fff 0,#fff 38%,var(--gold) 78%,var(--gold-deep) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
-    .sub{margin:0; color:var(--muted); font-size:clamp(15px,3.6vw,18px); font-weight:500;}
-    .sub b{color:var(--text); font-weight:700;}
+    /* אווטאר עם תמונה אמיתית + fallback ראשי-תיבות */
+    .ava{position:relative; border-radius:50%; overflow:hidden; flex:none; display:flex; align-items:center; justify-content:center; color:#0B0B0F; font-weight:900;}
+    .ava .ini{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+    .ava img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+    .vb{color:#4AA3FF; font-size:.72em; vertical-align:.1em; margin-inline-start:3px;}
 
-    .picker{width:100%; max-width:560px; display:flex; flex-direction:column; gap:14px; margin-top:4px;}
-    .picker .lbl{font-size:12px; letter-spacing:.14em; color:var(--muted); text-align:center;}
-    .arena{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
-    @media(min-width:560px){ .arena{grid-template-columns:repeat(4,1fr);} }
-    .arena button{cursor:pointer; font-family:inherit; color:var(--text); border:1px solid var(--line2); background:var(--surface); border-radius:14px; padding:14px 8px; display:flex; flex-direction:column; align-items:center; gap:6px; font-weight:800; font-size:14px; transition:.16s;}
-    .arena button .ic{font-size:22px;}
-    .arena button small{font-weight:600; color:var(--muted); font-size:11px;}
-    .arena button[aria-pressed="true"]{border-color:var(--gold); background:linear-gradient(180deg,rgba(242,206,107,.14),var(--surface)); box-shadow:0 0 0 1px rgba(242,206,107,.4);}
-    .arena button:disabled{opacity:.5; cursor:not-allowed;}
-    .seg{display:inline-flex; background:var(--surface); border:1px solid var(--line2); border-radius:100px; padding:4px; gap:4px; align-self:center;}
-    .seg button{cursor:pointer; font-family:inherit; color:var(--muted); font-weight:800; font-size:13px; border:0; background:transparent; padding:8px 18px; border-radius:100px; transition:.16s;}
-    .seg button[aria-pressed="true"]{background:var(--rose); color:#fff;}
+    /* ===== NAV רשמי ===== */
+    .nav{position:sticky; top:0; z-index:50; background:linear-gradient(180deg,rgba(11,11,15,.96),rgba(11,11,15,.75) 70%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+    .nav .in{display:flex; align-items:center; gap:14px; height:66px;}
+    .emblem{width:40px; height:40px; flex:none;}
+    .brand{display:flex; flex-direction:column; line-height:1.1;}
+    .brand .t{font-weight:900; font-size:clamp(15px,2.6vw,19px); letter-spacing:-.01em;}
+    .brand .s{font-size:11px; color:var(--gold); font-weight:700; letter-spacing:.04em;}
+    .nav .sp{flex:1;}
+    .nav .cmp{cursor:pointer; font-family:inherit; font-weight:800; font-size:13px; color:#0B0B0F; background:var(--gold); border:0; padding:10px 18px; border-radius:100px; display:inline-flex; align-items:center; gap:7px;}
+    .nav .cmp:hover{background:#F2D57E;}
+    @media(max-width:520px){ .nav .cmp span{display:none;} }
 
-    .cta{margin-top:6px; border:0; cursor:pointer; color:#fff; font-weight:900; font-size:clamp(19px,4.4vw,23px); font-family:inherit; padding:22px 56px; border-radius:100px; position:relative; background:linear-gradient(180deg,var(--rose-soft),var(--rose)); box-shadow:0 12px 40px -8px rgba(255,62,116,.7), inset 0 1px 0 rgba(255,255,255,.35); transition:transform .18s, box-shadow .18s;}
-    .cta:hover{transform:translateY(-2px) scale(1.02);}
-    .cta:active{transform:translateY(0) scale(.99);}
-    .cta:focus-visible{outline:3px solid #fff; outline-offset:4px;}
-    .cta::after{content:""; position:absolute; inset:-3px; border-radius:100px; background:conic-gradient(from 0deg,transparent,rgba(255,62,116,.6),transparent 40%); animation:spin 3.5s linear infinite; z-index:-1; filter:blur(7px);}
-    @keyframes spin{to{transform:rotate(360deg);}}
-    .pulse{display:inline-block; margin-inline-start:8px; animation:beat 1.4s ease-in-out infinite;}
-    @keyframes beat{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
-
-    /* ===== סריקת רדאר ===== */
-    .scan{position:fixed; inset:0; z-index:30; display:none; flex-direction:column; align-items:center; justify-content:center; gap:22px; background:rgba(8,8,12,.94); backdrop-filter:blur(8px); text-align:center; padding:20px;}
-    .scan.on{display:flex;}
-    .radar-wrap{position:relative; width:min(280px,74vw); aspect-ratio:1;}
-    .radar-ring{position:absolute; inset:0; border-radius:50%; border:1px solid var(--line2);}
-    .radar-ring.r2{inset:16%;} .radar-ring.r3{inset:34%;} .radar-ring.r4{inset:52%;}
-    .radar-cross{position:absolute; inset:0;}
-    .radar-cross::before,.radar-cross::after{content:""; position:absolute; background:var(--line);}
-    .radar-cross::before{left:50%; top:0; bottom:0; width:1px; transform:translateX(-50%);}
-    .radar-cross::after{top:50%; left:0; right:0; height:1px; transform:translateY(-50%);}
+    /* ===== סריקת רדאר (אינטרו 8ש') ===== */
+    .scan{position:fixed; inset:0; z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; background:radial-gradient(60% 60% at 50% 40%,#12121A,#08080C); text-align:center; padding:20px;}
+    .scan.off{display:none;}
+    .radar-wrap{position:relative; width:min(240px,66vw); aspect-ratio:1;}
+    .rr{position:absolute; border-radius:50%; border:1px solid var(--line2); inset:0;}
+    .rr.b{inset:16%;} .rr.c{inset:34%;} .rr.d{inset:52%;}
     .sweep{position:absolute; inset:0; border-radius:50%; overflow:hidden;}
-    .sweep::before{content:""; position:absolute; inset:0; background:conic-gradient(from 0deg, rgba(55,214,122,.55), rgba(55,214,122,.05) 45deg, transparent 90deg); animation:spin 2.2s linear infinite; border-radius:50%;}
-    .radar-core{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;}
-    .radar-pct{font-weight:900; font-size:clamp(40px,12vw,64px); letter-spacing:-.03em;}
-    .radar-pct small{font-size:.4em; color:var(--muted); margin-inline-start:2px;}
-    .blip{position:absolute; width:9px; height:9px; border-radius:50%; background:var(--up); box-shadow:0 0 12px var(--up); opacity:0; animation:blip 2.2s ease-out infinite;}
-    @keyframes blip{0%{opacity:0; transform:scale(.4);}12%{opacity:1;}60%{opacity:.5;}100%{opacity:0; transform:scale(1.4);}}
-    .scan-txt{font-weight:800; font-size:19px;} .scan-sub{color:var(--muted); font-size:14px; min-height:20px;}
-    .scan-hand{color:var(--muted); font-size:12px; direction:ltr;}
+    .sweep::before{content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 0deg,rgba(58,209,126,.55),rgba(58,209,126,.04) 45deg,transparent 90deg); animation:spin 1.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .rcore{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+    .rpct{font-weight:900; font-size:clamp(38px,11vw,58px); letter-spacing:-.03em;} .rpct small{font-size:.4em; color:var(--muted);}
+    .blip{position:absolute; width:8px; height:8px; border-radius:50%; background:var(--up); box-shadow:0 0 12px var(--up); opacity:0; animation:blip 1.8s ease-out infinite;}
+    @keyframes blip{0%{opacity:0;transform:scale(.4);}15%{opacity:1;}70%{opacity:.4;}100%{opacity:0;transform:scale(1.5);}}
+    .scan .ttl{font-weight:900; font-size:20px;} .scan .sb{color:var(--muted); font-size:14px; min-height:20px;}
+    .scan .skip{margin-top:6px; background:transparent; border:1px solid var(--line2); color:var(--muted); font-family:inherit; font-weight:700; font-size:12px; padding:8px 18px; border-radius:100px; cursor:pointer;}
+    .scan .skip:hover{color:var(--text);}
 
-    /* ===== תוצאות ===== */
-    .results{display:none; padding:30px 0 96px;} .results.on{display:block; animation:fadeUp .55s ease both;}
-    @keyframes fadeUp{from{opacity:0; transform:translateY(14px);}to{opacity:1; transform:none;}}
-    .res-head{text-align:center; margin-bottom:22px;}
-    .res-head .kick{color:var(--gold); font-weight:800; letter-spacing:.14em; font-size:12px;}
-    .res-head h2{margin:6px 0 4px; font-size:clamp(24px,6vw,36px); font-weight:900; letter-spacing:-.02em;}
-    .res-head .scope{color:var(--muted); font-size:13px;}
+    /* ===== HERO ביל-בורד ===== */
+    .home{display:none; padding-bottom:90px;} .home.on{display:block; animation:fade .5s ease both;}
+    @keyframes fade{from{opacity:0;}to{opacity:1;}}
+    .bill{position:relative; min-height:min(64vh,520px); display:flex; align-items:flex-end; overflow:hidden; border-bottom:1px solid var(--line);}
+    .bill .bg{position:absolute; inset:0; background-size:cover; background-position:center 22%; filter:saturate(1.05);}
+    .bill .shade{position:absolute; inset:0; background:linear-gradient(0deg,var(--ink) 4%,rgba(11,11,15,.55) 45%,rgba(11,11,15,.25) 100%), linear-gradient(90deg,rgba(11,11,15,.85) 0%,transparent 55%);}
+    .bill .c{position:relative; z-index:2; padding:0 clamp(14px,3.5vw,34px) 34px; max-width:1180px; margin:0 auto; width:100%;}
+    .bill .tag{display:inline-flex; align-items:center; gap:8px; background:var(--red); color:#fff; font-weight:900; font-size:12px; letter-spacing:.06em; padding:6px 12px; border-radius:6px;}
+    .bill h1{margin:12px 0 6px; font-size:clamp(30px,7vw,58px); font-weight:900; letter-spacing:-.02em; line-height:1;}
+    .bill .meta{display:flex; align-items:center; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:15px; font-weight:600;}
+    .bill .meta b{color:var(--gold); font-size:22px; font-weight:900;}
+    .bill .btns{margin-top:16px; display:flex; gap:10px;}
+    .bill .play{cursor:pointer; font-family:inherit; font-weight:900; font-size:15px; padding:12px 26px; border-radius:8px; border:0; background:var(--gold); color:#0B0B0F; display:inline-flex; align-items:center; gap:8px;}
+    .bill .more{cursor:pointer; font-family:inherit; font-weight:800; font-size:15px; padding:12px 22px; border-radius:8px; border:0; background:rgba(255,255,255,.16); color:#fff;}
 
-    .menu{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
-    @media(min-width:640px){ .menu{grid-template-columns:repeat(3,1fr);} }
-    .mbtn{cursor:pointer; font-family:inherit; text-align:right; color:var(--text); border:1px solid var(--line2); background:linear-gradient(180deg,var(--surface2),var(--surface)); border-radius:var(--r); padding:16px; display:flex; flex-direction:column; gap:6px; transition:.16s; position:relative;}
-    .mbtn:hover{transform:translateY(-3px); border-color:var(--gold); box-shadow:0 16px 40px -18px rgba(242,206,107,.5);}
-    .mbtn .ic{font-size:26px;} .mbtn .t{font-weight:900; font-size:16px;} .mbtn .d{color:var(--muted); font-size:12px; line-height:1.4;}
-    .mbtn.overview{grid-column:1/-1; align-items:center; text-align:center; border-color:rgba(242,206,107,.5); background:linear-gradient(180deg,rgba(242,206,107,.12),var(--surface));}
-    .mbtn.overview .t{font-size:19px;}
+    /* ===== שורות (rails) ===== */
+    .row-sec{margin-top:30px;}
+    .row-h{display:flex; align-items:baseline; gap:10px; margin:0 0 12px;}
+    .row-h h2{margin:0; font-size:clamp(18px,3.6vw,24px); font-weight:900; letter-spacing:-.01em;}
+    .row-h .sub{color:var(--muted); font-size:13px;}
+    .rail{display:flex; gap:12px; overflow-x:auto; padding:4px 2px 14px; scroll-snap-type:x mandatory; scrollbar-width:thin;}
+    .rail::-webkit-scrollbar{height:8px;} .rail::-webkit-scrollbar-thumb{background:var(--line2); border-radius:8px;}
 
-    .panel{margin-top:16px; animation:fadeUp .4s ease both;}
-    .panel-head{display:flex; align-items:center; gap:10px; margin:8px 0 14px;}
-    .panel-head .bar{width:4px; height:30px; border-radius:4px; background:linear-gradient(var(--rose),var(--gold)); flex:none;}
-    .panel-head h3{margin:0; font-weight:900; font-size:clamp(19px,5vw,25px);}
-    .panel-head .note{margin-inline-start:auto; color:var(--muted); font-size:11px; max-width:150px; text-align:left; line-height:1.35;}
+    /* כרטיס פוסטר */
+    .poster{scroll-snap-align:start; flex:none; width:clamp(132px,38vw,160px); cursor:pointer; transition:transform .18s;}
+    .poster:hover{transform:translateY(-4px);}
+    .poster .img{position:relative; width:100%; aspect-ratio:3/4; border-radius:12px; overflow:hidden; background:var(--card);}
+    .poster .img .ava{position:absolute; inset:0; border-radius:0; font-size:42px;}
+    .poster .img .grad{position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.85),transparent 55%);}
+    .poster .img .rankbig{position:absolute; top:8px; inset-inline-start:8px; font-weight:900; font-size:15px; background:var(--gold); color:#0B0B0F; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center;}
+    .poster .img .cap{position:absolute; bottom:8px; inset-inline:8px; z-index:2;}
+    .poster .img .cap .nm{font-weight:800; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .poster .img .cap .st{font-size:12px; color:var(--gold); font-weight:800;}
+    .poster .img .st2{position:absolute; top:8px; inset-inline-end:8px; font-size:11px; font-weight:800; padding:3px 7px; border-radius:6px; background:rgba(0,0,0,.5); backdrop-filter:blur(4px);}
+    .st2.up{color:var(--up);} .st2.down{color:var(--down);}
 
-    .av{border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; color:#0A0A0F; flex:none;}
-    .vbadge{color:#4AA3FF; font-size:.72em; vertical-align:.12em; margin-inline-start:3px;}
+    /* Top-10 השוואות */
+    .cmp-rail .item{scroll-snap-align:start; flex:none; display:flex; align-items:center; cursor:pointer;}
+    .cmp-rail .rank{font-weight:900; font-size:clamp(70px,17vw,104px); line-height:.8; color:transparent; -webkit-text-stroke:2.5px var(--line2); margin-inline-end:-14px; letter-spacing:-.06em; transition:.18s;}
+    .cmp-rail .item:hover .rank{-webkit-text-stroke-color:var(--gold);}
+    .vspair{position:relative; width:clamp(150px,42vw,180px); aspect-ratio:16/10; border-radius:12px; overflow:hidden; background:var(--card); border:1px solid var(--line); display:flex;}
+    .vspair .half{position:relative; flex:1; overflow:hidden;}
+    .vspair .half .ava{position:absolute; inset:0; border-radius:0; font-size:26px;}
+    .vspair .vs{position:absolute; inset-inline-start:50%; top:50%; transform:translate(-50%,-50%); z-index:3; font-weight:900; font-size:15px; color:#fff; background:var(--red); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid var(--ink);}
+    .vspair .lbl{position:absolute; inset-inline:0; bottom:0; z-index:2; background:linear-gradient(0deg,rgba(0,0,0,.9),transparent); padding:16px 8px 7px; font-size:11px; font-weight:800; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
-    .rows{display:flex; flex-direction:column; gap:8px;}
-    .row{display:flex; align-items:center; gap:13px; padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:var(--surface);}
-    .row .rank{width:26px; text-align:center; font-weight:900; color:var(--muted); font-size:15px; flex:none;}
-    .row .av{width:44px; height:44px; font-size:16px;}
-    .row .meta{min-width:0; flex:1;} .row .nm{font-weight:800; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .row .hd{color:var(--muted); font-size:12px; direction:ltr; text-align:right;}
-    .row .val{text-align:left; flex:none; font-weight:900; font-size:16px;} .row .val small{display:block; font-weight:700; color:var(--muted); font-size:11px;}
-    .val.up{color:var(--up);} .val.down{color:var(--down);} .val.gold{color:var(--gold);}
-    .podium-badge{width:26px; text-align:center; font-size:18px; flex:none;}
+    /* ===== הילייטס ===== */
+    .hl-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;} @media(min-width:720px){ .hl-grid{grid-template-columns:repeat(4,1fr);} }
+    .hl{position:relative; border-radius:var(--r); overflow:hidden; aspect-ratio:1/1.05; cursor:pointer; background:var(--card); border:1px solid var(--line);}
+    .hl .ava{position:absolute; inset:0; border-radius:0; font-size:40px;}
+    .hl .sh{position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.92) 10%,rgba(0,0,0,.2) 60%,rgba(0,0,0,.35));}
+    .hl .c{position:absolute; inset:0; padding:14px; display:flex; flex-direction:column; justify-content:space-between; z-index:2;}
+    .hl .kick{font-size:12px; font-weight:900; letter-spacing:.02em; align-self:flex-start; padding:5px 9px; border-radius:6px; background:rgba(0,0,0,.45); backdrop-filter:blur(4px);}
+    .hl .big{font-weight:900; font-size:clamp(20px,5vw,26px); line-height:1;}
+    .hl .nm{font-weight:800; font-size:14px; margin-top:3px;} .hl .u{color:var(--muted); font-size:12px;}
 
-    /* כרטיס דרמטי (פוסט חזק / צניחה) */
-    .hero-card{border:1px solid var(--line2); border-radius:var(--r); padding:20px; background:linear-gradient(180deg,var(--surface2),var(--surface)); display:flex; gap:16px; align-items:center;}
-    .hero-card.alert{border-color:rgba(255,84,112,.5); box-shadow:0 0 0 1px rgba(255,84,112,.2),0 20px 50px -24px rgba(255,84,112,.5);}
-    .hero-card.win{border-color:rgba(242,206,107,.5); box-shadow:0 0 0 1px rgba(242,206,107,.2),0 20px 50px -24px rgba(242,206,107,.45);}
-    .hero-card .av{width:72px; height:72px; font-size:24px;}
-    .hero-card .big{font-weight:900; font-size:clamp(26px,8vw,40px); line-height:1;}
-    .hero-card .big.gold{color:var(--gold);} .hero-card .big.down{color:var(--down);}
-    .hero-card .nm{font-weight:900; font-size:18px; margin-bottom:2px;}
-    .hero-card .u{color:var(--muted); font-size:13px;}
-    .hero-card .cap{color:var(--muted); font-size:12px; margin-top:6px; line-height:1.5; max-height:3em; overflow:hidden;}
-    .hero-card a{color:var(--gold); font-size:12px; text-decoration:none;}
+    /* ===== בונה השוואות (מודל) ===== */
+    .sheet{position:fixed; inset:0; z-index:120; background:rgba(6,6,10,.72); backdrop-filter:blur(6px); display:none; align-items:flex-start; justify-content:center; padding:20px; overflow:auto;}
+    .sheet.on{display:flex;}
+    .sheet .box{background:var(--surface); border:1px solid var(--line2); border-radius:20px; width:100%; max-width:860px; margin:auto; padding:22px; position:relative;}
+    .sheet .x{position:absolute; inset-inline-start:16px; top:16px; cursor:pointer; border:0; background:var(--card2); color:var(--text); width:34px; height:34px; border-radius:10px; font-size:18px; font-weight:800;}
+    .sheet h2{margin:0 0 4px; font-size:22px; font-weight:900;} .sheet .hint{margin:0 0 14px; color:var(--muted); font-size:13px;}
+    .search{width:100%; font-family:inherit; font-size:15px; color:var(--text); background:var(--card); border:1px solid var(--line2); border-radius:12px; padding:12px 14px; margin-bottom:10px;}
+    .search:focus{outline:2px solid var(--gold);}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; min-height:4px;}
+    .chip{display:inline-flex; align-items:center; gap:7px; background:var(--gold); color:#0B0B0F; font-weight:800; font-size:13px; padding:5px 8px 5px 10px; border-radius:100px;}
+    .chip .ava{width:22px; height:22px; font-size:9px;} .chip button{border:0; background:rgba(0,0,0,.2); color:#0B0B0F; width:18px; height:18px; border-radius:50%; cursor:pointer; font-weight:900; line-height:1;}
+    .pool{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:6px; max-height:230px; overflow:auto; padding:2px;}
+    .pool button{display:flex; align-items:center; gap:9px; text-align:right; cursor:pointer; font-family:inherit; color:var(--text); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:7px 9px;}
+    .pool button:hover{border-color:var(--gold);} .pool button:disabled{opacity:.4; cursor:not-allowed;}
+    .pool button .ava{width:30px; height:30px; font-size:11px;} .pool .nm{font-weight:700; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .pool .gr{color:var(--muted); font-size:11px;}
+    .go{width:100%; margin-top:12px; cursor:pointer; font-family:inherit; font-weight:900; font-size:16px; color:#fff; background:var(--red); border:0; border-radius:12px; padding:14px;}
+    .go:disabled{opacity:.45; cursor:not-allowed;}
 
-    .empty{border:1px dashed var(--line2); border-radius:var(--r); padding:22px; text-align:center; color:var(--muted); font-size:14px; line-height:1.6;}
-    .empty .big{font-size:30px; display:block; margin-bottom:8px;}
-    .status-ok{border:1px solid var(--line); border-radius:var(--r); background:var(--surface); padding:18px; display:flex; align-items:center; gap:12px; font-weight:700;} .status-ok .ok{color:var(--up); font-size:22px;}
+    /* תוצאת השוואה */
+    .vsres{display:grid; gap:10px; margin-top:14px;}
+    .vscols{display:grid; gap:10px; grid-template-columns:repeat(var(--n,2),1fr);}
+    .vscol{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 10px; text-align:center; position:relative;}
+    .vscol.win{border-color:var(--gold); box-shadow:0 0 0 1px rgba(235,200,104,.4);}
+    .vscol .crown{position:absolute; top:-12px; inset-inline-start:50%; transform:translateX(-50%); font-size:22px;}
+    .vscol .ava{width:64px; height:64px; margin:0 auto 8px; font-size:22px;}
+    .vscol .nm{font-weight:900; font-size:15px;} .vscol .gr{color:var(--muted); font-size:11px; margin-bottom:8px;}
+    .stat{border-top:1px solid var(--line); padding:8px 0 2px; margin-top:6px;}
+    .stat .lab{color:var(--muted); font-size:11px;} .stat .val{font-weight:900; font-size:16px;} .stat .val.lead{color:var(--gold);}
+    .verdict{background:linear-gradient(180deg,var(--card2),var(--card)); border:1px solid var(--gold); border-radius:14px; padding:14px; text-align:center; font-weight:800;}
+    .verdict b{color:var(--gold);}
 
-    .footer{text-align:center; margin-top:40px; color:var(--muted); font-size:12px; line-height:1.7;}
-    .footer b{color:var(--text);} .watermark{color:var(--gold); font-weight:800;}
-    .foot-note{font-size:10.5px; opacity:.75; max-width:420px; margin:8px auto 0;}
-    .redo{margin-top:16px; background:transparent; border:1px solid var(--line2); color:var(--text); font-family:inherit; font-weight:700; padding:12px 26px; border-radius:100px; cursor:pointer;}
-    .redo:hover{border-color:var(--gold); color:var(--gold);}
-    @media(prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important;} .cta::after,.sweep::before{animation:none;} }
+    .foot{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); text-align:center; color:var(--muted); font-size:12px; line-height:1.8;}
+    .foot .wm{color:var(--gold); font-weight:900;} .foot .fn{font-size:10.5px; opacity:.7; max-width:460px; margin:6px auto 0;}
+    @media(prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important;} .sweep::before{animation:none;} }
   </style>
 
-  <canvas class="stars"></canvas>
-
-  <!-- פתיחה -->
-  <section class="hero" id="hero">
-    <div class="brand-chip"><span class="dot"></span> מבית <b>אייקון ישראל</b> + Daskalo.AI</div>
-    <h1 class="title">המרכז הישראלי<br><span class="grad">לרייטינג בדיגיטל</span></h1>
-    <p class="sub"><b>מי באמת שולט ברשתות?</b> מי נפל? מי התפוצץ? מי נעלם?<br>בחרו זירה לניתוח וקבלו את כל המידע הכי חם ברשת — בלייב!</p>
-
-    <div class="picker">
-      <div class="lbl">את מי בודקים?</div>
-      <div class="arena" id="arena">
-        <button data-grp="all" aria-pressed="true"><span class="ic">🌟</span> כולם <small>כל הזירה</small></button>
-        <button data-grp="singers" aria-pressed="false"><span class="ic">🎤</span> זמרים <small>עולם המוזיקה</small></button>
-        <button data-grp="famous" aria-pressed="false"><span class="ic">🎬</span> מפורסמים <small>מסך ובידור</small></button>
-        <button data-grp="politicians" aria-pressed="false"><span class="ic">🏛️</span> פוליטיקאים <small>בקרוב</small></button>
-      </div>
-      <div class="lbl">מגדר</div>
-      <div class="seg" id="gender">
-        <button data-g="all" aria-pressed="true">הכל</button>
-        <button data-g="M" aria-pressed="false">גברים</button>
-        <button data-g="F" aria-pressed="false">נשים</button>
-      </div>
-    </div>
-
-    <button class="cta" id="analyzeBtn">התחילו בניתוח<span class="pulse">⚡</span></button>
-  </section>
-
-  <!-- רדאר -->
+  <!-- אינטרו: סריקת רדאר 8 שניות -->
   <div class="scan" id="scan">
     <div class="radar-wrap">
-      <div class="radar-ring"></div><div class="radar-ring r2"></div><div class="radar-ring r3"></div><div class="radar-ring r4"></div>
-      <div class="radar-cross"></div>
+      <div class="rr"></div><div class="rr b"></div><div class="rr c"></div><div class="rr d"></div>
       <div class="sweep"></div>
-      <div class="blip" style="left:64%;top:30%;animation-delay:.3s"></div>
-      <div class="blip" style="left:32%;top:58%;animation-delay:1s"></div>
-      <div class="blip" style="left:70%;top:66%;animation-delay:1.6s"></div>
-      <div class="blip" style="left:44%;top:26%;animation-delay:.8s"></div>
-      <div class="radar-core"><div class="radar-pct num" id="pct">0<small>%</small></div></div>
+      <div class="blip" style="left:64%;top:30%;animation-delay:.2s"></div>
+      <div class="blip" style="left:32%;top:60%;animation-delay:.9s"></div>
+      <div class="blip" style="left:70%;top:66%;animation-delay:1.4s"></div>
+      <div class="rcore"><div class="rpct num" id="pct">0<small>%</small></div></div>
     </div>
-    <div class="scan-txt" id="scanTxt">מפעיל את הרדאר…</div>
-    <div class="scan-sub" id="scanSub">מתחבר לאינסטגרם</div>
-    <div class="scan-hand" id="scanHand">&nbsp;</div>
+    <div class="ttl" id="scanTtl">מפעיל את הרדאר…</div>
+    <div class="sb" id="scanSub">מתחבר לרשתות</div>
+    <button class="skip" id="skipBtn">דלג ←</button>
   </div>
 
-  <!-- תוצאות -->
-  <main class="wrap results" id="results"></main>
+  <!-- דף הבית -->
+  <div class="home" id="home">
+    <nav class="nav"><div class="wrap in">
+      <svg class="emblem" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="22" fill="none" stroke="#EBC868" stroke-width="2"/>
+        <circle cx="24" cy="24" r="17" fill="none" stroke="#EBC868" stroke-width="1" opacity=".5"/>
+        <path d="M14 30 L12 17 L19 22 L24 12 L29 22 L36 17 L34 30 Z" fill="#EBC868"/>
+        <rect x="14" y="31" width="20" height="4" rx="1.5" fill="#EBC868"/>
+      </svg>
+      <div class="brand"><span class="t">המרכז הישראלי לרייטינג ברשתות</span><span class="s">מבית אייקון ישראל + Daskalo.AI</span></div>
+      <div class="sp"></div>
+      <button class="cmp" id="openCmp">⚔️ <span>בנה השוואה</span></button>
+    </div></nav>
+
+    <div id="homeBody"></div>
+
+    <div class="wrap foot">
+      <div><span class="wm">המרכז הישראלי לרייטינג ברשתות</span> · מבית אייקון ישראל + Daskalo.AI</div>
+      <div class="fn">נתוני עוקבים ולייקים חיים מאינסטגרם. מדד ה"חום" מבוסס על מגמת הלייקים בפוסטים האחרונים (מעורבות), לא על שינוי עוקבים. השוואות מוצגות למטרות מידע ובידור.</div>
+    </div>
+  </div>
+
+  <!-- מודל בונה השוואות -->
+  <div class="sheet" id="cmpSheet">
+    <div class="box">
+      <button class="x" id="cmpX" aria-label="סגירה">✕</button>
+      <h2>⚔️ בנה השוואה</h2>
+      <p class="hint">בחרו 2–4 דמויות מכל הקטגוריות והשוו ביניהן ראש בראש.</p>
+      <input class="search" id="cmpSearch" placeholder="חיפוש לפי שם… (למשל: ליאור סושרד, אדוה דדון, ביבי)">
+      <div class="chips" id="cmpChips"></div>
+      <div class="pool" id="cmpPool"></div>
+      <button class="go" id="cmpGo" disabled>השווה עכשיו</button>
+      <div class="vsres" id="cmpRes"></div>
+    </div>
+  </div>
 
   <script>
-    const ANALYSIS = {"asOf":"2026-08-04","celebs":[{"n":"אדוה דדון","h":"adva_dadon","cat":"עיתונאות","f":191394,"v":1,"exists":1,"grp":"famous","g":"F","avg7":8770,"momentum":-49.5,"topLikes":22627,"topUrl":"https://www.instagram.com/p/DbdkRQqgkzK/","topCap":"Always us 🤍","posts7":7},{"n":"נועה קירל","h":"noakirel","cat":"מוזיקה","f":1841283,"v":1,"exists":1,"grp":"singers","g":"F","avg7":16110,"momentum":-9.1,"topLikes":27220,"topUrl":"https://www.instagram.com/p/DbYoZDBDM_j/","topCap":"דברים שקרו לאחרונה","posts7":5},{"n":"נינט טייב","h":"n.tayeb","cat":"מוזיקה","f":267262,"v":1,"exists":1,"grp":"singers","g":"F","avg7":1630,"momentum":-9,"topLikes":1630,"topUrl":"https://www.instagram.com/p/Dbn2-uCoB7U/","topCap":"אני מחליטה שאני לא נותנת למצבי הרוח של טראמפ לחרד לי את הימים\n\nאם תהיה מלחמה( בטל ומבוטל כפול שלוש)- אני אדע \n\nעד אז- נעולה בחדר חזרות עם הלהקה הכי בת זוממת ריגושים במזרח התיכון, לקראת ההופעה באמפי ת״","posts7":1},{"n":"עדן בן זקן","h":"edenben_zaken","cat":"מוזיקה","f":1118526,"v":1,"exists":1,"grp":"singers","g":"F","avg7":15463,"momentum":32.8,"topLikes":15463,"topUrl":"https://www.instagram.com/p/DbnoLtHjFDM/","topCap":null,"posts7":1},{"n":"אנה זק","h":"annazak12","cat":"מוזיקה","f":1349032,"v":1,"exists":1,"grp":"singers","g":"F","avg7":12556,"momentum":86.3,"topLikes":15475,"topUrl":"https://www.instagram.com/p/DbgTI58COmq/","topCap":"all roads lead to gelato","posts7":2},{"n":"שרית חדד","h":"sarithadadofficial","cat":"מוזיקה","f":273264,"v":1,"exists":1,"grp":"singers","g":"F","avg7":2220,"momentum":-41.3,"topLikes":2220,"topUrl":"https://www.instagram.com/p/DbU9F0bI4CQ/","topCap":"⁨\tיפות ויפים שלי!\nרוצים להכיר את ״אלה״? 🦋🦋🦋\nהיא מחכה לכם בכל הפלטפורמות ומאוד מתרגשת 😉❤️⁩","posts7":1},{"n":"פאר טסי","h":"peertasi","cat":"מוזיקה","f":240021,"v":1,"exists":1,"grp":"singers","g":"M","avg7":null,"momentum":14,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"נסרין קדרי","h":"nasrinkadry","cat":"מוזיקה","f":387808,"v":1,"exists":1,"grp":"singers","g":"F","avg7":null,"momentum":13.6,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"שירה האס","h":"shirahaas","cat":"שחקנים","f":415349,"v":1,"exists":1,"grp":"famous","g":"F","avg7":null,"momentum":-32.1,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"רותם סלע","h":"rotemsela1","cat":"טלוויזיה","f":1278453,"v":1,"exists":1,"grp":"famous","g":"F","avg7":19032,"momentum":-26.1,"topLikes":19032,"topUrl":"https://www.instagram.com/p/DbbE37hs9Dz/","topCap":"⁨\tאיזה הוא העשיר השמח בחלקו? \n\n׳הקייטנה של נלי ולירון׳ עם רותם סלע זמין בכל הפלטפורמות! 🎧⁩","posts7":1},{"n":"ליאור רז","h":"liorraz","cat":"שחקנים","f":458916,"v":1,"exists":1,"grp":"famous","g":"M","avg7":null,"momentum":-6.6,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"גיא זוארץ","h":"guyzu_aretz","cat":"טלוויזיה","f":315566,"v":1,"exists":1,"grp":"famous","g":"M","avg7":3404,"momentum":-92.8,"topLikes":3404,"topUrl":"https://www.instagram.com/p/DbYLOasihwh/","topCap":"ט״ו באב שמח 🤍🧚🏻‍♂️🙌","posts7":1},{"n":"ליאור סושרד","h":"liorsuchard","cat":"בידור","f":463971,"v":1,"exists":1,"grp":"famous","g":"M","avg7":737,"momentum":-96.2,"topLikes":1216,"topUrl":"https://www.instagram.com/p/DbgbzRjM71x/","topCap":"@mcuban reaction says it all 😂","posts7":2},{"n":"אגם בוחבוט","h":"agam__buhbut","cat":"משפיענים","f":532682,"v":1,"exists":1,"grp":"famous","g":"F","avg7":6103,"momentum":-7.6,"topLikes":6583,"topUrl":"https://www.instagram.com/p/DbgdBtosPvO/","topCap":"בוקר טוב ☀️","posts7":2},{"n":"עומר אדם","h":"omeradam","cat":"מוזיקה","f":1459221,"v":1,"exists":1,"grp":"singers","g":"M","avg7":null,"momentum":-10.2,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"יובל דיין","h":"yuvaldayan1","cat":"מוזיקה","f":138649,"v":1,"exists":1,"grp":"singers","g":"F","avg7":538,"momentum":-85.3,"topLikes":637,"topUrl":"https://www.instagram.com/p/DbgZHmWMQBL/","topCap":"רגע של נס שהזכיר לי כמה אנחנו העם הכי חזק שיש וכמה כוח יש למוזיקה 🥹🤍 #יובלדיין #עדשתחזור","posts7":2},{"n":"אושר כהן","h":"oshercohen","cat":"מוזיקה","f":330543,"v":1,"exists":1,"grp":"singers","g":"M","avg7":null,"momentum":20.7,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"גל גדות","h":"gal_gadot","cat":"שחקנים","f":103717779,"v":1,"exists":1,"grp":"famous","g":"F","avg7":52949,"momentum":2.5,"topLikes":52949,"topUrl":"https://www.instagram.com/p/Dbn_1WNRm3r/","topCap":"For The Runner, I had to learn how to run.\n\nWhen a movie has you hit the ground running… literally 😅, you call the best.\n\nHuge thanks to Olympic coach @malachi_davis_ for getting me ready for the rol","posts7":1},{"n":"יעל שלביה","h":"yaelshelbia","cat":"דוגמנות","f":1440118,"v":1,"exists":1,"grp":"famous","g":"F","avg7":10216,"momentum":-26.8,"topLikes":10216,"topUrl":"https://www.instagram.com/p/DboRLAvkVOX/","topCap":null,"posts7":1}],"stats":{"total":19,"daysTracked":1,"hasFollowerDeltas":false}};
+    const ANALYSIS = {"asOf":"2026-08-05","celebs":[{"n":"אדוה דדון","h":"adva_dadon","cat":"עיתונאות","f":191394,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/adva_dadon.jpg","avg7":8770,"momentum":-49.5,"topLikes":22627,"topUrl":"https://www.instagram.com/p/DbdkRQqgkzK/","topCap":"Always us 🤍","posts7":7},{"n":"נועה קירל","h":"noakirel","cat":"מוזיקה","f":1841283,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/noakirel.jpg","avg7":17995,"momentum":-9.1,"topLikes":27220,"topUrl":"https://www.instagram.com/p/DbYoZDBDM_j/","topCap":"דברים שקרו לאחרונה","posts7":3},{"n":"נינט טייב","h":"n.tayeb","cat":"מוזיקה","f":267262,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/n.tayeb.jpg","avg7":1630,"momentum":-9,"topLikes":1630,"topUrl":"https://www.instagram.com/p/Dbn2-uCoB7U/","topCap":"אני מחליטה שאני לא נותנת למצבי הרוח של טראמפ לחרד לי את הימים\n\nאם תהיה מלחמה( בטל ומבוטל כפול שלוש)- אני אדע \n\nעד אז- נעולה בחדר חזרות עם הלהקה הכי בת זוממת ריגושים במזרח התיכון, לקראת ההופעה באמפי ת״","posts7":1},{"n":"עדן בן זקן","h":"edenben_zaken","cat":"מוזיקה","f":1118526,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/edenben_zaken.jpg","avg7":15463,"momentum":32.8,"topLikes":15463,"topUrl":"https://www.instagram.com/p/DbnoLtHjFDM/","topCap":null,"posts7":1},{"n":"אנה זק","h":"annazak12","cat":"מוזיקה","f":1349032,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/annazak12.jpg","avg7":12556,"momentum":86.3,"topLikes":15475,"topUrl":"https://www.instagram.com/p/DbgTI58COmq/","topCap":"all roads lead to gelato","posts7":2},{"n":"שרית חדד","h":"sarithadadofficial","cat":"מוזיקה","f":273264,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/sarithadadofficial.jpg","avg7":null,"momentum":-41.3,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"פאר טסי","h":"peertasi","cat":"מוזיקה","f":240021,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/peertasi.jpg","avg7":null,"momentum":14,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"נסרין קדרי","h":"nasrinkadry","cat":"מוזיקה","f":387808,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/nasrinkadry.jpg","avg7":null,"momentum":13.6,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"שירה האס","h":"shirahaas","cat":"שחקנים","f":415349,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/shirahaas.jpg","avg7":null,"momentum":-32.1,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"רותם סלע","h":"rotemsela1","cat":"טלוויזיה","f":1278453,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/rotemsela1.jpg","avg7":19032,"momentum":-26.1,"topLikes":19032,"topUrl":"https://www.instagram.com/p/DbbE37hs9Dz/","topCap":"⁨\tאיזה הוא העשיר השמח בחלקו? \n\n׳הקייטנה של נלי ולירון׳ עם רותם סלע זמין בכל הפלטפורמות! 🎧⁩","posts7":1},{"n":"ליאור רז","h":"liorraz","cat":"שחקנים","f":458916,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/liorraz.jpg","avg7":null,"momentum":-6.6,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"גיא זוארץ","h":"guyzu_aretz","cat":"טלוויזיה","f":315566,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/guyzu_aretz.jpg","avg7":3404,"momentum":-92.8,"topLikes":3404,"topUrl":"https://www.instagram.com/p/DbYLOasihwh/","topCap":"ט״ו באב שמח 🤍🧚🏻‍♂️🙌","posts7":1},{"n":"ליאור סושרד","h":"liorsuchard","cat":"בידור","f":463971,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/liorsuchard.jpg","avg7":737,"momentum":-96.2,"topLikes":1216,"topUrl":"https://www.instagram.com/p/DbgbzRjM71x/","topCap":"@mcuban reaction says it all 😂","posts7":2},{"n":"אגם בוחבוט","h":"agam__buhbut","cat":"משפיענים","f":532682,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/agam__buhbut.jpg","avg7":6103,"momentum":-7.6,"topLikes":6583,"topUrl":"https://www.instagram.com/p/DbgdBtosPvO/","topCap":"בוקר טוב ☀️","posts7":2},{"n":"עומר אדם","h":"omeradam","cat":"מוזיקה","f":1459221,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/omeradam.jpg","avg7":null,"momentum":-10.2,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"יובל דיין","h":"yuvaldayan1","cat":"מוזיקה","f":138649,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/yuvaldayan1.jpg","avg7":538,"momentum":-85.3,"topLikes":637,"topUrl":"https://www.instagram.com/p/DbgZHmWMQBL/","topCap":"רגע של נס שהזכיר לי כמה אנחנו העם הכי חזק שיש וכמה כוח יש למוזיקה 🥹🤍 #יובלדיין #עדשתחזור","posts7":2},{"n":"אושר כהן","h":"oshercohen","cat":"מוזיקה","f":330543,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/oshercohen.jpg","avg7":null,"momentum":20.7,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"גל גדות","h":"gal_gadot","cat":"שחקנים","f":103717779,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/gal_gadot.jpg","avg7":52949,"momentum":2.5,"topLikes":52949,"topUrl":"https://www.instagram.com/p/Dbn_1WNRm3r/","topCap":"For The Runner, I had to learn how to run.\n\nWhen a movie has you hit the ground running… literally 😅, you call the best.\n\nHuge thanks to Olympic coach @malachi_davis_ for getting me ready for the rol","posts7":1},{"n":"יעל שלביה","h":"yaelshelbia","cat":"דוגמנות","f":1440118,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/yaelshelbia.jpg","avg7":10216,"momentum":-26.8,"topLikes":10216,"topUrl":"https://www.instagram.com/p/DboRLAvkVOX/","topCap":null,"posts7":1},{"n":"בנימין נתניהו","h":"b.netanyahu","cat":"פוליטיקה","f":3846607,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/b.netanyahu.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"יאיר לפיד","h":"yairlapid","cat":"פוליטיקה","f":165662,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/yairlapid.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"נפתלי בנט","h":"naftalibennett","cat":"פוליטיקה","f":413304,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/naftalibennett.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"בצלאל סמוטריץ׳","h":"bezalel_smotrich","cat":"פוליטיקה","f":36344,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/bezalel_smotrich.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"אביגדור ליברמן","h":"avigdor.liberman","cat":"פוליטיקה","f":61991,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/avigdor.liberman.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"בני גנץ","h":"gantzbe","cat":"פוליטיקה","f":141617,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/gantzbe.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"חדשות 12","h":"n12news","cat":"תקשורת","f":577460,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/n12news.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"קשת 12","h":"keshet12","cat":"תקשורת","f":342602,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/keshet12.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"וואלה","h":"wallanews","cat":"תקשורת","f":115432,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/wallanews.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"כלכליסט","h":"calcalist","cat":"תקשורת","f":81866,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/calcalist.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0}],"stats":{"total":29,"daysTracked":2}};
     const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+    const C = ANALYSIS.celebs || [];
+    const byH = Object.fromEntries(C.map(c=>[c.h,c]));
     const fmt = n => (n==null?"—":Number(n).toLocaleString("en-US"));
+    const kfmt = n => n==null?"—":(n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,"")+"M":n>=1e3?Math.round(n/1e3)+"K":""+n);
     const esc = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
     const initials = n => (n||"").replace(/[^֐-׿א-ת ]/g,"").split(" ").slice(0,2).map(w=>w[0]||"").join("");
-    function grad(str){let s=0;for(const ch of (str||"x"))s=(s*31+ch.charCodeAt(0))>>>0;const a=s%360,b=(a+48)%360;return `linear-gradient(145deg,hsl(${a} 75% 62%),hsl(${b} 80% 48%))`;}
-    const av=(n,sz)=>`<div class="av" style="background:${grad(n)}${sz?`;width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.36)}px`:""}">${esc(initials(n))}</div>`;
-    const vb=v=>v?'<span class="vbadge">✔</span>':'';
-    const GRP_HE={singers:"זמרים",famous:"מפורסמים",politicians:"פוליטיקאים",all:"כל הזירה"};
+    function grad(str){let s=0;for(const ch of (str||"x"))s=(s*31+ch.charCodeAt(0))>>>0;const a=s%360,b=(a+48)%360;return `linear-gradient(145deg,hsl(${a} 70% 58%),hsl(${b} 74% 44%))`;}
+    // אווטאר: תמונה אמיתית עם fallback לראשי-תיבות
+    function ava(c,cls){return `<div class="ava ${cls||''}" style="background:${grad(c.n)}"><span class="ini">${esc(initials(c.n))}</span><img src="${esc(c.pic)}" alt="${esc(c.n)}" loading="lazy" onerror="this.remove()"></div>`;}
+    const vb=v=>v?'<span class="vb">✔</span>':'';
+    const GRP={singers:{he:"זמרים",ic:"🎤"},famous:{he:"מפורסמים",ic:"🎬"},politicians:{he:"פוליטיקאים",ic:"🏛️"},media:{he:"ערוצי תקשורת",ic:"📺"}};
 
-    // כוכבים
-    (function(){const c=document.querySelector(".stars"),x=c.getContext("2d");let w,h,st;
-      function rs(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio;st=Array.from({length:66},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5*devicePixelRatio+.3,s:Math.random()*.4+.1,p:Math.random()*6}));}
-      rs();addEventListener("resize",rs);
-      (function loop(t){x.clearRect(0,0,w,h);for(const s of st){s.y-=s.s;if(s.y<0)s.y=h;const o=.4+.5*Math.sin(t/900+s.p);x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fillStyle=`rgba(242,206,107,${o*.5})`;x.fill();}if(!reduce)requestAnimationFrame(loop);})(0);
-    })();
+    const sortF=a=>[...a].sort((x,y)=>y.f-x.f);
+    const withMom=a=>a.filter(c=>c.momentum!=null);
 
-    // ===== בחירת זירה =====
-    let SEL_GRP="all", SEL_G="all";
-    document.getElementById("arena").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-      SEL_GRP=b.dataset.grp; [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed",x===b));});
-    document.getElementById("gender").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-      SEL_G=b.dataset.g; [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed",x===b));});
-
-    const filtered=()=>ANALYSIS.celebs.filter(c=>(SEL_GRP==="all"||c.grp===SEL_GRP)&&(SEL_G==="all"||c.g===SEL_G));
-
-    // ===== מחשבי תצוגות (הכל מהנתונים האמיתיים) =====
-    const V={
-      leaders:d=>[...d].filter(c=>c.exists).sort((a,b)=>b.f-a.f),
-      rising:d=>[...d].filter(c=>c.momentum!=null&&c.momentum>0).sort((a,b)=>b.momentum-a.momentum).slice(0,6),
-      falling:d=>[...d].filter(c=>c.momentum!=null&&c.momentum<0).sort((a,b)=>a.momentum-b.momentum).slice(0,6),
-      freefall:d=>[...d].filter(c=>c.momentum!=null&&c.momentum<0).sort((a,b)=>a.momentum-b.momentum)[0]||null,
-      topPost:d=>[...d].filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes)[0]||null,
-      vanished:d=>d.filter(c=>!c.exists),
-    };
-
-    const rowHTML=(c,i,valHTML)=>`<div class="row"><div class="rank num">${i}</div>${av(c.n,44)}<div class="meta"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="hd">@${esc(c.h)}</div></div>${valHTML}</div>`;
-    const medal=i=>["🥇","🥈","🥉"][i]||"";
-
-    // בונה כל פאנל לפי מפתח
-    function buildPanel(key,data){
-      const note=`<div class="note">${key==='rising'||key==='falling'||key==='freefall'?'מדד חום לפי מגמת לייקים בפוסטים האחרונים':key==='topPost'?'הפוסט עם הכי הרבה לייקים ב-7 ימים':'נתונים חיים · אינסטגרם'}</div>`;
-      if(key==="leaders"){const L=V.leaders(data);
-        return head("👑","מלכי ומלכות העוקבים","מי יושב על הכס?",note)+
-          '<div class="rows">'+L.map((c,i)=>rowHTML(c,i+1,`<div class="val gold">${fmt(c.f)}<small>עוקבים</small></div>`)
-            .replace('<div class="rank num">'+(i+1)+'</div>', i<3?`<div class="podium-badge">${medal(i)}</div>`:'<div class="rank num">'+(i+1)+'</div>')).join("")+'</div>';
-      }
-      if(key==="rising"){const L=V.rising(data); if(!L.length)return head("🚀","בזינוק","מי מחמם את הקהל",note)+emptyBox("😴","אף אחד לא בזינוק בזירה הזו כרגע.");
-        return head("🚀","בזינוק — מחממים מנועים","מי מטפס בכוח השבוע",note)+
-          '<div class="rows">'+L.map((c,i)=>rowHTML(c,i+1,`<div class="val up">▲ ${c.momentum}%<small>מומנטום</small></div>`)).join("")+'</div>';
-      }
-      if(key==="falling"){const L=V.falling(data); if(!L.length)return head("📉","מאבדים גובה","מי מתקרר",note)+emptyBox("🔥","כולם לוהטים — אף אחד לא מתקרר בזירה הזו.");
-        return head("📉","מאבדים גובה","מי מתקרר השבוע",note)+
-          '<div class="rows">'+L.map((c,i)=>rowHTML(c,i+1,`<div class="val down">▼ ${c.momentum}%<small>מומנטום</small></div>`)).join("")+'</div>';
-      }
-      if(key==="freefall"){const c=V.freefall(data); if(!c)return head("⚠️","צניחה חופשית","",note)+emptyBox("🪂","אין צניחות דרמטיות בזירה הזו.");
-        return head("⚠️","צניחה חופשית","הנפילה הכי דרמטית של השבוע",note)+
-          `<div class="hero-card alert">${av(c.n,72)}<div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="big down">▼ ${c.momentum}%</div><div class="u">קריסת מעורבות מול הרגיל שלו</div></div></div>`;
-      }
-      if(key==="topPost"){const c=V.topPost(data); if(!c)return head("💣","הפצצה של השבוע","",note)+emptyBox("📭","אין פוסטים חדשים בחלון של 7 ימים בזירה הזו.");
-        return head("💣","הפצצה של השבוע","הפוסט ששבר את הרשת",note)+
-          `<div class="hero-card win">${av(c.n,72)}<div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="big gold">${fmt(c.topLikes)}</div><div class="u">לייקים על פוסט אחד</div>${c.topCap?`<div class="cap">${esc(c.topCap)}</div>`:""}${c.topUrl?`<a href="${esc(c.topUrl)}" target="_blank" rel="noopener">צפייה בפוסט ↗</a>`:""}</div></div>`;
-      }
-      if(key==="vanished"){const L=V.vanished(data);
-        return head("👻","נעלמו מהרדאר","מי ירד מהרשת",note)+ (L.length
-          ? '<div class="rows">'+L.map(c=>`<div class="row">${av(c.n,44)}<div class="meta"><div class="nm">${esc(c.n)}</div><div class="hd">@${esc(c.h)}</div></div><div class="val down">נעלם</div></div>`).join("")+'</div>'
-          : `<div class="status-ok"><span class="ok">✅</span> כל הכוכבים בזירה הזו פעילים. אף אחד לא נעלם מהרדאר.</div>`);
-      }
-      return "";
+    // ===== הילייטס שבועיים =====
+    function highlights(){
+      const lead=sortF(C)[0];
+      const rise=withMom(C).sort((a,b)=>b.momentum-a.momentum)[0];
+      const bomb=C.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes)[0];
+      const fall=withMom(C).sort((a,b)=>a.momentum-b.momentum)[0];
+      return [
+        {c:lead,kick:"👑 המוביל",big:kfmt(lead.f),u:"עוקבים"},
+        {c:rise,kick:"🚀 הזינוק",big:"▲ "+rise.momentum+"%",u:"מומנטום מעורבות"},
+        {c:bomb,kick:"💣 התפוצצות",big:kfmt(bomb.topLikes),u:"לייקים על פוסט"},
+        {c:fall,kick:"📉 הצניחה",big:"▼ "+fall.momentum+"%",u:"מומנטום מעורבות"},
+      ].filter(x=>x.c);
     }
-    const head=(ic,t,d,note)=>`<div class="panel-head"><span class="bar"></span><h3>${ic} ${t}</h3>${note||""}</div>${d?`<p class="scope" style="color:var(--muted);margin:-8px 0 12px;font-size:13px">${d}</p>`:""}`;
-    const emptyBox=(ic,txt)=>`<div class="empty"><span class="big">${ic}</span>${txt}</div>`;
 
-    // ===== מסך תוצאות =====
-    const MENU=[
-      {k:"leaders",ic:"👑",t:"מי מוביל בעוקבים",d:"טבלת המלכים והמלכות"},
-      {k:"topPost",ic:"💣",t:"הפוסט הכי חזק",d:"הפצצה של השבוע"},
-      {k:"rising",ic:"🚀",t:"מי עלה השבוע",d:"מחממים מנועים"},
-      {k:"falling",ic:"📉",t:"מי נפל השבוע",d:"מאבדים גובה"},
-      {k:"freefall",ic:"⚠️",t:"מי בצניחה חופשית",d:"הנפילה הדרמטית"},
-      {k:"vanished",ic:"👻",t:"מי נעלם",d:"ירדו מהרדאר"},
-    ];
+    // ===== Top-10 השוואות חמות (מבחר מערכת) =====
+    const HOT=[["b.netanyahu","yairlapid","קרב ראשי הממשלה"],["noakirel","annazak12","מלכות הפופ"],
+      ["gal_gadot","yaelshelbia","כוכבות בינלאומיות"],["omeradam","edenben_zaken","זמרי הפריים"],
+      ["naftalibennett","gantzbe","המחנה הממלכתי"],["liorsuchard","guyzu_aretz","מלכי הבידור"],
+      ["sarithadadofficial","nasrinkadry","הדיוות"],["n12news","keshet12","מלחמת הרייטינג"],
+      ["rotemsela1","adva_dadon","נשות המסך"],["peertasi","oshercohen","זמרי הרחוב"]];
 
-    function showResults(){
-      const d=filtered();
-      const scopeTxt=`${GRP_HE[SEL_GRP]} · ${SEL_G==="all"?"כל המגדרים":SEL_G==="M"?"גברים":"נשים"} · ${d.length} כוכבים`;
-      let H=`<div class="res-head"><div class="kick">RADAR · ${ANALYSIS.asOf||""}</div><h2>הרייטינג חשוף 🔥</h2><div class="scope">${scopeTxt}</div></div>`;
+    // ===== בניית דף הבית =====
+    function buildHome(){
+      const HL=highlights(); const lead=sortF(C)[0];
+      let H="";
+      // ביל-בורד = המוביל
+      H+=`<div class="bill"><div class="bg" style="background-image:url('${esc(lead.pic)}')"></div><div class="shade"></div>
+        <div class="c"><span class="tag">🔴 בלייב · ${ANALYSIS.asOf||""}</span>
+        <h1>${esc(lead.n)}${vb(lead.v)}</h1>
+        <div class="meta"><span><b>${fmt(lead.f)}</b> עוקבים</span><span>${GRP[lead.grp]?.ic||""} ${GRP[lead.grp]?.he||""}</span><span>👑 מוביל הרייטינג</span></div>
+        <div class="btns"><button class="play" onclick="Radar.compareWith('${lead.h}')">⚔️ השווה אותו</button><button class="more" onclick="Radar.openCmp()">בנה השוואה משלך</button></div>
+        </div></div>`;
 
-      if(SEL_GRP==="politicians"){
-        H+=emptyBox("🏛️","מאגר הפוליטיקאים ייפתח בסריקה הבאה. בחרו זמרים או מפורסמים כדי לראות את הרייטינג המלא.");
-        H+=footer(); document.getElementById("results").innerHTML=H; bindRedo(); return;
-      }
+      H+='<div class="wrap">';
+      // הילייטס
+      H+=`<div class="row-sec"><div class="row-h"><h2>ההיילייטס של השבוע</h2><span class="sub">מה הכי חם ברשת עכשיו</span></div><div class="hl-grid">`;
+      HL.forEach(x=>{H+=`<div class="hl" onclick="Radar.compareWith('${x.c.h}')">${ava(x.c)}<div class="sh"></div><div class="c"><span class="kick">${x.kick}</span><div><div class="big">${x.big}</div><div class="nm">${esc(x.c.n)}${vb(x.c.v)}</div><div class="u">${x.u}</div></div></div></div>`;});
+      H+=`</div></div>`;
 
-      H+='<div class="menu">';
-      MENU.forEach(m=>{H+=`<button class="mbtn" data-key="${m.k}"><span class="ic">${m.ic}</span><span class="t">${m.t}</span><span class="d">${m.d}</span></button>`;});
-      H+=`<button class="mbtn overview" data-key="__all"><span class="ic">🔭</span><span class="t">מבט על — הכל במכה אחת</span><span class="d">כל הרייטינג בפוזה אחת לצילום מסך</span></button>`;
-      H+='</div><div id="panelHost"></div>';
-      H+=footer();
-      const R=document.getElementById("results"); R.innerHTML=H;
+      // Top-10 השוואות
+      H+=`<div class="row-sec"><div class="row-h"><h2>🔥 10 ההשוואות החמות של השבוע</h2></div><div class="rail cmp-rail">`;
+      HOT.forEach((p,i)=>{const a=byH[p[0]],b=byH[p[1]]; if(!a||!b)return;
+        H+=`<div class="item" onclick="Radar.compare(['${p[0]}','${p[1]}'])"><div class="rank num">${i+1}</div>
+          <div class="vspair"><div class="half">${ava(a)}</div><div class="half">${ava(b)}</div><div class="vs">VS</div><div class="lbl">${esc(p[2])}</div></div></div>`;});
+      H+=`</div></div>`;
 
-      R.querySelector(".menu").addEventListener("click",e=>{const b=e.target.closest(".mbtn");if(!b)return;
-        const key=b.dataset.key, host=document.getElementById("panelHost");
-        if(key==="__all"){ host.innerHTML='<div class="panel">'+MENU.map(m=>buildPanel(m.k,d)).join('<div style="height:8px"></div>')+'</div>'; }
-        else { host.innerHTML='<div class="panel">'+buildPanel(key,d)+'</div>'; }
-        host.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});
+      // שורות קטגוריה
+      ["famous","singers","politicians","media"].forEach(g=>{
+        const list=sortF(C.filter(c=>c.grp===g)); if(!list.length)return;
+        H+=`<div class="row-sec"><div class="row-h"><h2>${GRP[g].ic} ${GRP[g].he}</h2><span class="sub">${list.length} דמויות · לפי עוקבים</span></div><div class="rail">`;
+        list.forEach((c,i)=>{H+=poster(c,i+1);});
+        H+=`</div></div>`;
       });
-      bindRedo();
-    }
-    const footer=()=>`<div class="footer"><div><span class="watermark">המרכז הישראלי לרייטינג בדיגיטל</span> · מבית אייקון ישראל + Daskalo.AI</div><div class="foot-note">מדד ה"חום" מבוסס על מגמת הלייקים בפוסטים האחרונים (מעורבות), לא על שינוי עוקבים. נתוני עוקבים ולייקים חיים מאינסטגרם.</div><button class="redo" id="redoBtn">↺ זירה חדשה</button></div>`;
-    function bindRedo(){const b=document.getElementById("redoBtn");if(b)b.addEventListener("click",()=>{document.getElementById("results").classList.remove("on");document.getElementById("hero").style.display="flex";scrollTo({top:0,behavior:"smooth"});});}
 
-    // ===== סריקת רדאר 15 שניות =====
-    const hero=document.getElementById("hero"),scan=document.getElementById("scan"),results=document.getElementById("results");
-    const pctEl=document.getElementById("pct"),scanTxt=document.getElementById("scanTxt"),scanSub=document.getElementById("scanSub"),scanHand=document.getElementById("scanHand");
-    function analyze(){
-      hero.style.display="none"; scan.classList.add("on"); results.classList.remove("on");
-      const d=filtered(); const handles=d.map(c=>c.h);
-      const stages=[[0,"מפעיל את הרדאר…","מתחבר לאינסטגרם"],[18,"סורק חשבונות…","מאמת זהויות"],[40,"מושך עוקבים…","סופר מיליוני עוקבים"],[62,"בודק פוסטים…","מנתח מעורבות ולייקים"],[82,"מדרג את הכוכבים…","מרכיב את הטבלה"],[95,"מסיים…","חושף את הרייטינג"]];
-      const DUR=reduce?400:15000, t0=performance.now(); let hi=0;
-      (function tick(t){
-        const p=Math.min(1,(t-t0)/DUR), pc=Math.round(p*100);
-        pctEl.innerHTML=pc+'<small>%</small>';
-        for(let i=stages.length-1;i>=0;i--){ if(pc>=stages[i][0]){ scanTxt.textContent=stages[i][1]; scanSub.textContent=stages[i][2]; break; } }
-        if(!reduce && handles.length && t-hi>360){ hi=t; scanHand.textContent="@"+handles[Math.floor(Math.random()*handles.length)]; }
-        if(p<1)requestAnimationFrame(tick);
-        else{ scan.classList.remove("on"); showResults(); results.classList.add("on"); results.scrollIntoView({behavior:reduce?"auto":"smooth"}); }
-      })(t0);
+      // מובילי עוקבים (כל הקטגוריות)
+      H+=`<div class="row-sec"><div class="row-h"><h2>👑 מובילי העוקבים בישראל</h2><span class="sub">כל הקטגוריות יחד</span></div><div class="rail">`;
+      sortF(C).slice(0,15).forEach((c,i)=>{H+=poster(c,i+1,true);});
+      H+=`</div></div>`;
+
+      H+='</div>';
+      document.getElementById("homeBody").innerHTML=H;
     }
-    document.getElementById("analyzeBtn").addEventListener("click",analyze);
+    function poster(c,rank,showRank){
+      const mom=c.momentum!=null?`<div class="st2 ${c.momentum>=0?'up':'down'}">${c.momentum>=0?'▲':'▼'} ${Math.abs(c.momentum)}%</div>`:"";
+      return `<div class="poster" onclick="Radar.compareWith('${c.h}')"><div class="img">${ava(c)}<div class="grad"></div>${showRank?`<div class="rankbig num">${rank}</div>`:mom}<div class="cap"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="st">${kfmt(c.f)} עוקבים</div></div></div></div>`;
+    }
+
+    // ===== בונה השוואות =====
+    let picks=[];
+    function openCmp(pre){ picks=pre?pre.slice(0,4):[]; document.getElementById("cmpSheet").classList.add("on"); document.getElementById("cmpRes").innerHTML=""; renderCmp(); document.getElementById("cmpSearch").focus(); }
+    function renderCmp(){
+      const q=document.getElementById("cmpSearch").value.trim();
+      const chips=document.getElementById("cmpChips");
+      chips.innerHTML=picks.map(h=>{const c=byH[h];return `<span class="chip">${ava(c)} ${esc(c.n)} <button onclick="Radar.unpick('${h}')" aria-label="הסר">✕</button></span>`;}).join("");
+      const pool=document.getElementById("cmpPool");
+      const list=C.filter(c=>!picks.includes(c.h)&&(!q||c.n.includes(q)||c.h.includes(q.toLowerCase())));
+      pool.innerHTML=sortF(list).slice(0,60).map(c=>`<button ${picks.length>=4?"disabled":""} onclick="Radar.pick('${c.h}')">${ava(c)}<div style="min-width:0"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.he||""} · ${kfmt(c.f)}</div></div></button>`).join("")||'<div style="color:var(--muted);padding:10px">לא נמצאו תוצאות</div>';
+      document.getElementById("cmpGo").disabled=picks.length<2;
+    }
+    function renderResult(){
+      const cs=picks.map(h=>byH[h]); if(cs.length<2)return;
+      const metrics=[{k:"f",lab:"עוקבים",fmt:fmt,hi:"max"},{k:"momentum",lab:"מומנטום (חום)",fmt:v=>v==null?"—":(v>=0?"▲ ":"▼ ")+v+"%",hi:"max"},{k:"topLikes",lab:"פוסט חזק (7ימים)",fmt:kfmt,hi:"max"}];
+      const wins={}; picks.forEach(h=>wins[h]=0);
+      metrics.forEach(m=>{let best=-Infinity,bh=null; cs.forEach(c=>{const v=c[m.k]; if(v!=null&&v>best){best=v;bh=c.h;}}); if(bh)wins[bh]++; m._bh=bh;});
+      let champ=picks[0]; picks.forEach(h=>{if(wins[h]>wins[champ])champ=h;});
+      let H=`<div class="vscols" style="--n:${cs.length}">`;
+      cs.forEach(c=>{H+=`<div class="vscol ${c.h===champ?'win':''}">${c.h===champ?'<div class="crown">👑</div>':''}${ava(c,'')}<div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''}</div>`+
+        metrics.map(m=>`<div class="stat"><div class="lab">${m.lab}</div><div class="val ${m._bh===c.h?'lead':''}">${m.fmt(c[m.k])}</div></div>`).join("")+`</div>`;});
+      H+=`</div><div class="verdict">🏆 המנצח בהשוואה: <b>${esc(byH[champ].n)}</b> — מוביל ב-${wins[champ]} מתוך ${metrics.length} מדדים</div>`;
+      document.getElementById("cmpRes").innerHTML=H;
+      document.getElementById("cmpRes").scrollIntoView({behavior:reduce?"auto":"smooth",block:"nearest"});
+    }
+
+    // ===== API גלובלי לאירועי onclick =====
+    window.Radar={
+      openCmp:()=>openCmp(),
+      compare:(arr)=>openCmp(arr),
+      compareWith:(h)=>openCmp([h]),
+      pick:(h)=>{if(picks.length<4&&!picks.includes(h))picks.push(h); renderCmp();},
+      unpick:(h)=>{picks=picks.filter(x=>x!==h); renderCmp(); document.getElementById("cmpRes").innerHTML="";},
+    };
+    document.getElementById("openCmp").addEventListener("click",()=>openCmp());
+    document.getElementById("cmpX").addEventListener("click",()=>document.getElementById("cmpSheet").classList.remove("on"));
+    document.getElementById("cmpSheet").addEventListener("click",e=>{if(e.target.id==="cmpSheet")e.currentTarget.classList.remove("on");});
+    document.getElementById("cmpSearch").addEventListener("input",renderCmp);
+    document.getElementById("cmpGo").addEventListener("click",renderResult);
+
+    // ===== סריקת אינטרו 8 שניות =====
+    const scan=document.getElementById("scan"),home=document.getElementById("home");
+    function enterHome(){ buildHome(); scan.classList.add("off"); home.classList.add("on"); }
+    (function(){
+      const stages=[[0,"מפעיל את הרדאר…","מתחבר לרשתות"],[22,"סורק חשבונות…","מאמת זהויות"],[46,"מושך עוקבים ולייקים…","אלפי נקודות מידע"],[72,"מדרג את הכוכבים…","מרכיב את הרייטינג"],[92,"מסיים…","טוען את הבית"]];
+      const DUR=reduce?300:8000,t0=performance.now();
+      const pct=document.getElementById("pct"),tt=document.getElementById("scanTtl"),sb=document.getElementById("scanSub");
+      document.getElementById("skipBtn").addEventListener("click",enterHome);
+      (function tick(t){const p=Math.min(1,(t-t0)/DUR),pc=Math.round(p*100); pct.innerHTML=pc+'<small>%</small>';
+        for(let i=stages.length-1;i>=0;i--){if(pc>=stages[i][0]){tt.textContent=stages[i][1];sb.textContent=stages[i][2];break;}}
+        if(p<1&&!home.classList.contains("on"))requestAnimationFrame(tick); else if(!home.classList.contains("on"))enterHome();
+      })(t0);
+    })();
   </script>
 </div>
 
 <!-- ===== תוסף נגישות (ת״י 5568 · WCAG 2.0 AA) ===== -->
 <style>
-  .a11y-btn{position:fixed; bottom:18px; inset-inline-start:18px; z-index:9998; width:56px; height:56px; border-radius:50%; border:2px solid #fff; background:#1449C4; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 20px rgba(0,0,0,.5);}
-  .a11y-btn:focus-visible{outline:3px solid #F2CE6B; outline-offset:3px;}
-  .a11y-btn svg{width:30px; height:30px;}
-  .a11y-panel{position:fixed; bottom:84px; inset-inline-start:18px; z-index:9999; width:290px; max-width:calc(100vw - 36px); background:#fff; color:#111; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.55); padding:16px; display:none; font-family:Arial,"Arial Hebrew",sans-serif; direction:rtl; max-height:82vh; overflow:auto;}
-  .a11y-panel.on{display:block;}
-  .a11y-panel h2{margin:0 0 4px; font-size:17px; color:#111;}
-  .a11y-panel .hint{margin:0 0 12px; font-size:12px; color:#555;}
+  .a11y-btn{position:fixed; bottom:18px; inset-inline-start:18px; z-index:9998; width:54px; height:54px; border-radius:50%; border:2px solid #fff; background:#1449C4; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 20px rgba(0,0,0,.5);}
+  .a11y-btn:focus-visible{outline:3px solid #EBC868; outline-offset:3px;} .a11y-btn svg{width:28px; height:28px;}
+  .a11y-panel{position:fixed; bottom:80px; inset-inline-start:18px; z-index:9999; width:290px; max-width:calc(100vw - 36px); background:#fff; color:#111; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.55); padding:16px; display:none; font-family:Arial,"Arial Hebrew",sans-serif; direction:rtl; max-height:82vh; overflow:auto;}
+  .a11y-panel.on{display:block;} .a11y-panel h2{margin:0 0 4px; font-size:17px; color:#111;} .a11y-panel .hint{margin:0 0 12px; font-size:12px; color:#555;}
   .a11y-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   .a11y-grid button{cursor:pointer; font-family:inherit; font-size:13px; font-weight:700; color:#111; background:#F1F3F8; border:2px solid #E0E4EC; border-radius:10px; padding:10px 6px; display:flex; flex-direction:column; align-items:center; gap:4px;}
-  .a11y-grid button .i{font-size:18px;}
-  .a11y-grid button[aria-pressed="true"]{background:#DCE7FF; border-color:#1449C4; color:#0B2E8A;}
-  .a11y-grid button:focus-visible{outline:3px solid #1449C4; outline-offset:2px;}
+  .a11y-grid button .i{font-size:18px;} .a11y-grid button[aria-pressed="true"]{background:#DCE7FF; border-color:#1449C4; color:#0B2E8A;} .a11y-grid button:focus-visible{outline:3px solid #1449C4; outline-offset:2px;}
   .a11y-foot{margin-top:12px; display:flex; gap:8px; align-items:center;}
   .a11y-reset{flex:1; cursor:pointer; font-family:inherit; font-weight:800; font-size:13px; color:#fff; background:#C0392B; border:0; border-radius:10px; padding:10px;}
   .a11y-state{background:transparent; border:0; color:#1449C4; font-weight:700; font-size:12px; text-decoration:underline; cursor:pointer; font-family:inherit;}
-  .a11y-modal{position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; padding:20px;}
-  .a11y-modal.on{display:flex;}
+  .a11y-modal{position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; padding:20px;} .a11y-modal.on{display:flex;}
   .a11y-modal .box{background:#fff; color:#222; max-width:560px; max-height:84vh; overflow:auto; border-radius:16px; padding:26px; direction:rtl; font-family:Arial,"Arial Hebrew",sans-serif; line-height:1.7; font-size:14px;}
-  .a11y-modal h3{margin:0 0 10px; font-size:20px;} .a11y-modal p{margin:0 0 10px;} .a11y-modal a{color:#1449C4;}
-  .a11y-modal .x{float:left; cursor:pointer; border:0; background:#eee; border-radius:8px; width:32px; height:32px; font-size:18px; font-weight:800;}
-
-  /* מצבי נגישות (מוחלים על .app) */
-  .app.acc-links a{text-decoration:underline !important; outline:2px solid #F2CE6B; outline-offset:2px;}
-  .app.acc-readable, .app.acc-readable *{font-family:Arial,"Arial Hebrew",sans-serif !important; letter-spacing:.02em !important; line-height:1.7 !important; font-weight:500;}
+  .a11y-modal h3{margin:0 0 10px; font-size:20px;} .a11y-modal p{margin:0 0 10px;} .a11y-modal a{color:#1449C4;} .a11y-modal .x{float:left; cursor:pointer; border:0; background:#eee; border-radius:8px; width:32px; height:32px; font-size:18px; font-weight:800;}
+  .app.acc-links a{text-decoration:underline !important; outline:2px solid #EBC868; outline-offset:2px;}
+  .app.acc-readable, .app.acc-readable *{font-family:Arial,"Arial Hebrew",sans-serif !important; letter-spacing:.02em !important; line-height:1.7 !important;}
   .app.acc-nomotion *{animation:none !important; transition:none !important;}
   .app.acc-cursor, .app.acc-cursor *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='38'%20height='38'%20viewBox='0%200%2032%2032'%3E%3Cpath%20d='M5%202L5%2027L12%2020L16%2029L20%2027L16%2018L25%2018Z'%20fill='%23000'%20stroke='%23fff'%20stroke-width='2'/%3E%3C/svg%3E") 5 2, auto !important;}
 </style>
-
 <button class="a11y-btn" id="a11yBtn" aria-label="פתיחת תפריט נגישות" aria-expanded="false" aria-haspopup="true">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="3.5" r="2"/><path d="M21 8c0 .6-.4 1-1 1l-5-.5v4l1.8 6.2c.2.6-.2 1.2-.8 1.3-.6.2-1.2-.2-1.3-.8L13 14h-2l-1.7 5.4c-.2.6-.8 1-1.4.8-.6-.2-1-.8-.8-1.4L9 12.5v-4L4 9c-.6 0-1-.4-1-1s.4-1 1-1l5 .5h6L20 7c.6 0 1 .4 1 1z"/></svg>
 </button>
-
 <div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="תפריט נגישות">
-  <h2>נגישות</h2>
-  <p class="hint">התאמת האתר לצרכים שלך</p>
+  <h2>נגישות</h2><p class="hint">התאמת האתר לצרכים שלך</p>
   <div class="a11y-grid">
     <button data-act="bigger"><span class="i">🔎</span>הגדל טקסט</button>
     <button data-act="smaller"><span class="i">🔍</span>הקטן טקסט</button>
@@ -391,63 +400,37 @@
     <button data-act="nomotion" aria-pressed="false"><span class="i">⏸️</span>עצור תנועה</button>
     <button data-act="cursor" aria-pressed="false"><span class="i">➚</span>סמן גדול</button>
   </div>
-  <div class="a11y-foot">
-    <button class="a11y-reset" data-act="reset">איפוס הגדרות</button>
-    <button class="a11y-state" id="a11yStateBtn">הצהרת נגישות</button>
-  </div>
+  <div class="a11y-foot"><button class="a11y-reset" data-act="reset">איפוס הגדרות</button><button class="a11y-state" id="a11yStateBtn">הצהרת נגישות</button></div>
 </div>
-
 <div class="a11y-modal" id="a11yModal" role="dialog" aria-modal="true" aria-label="הצהרת נגישות">
-  <div class="box">
-    <button class="x" id="a11yModalX" aria-label="סגירה">✕</button>
+  <div class="box"><button class="x" id="a11yModalX" aria-label="סגירה">✕</button>
     <h3>הצהרת נגישות</h3>
-    <p>אתר "המרכז הישראלי לרייטינג בדיגיטל" (מבית אייקון ישראל + Daskalo.AI) רואה חשיבות רבה במתן שירות שוויוני לכלל הגולשים, ופועל להנגשת האתר בהתאם ל<b>תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג-2013</b> ולתקן הישראלי <b>ת"י 5568</b> ברמת AA, המבוסס על הנחיות <b>WCAG 2.0</b>.</p>
-    <p><b>מה הונגש:</b> תפריט נגישות ייעודי (הגדלת טקסט, ניגודיות, גווני אפור, הדגשת קישורים, גופן קריא, עצירת אנימציות, סמן גדול), מבנה סמנטי, ניווט מקלדת, סימון פוקוס, טקסט חלופי ותמיכה ב-RTL.</p>
-    <p><b>מגבלות ידועות:</b> ייתכנו רכיבים שטרם הונגשו במלואם. אנו פועלים לשיפור מתמיד.</p>
-    <p><b>פניות בנושא נגישות:</b> רכז הנגישות — בן דסקלו · <a href="mailto:ben@b-films.co.il">ben@b-films.co.il</a>. נשמח לקבל משוב ולטפל בכל בעיה.</p>
-    <p style="color:#777;font-size:12px">ההצהרה עודכנה באוגוסט 2026.</p>
+    <p>"המרכז הישראלי לרייטינג ברשתות" (מבית אייקון ישראל + Daskalo.AI) רואה חשיבות רבה במתן שירות שוויוני, ופועל להנגשת האתר בהתאם ל<b>תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג-2013</b> ולתקן הישראלי <b>ת"י 5568</b> ברמת AA (WCAG 2.0).</p>
+    <p><b>מה הונגש:</b> תפריט נגישות (הגדלת טקסט, ניגודיות, גווני אפור, הדגשת קישורים, גופן קריא, עצירת אנימציות, סמן גדול), מבנה סמנטי, ניווט מקלדת, סימון פוקוס, טקסט חלופי לתמונות ותמיכה ב-RTL.</p>
+    <p><b>מגבלות ידועות:</b> ייתכנו רכיבים שטרם הונגשו במלואם; אנו פועלים לשיפור מתמיד.</p>
+    <p><b>פניות בנושא נגישות:</b> רכז הנגישות — בן דסקלו · <a href="mailto:ben@b-films.co.il">ben@b-films.co.il</a>.</p>
+    <p style="color:#777;font-size:12px">עודכן באוגוסט 2026.</p>
   </div>
 </div>
-
 <script>
 (function(){
-  var app=document.querySelector(".app");
-  var KEY="a11y_prefs_v1";
-  var st=JSON.parse(localStorage.getItem(KEY)||"{}");
-  if(typeof st.scale!=="number") st.scale=1;
+  var app=document.querySelector(".app"), KEY="a11y_prefs_v1";
+  var st=JSON.parse(localStorage.getItem(KEY)||"{}"); if(typeof st.scale!=="number")st.scale=1;
   var toggles=["contrast","gray","links","readable","nomotion","cursor"];
-
-  function apply(){
-    app.style.zoom = st.scale;
-    toggles.forEach(function(t){ app.classList.toggle("acc-"+t, !!st[t]); });
-    // ניגודיות/אפור דרך filter משולב
-    var f=[]; if(st.contrast) f.push("contrast(1.3) brightness(1.08)"); if(st.gray) f.push("grayscale(1)");
-    app.style.filter=f.join(" ");
-    // סנכרון מצב כפתורים
-    document.querySelectorAll('.a11y-grid button[data-act]').forEach(function(b){
-      var a=b.dataset.act; if(toggles.indexOf(a)>=0) b.setAttribute("aria-pressed", st[a]?"true":"false");
-    });
-    localStorage.setItem(KEY, JSON.stringify(st));
-  }
-  function act(a){
-    if(a==="bigger") st.scale=Math.min(1.6, +(st.scale+0.1).toFixed(2));
-    else if(a==="smaller") st.scale=Math.max(0.8, +(st.scale-0.1).toFixed(2));
-    else if(a==="reset"){ st={scale:1}; }
-    else st[a]=!st[a];
-    apply();
-  }
+  function apply(){ app.style.zoom=st.scale; toggles.forEach(function(t){app.classList.toggle("acc-"+t,!!st[t]);});
+    var f=[]; if(st.contrast)f.push("contrast(1.3) brightness(1.08)"); if(st.gray)f.push("grayscale(1)"); app.style.filter=f.join(" ");
+    document.querySelectorAll('.a11y-grid button[data-act]').forEach(function(b){var a=b.dataset.act; if(toggles.indexOf(a)>=0)b.setAttribute("aria-pressed",st[a]?"true":"false");});
+    localStorage.setItem(KEY,JSON.stringify(st)); }
+  function act(a){ if(a==="bigger")st.scale=Math.min(1.6,+(st.scale+0.1).toFixed(2)); else if(a==="smaller")st.scale=Math.max(0.8,+(st.scale-0.1).toFixed(2)); else if(a==="reset")st={scale:1}; else st[a]=!st[a]; apply(); }
   document.querySelector(".a11y-grid").addEventListener("click",function(e){var b=e.target.closest("button");if(b)act(b.dataset.act);});
   document.querySelector(".a11y-reset").addEventListener("click",function(){act("reset");});
-
-  var btn=document.getElementById("a11yBtn"), panel=document.getElementById("a11yPanel");
-  btn.addEventListener("click",function(){var on=panel.classList.toggle("on"); btn.setAttribute("aria-expanded",on?"true":"false");});
-  document.addEventListener("keydown",function(e){ if(e.key==="Escape"){panel.classList.remove("on"); btn.setAttribute("aria-expanded","false"); document.getElementById("a11yModal").classList.remove("on");} });
-
+  var btn=document.getElementById("a11yBtn"),panel=document.getElementById("a11yPanel");
+  btn.addEventListener("click",function(){var on=panel.classList.toggle("on");btn.setAttribute("aria-expanded",on?"true":"false");});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"){panel.classList.remove("on");btn.setAttribute("aria-expanded","false");document.getElementById("a11yModal").classList.remove("on");document.getElementById("cmpSheet").classList.remove("on");}});
   var modal=document.getElementById("a11yModal");
   document.getElementById("a11yStateBtn").addEventListener("click",function(){modal.classList.add("on");});
   document.getElementById("a11yModalX").addEventListener("click",function(){modal.classList.remove("on");});
   modal.addEventListener("click",function(e){if(e.target===modal)modal.classList.remove("on");});
-
   apply();
 })();
 </script>
