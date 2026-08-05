@@ -521,12 +521,12 @@
     function renderResult(){
       const cs=picks.map(h=>cmpByH[h]); if(cs.length<2)return;
       const metrics=[{k:"rating",lab:"מדד רייטינג",f:v=>v},{k:"growthDelta",lab:"שינוי עוקבים (24ש')",f:v=>v==null?"—":(v>=0?"+":"")+fmt(v)},{k:"engageRate",lab:"מעורבות",f:v=>(v*100).toFixed(2)+"%"},{k:"avgViews7",lab:"צפיות ממוצעות",f:v=>v==null?"—":kfmt(v)},{k:"f",lab:"עוקבים",f:fmt},{k:"topLikes",lab:"פוסט חזק",f:kfmt}];
-      const wins={}; picks.forEach(h=>wins[h]=0);
-      metrics.forEach(m=>{let best=-Infinity,bh=null; cs.forEach(c=>{const v=c[m.k]; if(v!=null&&v>best){best=v;bh=c.h;}}); if(bh)wins[bh]++; m._bh=bh;});
-      let champ=picks[0]; picks.forEach(h=>{if(wins[h]>wins[champ])champ=h;});
+      metrics.forEach(m=>{let best=-Infinity,bh=null; cs.forEach(c=>{const v=c[m.k]; if(v!=null&&v>best){best=v;bh=c.h;}}); m._bh=bh;});
+      // המנצח = מדד הרייטינג הכולל הגבוה ביותר (לא ספירת שדות)
+      let champ=picks[0]; picks.forEach(h=>{if((cmpByH[h].rating||0)>(cmpByH[champ].rating||0))champ=h;});
       let H=`<div class="cmp-period">📊 ההשוואה מחושבת על <b>7 הימים האחרונים</b></div><div class="vscols" style="--n:${cs.length}">`;
       cs.forEach(c=>{H+=`<div class="vscol ${c.h===champ?'win':''}">${c.h===champ?'<div class="crown">👑</div>':''}${ava(c)}<div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''}</div>`+metrics.map(m=>`<div class="stat"><div class="lab">${m.lab}</div><div class="val ${m._bh===c.h?'lead':''}">${m.f(c[m.k])}</div></div>`).join("")+`</div>`;});
-      H+=`</div><div class="verdict">🏆 המנצח/ת: <b>${esc(cmpByH[champ].n)}</b> — מוביל/ה ב-${wins[champ]} מתוך ${metrics.length} מדדים</div>`;
+      H+=`</div><div class="verdict">🏆 המנצח/ת: <b>${esc(cmpByH[champ].n)}</b> — מדד הרייטינג הגבוה ביותר (${cmpByH[champ].rating})</div>`;
       document.getElementById("cmpRes").innerHTML=H;
     }
 
