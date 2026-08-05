@@ -82,10 +82,13 @@
     /* HOME + BILLBOARD */
     .home{display:none; padding-bottom:90px;} .home.on{display:block; animation:fade .5s ease both;}
     @keyframes fade{from{opacity:0;}to{opacity:1;}}
-    .bill{position:relative; min-height:min(60vh,480px); display:flex; align-items:flex-end; overflow:hidden; border-bottom:1px solid var(--line);}
-    .bill .bg{position:absolute; inset:0; background-size:cover; background-position:center 20%;}
-    .bill .shade{position:absolute; inset:0; background:linear-gradient(0deg,var(--ink) 3%,rgba(11,11,15,.5) 45%,rgba(11,11,15,.2)), linear-gradient(90deg,rgba(11,11,15,.82),transparent 55%);}
-    .bill .c{position:relative; z-index:2; padding:0 clamp(14px,3.5vw,34px) 30px; max-width:1180px; margin:0 auto; width:100%;}
+    .bill{position:relative; min-height:min(62vh,500px); overflow:hidden; border-bottom:1px solid var(--line);}
+    .slide{position:absolute; inset:0; display:flex; align-items:flex-end; transform:translateX(100%); opacity:0; transition:transform .7s ease, opacity .7s ease; pointer-events:none;}
+    .slide.active{transform:translateX(0); opacity:1; pointer-events:auto; z-index:2;}
+    .slide.exit{transform:translateX(-100%); opacity:0; z-index:1;}
+    .slide .bg{position:absolute; inset:0; background-size:cover; background-position:center 38%;}
+    .slide .shade{position:absolute; inset:0; background:linear-gradient(0deg,var(--ink) 3%,rgba(11,11,15,.5) 45%,rgba(11,11,15,.2)), linear-gradient(90deg,rgba(11,11,15,.82),transparent 55%);}
+    .slide .c{position:relative; z-index:2; padding:0 clamp(14px,3.5vw,34px) 40px; max-width:1180px; margin:0 auto; width:100%;}
     .bill .tag{display:inline-flex; align-items:center; gap:7px; background:var(--red); color:#fff; font-weight:900; font-size:12px; padding:5px 11px; border-radius:6px;}
     .bill h1{margin:12px 0 4px; font-size:clamp(28px,6.5vw,54px); font-weight:900; letter-spacing:-.02em; line-height:1;}
     .bill .meta{display:flex; align-items:center; gap:12px; flex-wrap:wrap; color:var(--muted); font-size:14px; font-weight:600;}
@@ -93,6 +96,10 @@
     .bill .btns{margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;}
     .bill .btns button{cursor:pointer; font-weight:900; font-size:15px; padding:12px 22px; border-radius:9px; border:0;}
     .bill .play{background:var(--gold); color:#0B0B0F;} .bill .more{background:rgba(255,255,255,.16); color:#fff;}
+    .bill-dots{position:absolute; z-index:5; top:14px; inset-inline-start:16px; display:flex; gap:6px;}
+    .bill-dots button{width:8px; height:8px; border-radius:5px; border:0; background:rgba(255,255,255,.4); cursor:pointer; padding:0; transition:.3s;}
+    .bill-dots button.on{background:var(--gold); width:22px;}
+    @media(prefers-reduced-motion:reduce){ .slide{transition:none;} }
 
     /* שורות */
     .row-sec{margin-top:28px;}
@@ -248,16 +255,53 @@
       ["sarithadadofficial","nasrinkadry","הדיוות"],["n12news","keshet12","מלחמת הרייטינג"],
       ["rotemsela1","adva_dadon","נשות המסך"],["peertasi","oshercohen","זמרי הרחוב"]];
 
+    // ===== שקופיות ביל-בורד =====
+    function slP(c,tag,statBig,statSub){
+      return `<div class="slide__A__"><div class="bg" style="background-image:url('${esc(c.pic)}')"></div><div class="shade"></div>
+        <div class="c" style="cursor:pointer" onclick="Radar.profile('${c.h}')">
+          <span class="tag">${tag} · ${ANALYSIS.asOf||""}</span>
+          <h1>${esc(c.n)}${vb(c.v)}</h1>
+          <div class="meta"><span class="rt"><b>${statBig}</b></span>${statSub?`<span>${statSub}</span>`:""}<span>${GRP[c.grp]?.ic||""} ${GRP[c.grp]?.he||""}</span></div>
+          <div class="btns"><button class="play" onclick="event.stopPropagation();Radar.profile('${c.h}')">📊 לנתונים המלאים</button></div>
+        </div></div>`;
+    }
+    function slC(a,b,label){
+      return `<div class="slide__A__"><div class="bg" style="background-image:url('${esc(a.pic)}')"></div><div class="shade"></div>
+        <div class="c" style="cursor:pointer" onclick="Radar.compare(['${a.h}','${b.h}'])">
+          <span class="tag">🔥 ההשוואה הכי חמה</span>
+          <h1 style="font-size:clamp(24px,5.5vw,44px)">${esc(a.n)} <span style="color:var(--red)">🆚</span> ${esc(b.n)}</h1>
+          <div class="meta"><span>${esc(label)}</span></div>
+          <div class="btns"><button class="play" onclick="event.stopPropagation();Radar.compare(['${a.h}','${b.h}'])">⚔️ צפו בהשוואה</button></div>
+        </div></div>`;
+    }
+    function initBillboard(){
+      const slides=[...document.querySelectorAll('.slide')], dots=[...document.querySelectorAll('.bill-dots button')];
+      if(slides.length<2)return;
+      let cur=0,timer;
+      function go(n){ if(n===cur)return; const a=slides[cur],b=slides[n];
+        a.classList.remove('active');a.classList.add('exit'); b.classList.remove('exit');b.classList.add('active');
+        dots[cur]&&dots[cur].classList.remove('on'); dots[n]&&dots[n].classList.add('on');
+        setTimeout(function(){a.classList.remove('exit');},720); cur=n; }
+      function restart(){ clearInterval(timer); if(!reduce) timer=setInterval(function(){go((cur+1)%slides.length);},5000); }
+      dots.forEach((d,i)=>d.addEventListener('click',function(){go(i);restart();}));
+      restart();
+    }
+
     // ===== בית =====
     function buildHome(){
-      const top=sortR(C); const lead=top[0];
-      let H="";
-      H+=`<div class="bill"><div class="bg" style="background-image:url('${esc(lead.pic)}')"></div><div class="shade"></div><div class="c">
-        <span class="tag">🔴 מוביל הרייטינג · ${ANALYSIS.asOf||""}</span>
-        <h1>${esc(lead.n)}${vb(lead.v)}</h1>
-        <div class="meta"><span class="rt"><b>${lead.rating}</b> מדד רייטינג</span><span>${fmt(lead.f)} עוקבים</span><span>${GRP[lead.grp]?.ic||""} ${GRP[lead.grp]?.he||""}</span></div>
-        <div class="btns"><button class="play" onclick="Radar.profile('${lead.h}')">📊 סקירה כללית מלאה</button><button class="more" onclick="Radar.openCmp()">⚔️ יצירת השוואה משלך</button></div>
-      </div></div><div class="wrap">`;
+      const top=sortR(C), rlead=top[0], flead=sortF(C)[0];
+      const rise=withMom(C).sort((a,b)=>b.momentum-a.momentum)[0];
+      const bomb=C.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes)[0];
+      const hotp=HOT.map(p=>[byH[p[0]],byH[p[1]],p[2]]).find(x=>x[0]&&x[1]);
+      const feat=[];
+      feat.push(slP(rlead,"🏆 מוביל מדד הרייטינג",`מדד ${rlead.rating}`,`${fmt(rlead.f)} עוקבים`));
+      if(hotp)feat.push(slC(hotp[0],hotp[1],hotp[2]));
+      if(rise)feat.push(slP(rise,"🚀 הכי בזינוק השבוע",`▲ ${rise.momentum}%`,"מומנטום מעורבות"));
+      if(bomb)feat.push(slP(bomb,"💣 הפוסט שהתפוצץ",`${kfmt(bomb.topLikes)} לייקים`,"בשבוע האחרון"));
+      feat.push(slP(flead,"👑 מלך/ת העוקבים",`${fmt(flead.f)}`,"עוקבים"));
+      let H=`<div class="bill">`+feat.map((s,i)=>s.replace('__A__',i===0?' active':'')).join("")+
+        `<div class="bill-dots">`+feat.map((_,i)=>`<button class="${i===0?'on':''}" aria-label="שקופית ${i+1}"></button>`).join("")+
+        `</div></div><div class="wrap">`;
 
       // 1) השוואות חמות
       H+=`<div class="row-sec"><div class="row-h"><h2>🔥 ההשוואות החמות של השבוע</h2></div><div class="rail cmp-rail">`;
@@ -283,6 +327,7 @@
         H+=`</div>`;});
       H+=`</div></div>`;
       document.getElementById("homeBody").innerHTML=H;
+      initBillboard();
     }
 
     // ===== פרופיל מלא =====
