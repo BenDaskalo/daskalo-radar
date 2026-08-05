@@ -221,7 +221,6 @@
       <div class="blip" style="left:64%;top:30%;animation-delay:.2s"></div><div class="blip" style="left:32%;top:60%;animation-delay:.9s"></div><div class="blip" style="left:70%;top:66%;animation-delay:1.4s"></div>
       <div class="rcore"><div class="rpct num" id="pct">0<small>%</small></div></div></div>
     <div class="ttl" id="scanTtl">מפעיל את הרדאר…</div><div class="sb" id="scanSub">מתחבר לרשתות</div>
-    <button class="skip" id="skipBtn">דלג ←</button>
   </div>
 
   <!-- בית -->
@@ -456,7 +455,6 @@
       const pct=document.getElementById("pct"),tt=document.getElementById("scanTtl"),sb=document.getElementById("scanSub");
       const D=reduce?250:dur,t0=performance.now(); let fin=false;
       function finish(){ if(fin)return; fin=true; scan.classList.add("off"); done&&done(); }
-      document.getElementById("skipBtn").onclick=finish;
       (function tick(t){ if(fin)return; const p=Math.min(1,(t-t0)/D),pc=Math.round(p*100); pct.innerHTML=pc+'<small>%</small>';
         for(let i=scanStages.length-1;i>=0;i--){if(pc>=scanStages[i][0]){tt.textContent=scanStages[i][1];sb.textContent=scanStages[i][2];break;}}
         if(p<1)requestAnimationFrame(tick); else finish(); })(t0);
