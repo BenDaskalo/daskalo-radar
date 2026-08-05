@@ -411,7 +411,7 @@
     // ===== בונה השוואות =====
     let picks=[];
     function openCmp(pre,auto){picks=pre?pre.slice(0,4):[]; document.getElementById("cmpSheet").classList.add("on"); document.getElementById("cmpRes").innerHTML=""; renderCmp();
-      if(auto&&picks.length>=2){renderResult(); setTimeout(()=>document.getElementById("cmpRes").scrollIntoView({behavior:reduce?"auto":"smooth",block:"nearest"}),60);}
+      if(auto&&picks.length>=2){runScan(2600,()=>{renderResult(); setTimeout(()=>document.getElementById("cmpRes").scrollIntoView({behavior:reduce?"auto":"smooth",block:"nearest"}),60);});}
       else setTimeout(()=>document.getElementById("cmpSearch").focus(),50);}
     function renderCmp(){
       const q=document.getElementById("cmpSearch").value.trim();
@@ -434,7 +434,7 @@
 
     window.Radar={
       profile:(h)=>{buildProfile(h); document.getElementById("pfSheet").classList.add("on");},
-      openCmp:()=>openCmp(), overview:()=>{buildOverview();document.getElementById("ovSheet").classList.add("on");},
+      openCmp:()=>openCmp(), overview:()=>runScan(2200,()=>{buildOverview();document.getElementById("ovSheet").classList.add("on");}),
       browse:()=>{buildBrowse();document.getElementById("brSheet").classList.add("on");},
       compare:(arr)=>openCmp(arr,true), compareWith:(h)=>openCmp([h]),
       pick:(h)=>{if(picks.length<4&&!picks.includes(h))picks.push(h); renderCmp();},
@@ -446,20 +446,23 @@
     ["pf","ov","br","cmp"].forEach(id=>{document.getElementById(id+"X").addEventListener("click",()=>document.getElementById(id+"Sheet").classList.remove("on"));
       document.getElementById(id+"Sheet").addEventListener("click",e=>{if(e.target.id===id+"Sheet")e.currentTarget.classList.remove("on");});});
     document.getElementById("cmpSearch").addEventListener("input",renderCmp);
-    document.getElementById("cmpGo").addEventListener("click",renderResult);
+    document.getElementById("cmpGo").addEventListener("click",()=>runScan(2600,renderResult));
 
-    // ===== סריקה 8ש' =====
+    // ===== רדאר — מופעל רק כשעושים ניתוח (השוואה / סקירה) =====
     const scan=document.getElementById("scan"),home=document.getElementById("home");
-    function enterHome(){buildHome(); scan.classList.add("off"); home.classList.add("on");}
-    (function(){
-      const stages=[[0,"מפעיל את הרדאר…","מתחבר לרשתות"],[22,"סורק חשבונות…","מאמת זהויות"],[46,"מחשב מדד רייטינג…","מעורבות · תוכן · מומנטום"],[72,"מדרג את הכוכבים…","מרכיב את הבית"],[92,"מסיים…","טוען"]];
-      const DUR=reduce?300:8000,t0=performance.now();
+    const scanStages=[[0,"מפעיל את הרדאר…","מתחבר לרשתות"],[30,"סורק נתונים…","מעורבות · לייקים · מומנטום"],[62,"מנתח…","מרכיב את התוצאה"],[90,"מסיים…","כמעט שם"]];
+    function runScan(dur,done){
+      scan.classList.remove("off");
       const pct=document.getElementById("pct"),tt=document.getElementById("scanTtl"),sb=document.getElementById("scanSub");
-      document.getElementById("skipBtn").addEventListener("click",enterHome);
-      (function tick(t){const p=Math.min(1,(t-t0)/DUR),pc=Math.round(p*100); pct.innerHTML=pc+'<small>%</small>';
-        for(let i=stages.length-1;i>=0;i--){if(pc>=stages[i][0]){tt.textContent=stages[i][1];sb.textContent=stages[i][2];break;}}
-        if(p<1&&!home.classList.contains("on"))requestAnimationFrame(tick); else if(!home.classList.contains("on"))enterHome();})(t0);
-    })();
+      const D=reduce?250:dur,t0=performance.now(); let fin=false;
+      function finish(){ if(fin)return; fin=true; scan.classList.add("off"); done&&done(); }
+      document.getElementById("skipBtn").onclick=finish;
+      (function tick(t){ if(fin)return; const p=Math.min(1,(t-t0)/D),pc=Math.round(p*100); pct.innerHTML=pc+'<small>%</small>';
+        for(let i=scanStages.length-1;i>=0;i--){if(pc>=scanStages[i][0]){tt.textContent=scanStages[i][1];sb.textContent=scanStages[i][2];break;}}
+        if(p<1)requestAnimationFrame(tick); else finish(); })(t0);
+    }
+    // כניסה ישירה לבית — בלי סריקה
+    buildHome(); scan.classList.add("off"); home.classList.add("on");
   </script>
 </div>
 
