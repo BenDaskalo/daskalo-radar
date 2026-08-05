@@ -62,7 +62,17 @@
     .nav button{cursor:pointer; font-weight:800; font-size:13px; border-radius:100px; border:0; padding:9px 15px; display:inline-flex; align-items:center; gap:6px;}
     .nav .browse{background:transparent; color:var(--text); border:1px solid var(--line2);}
     .nav .cmp{color:#0B0B0F; background:var(--gold);} .nav .cmp:hover{background:#F2D57E;}
-    @media(max-width:560px){ .nav button .lbl{display:none;} .nav button{padding:9px 12px;} }
+    @media(max-width:560px){ .nav .browse .lbl{display:none;} .nav .browse{padding:9px 12px;} .nav .cmp{display:none;} }
+
+    /* כפתור צף קבוע — יצירת השוואה (הכי בולט, תמיד נראה) */
+    .fab-cmp{position:fixed; left:16px; bottom:18px; z-index:95; display:inline-flex; align-items:center; gap:8px;
+      background:linear-gradient(180deg,#F5DA86,var(--gold)); color:#0B0B0F; font-weight:900; font-size:15px;
+      padding:14px 22px; border-radius:100px; border:0; cursor:pointer;
+      box-shadow:0 12px 30px -6px rgba(235,200,104,.65), 0 0 0 1px rgba(0,0,0,.25); transition:transform .18s;}
+    .fab-cmp:hover{transform:translateY(-2px);}
+    .fab-cmp:focus-visible{outline:3px solid #fff; outline-offset:3px;}
+    .fab-cmp .swd{font-size:17px;}
+    @media(max-width:400px){ .fab-cmp{font-size:14px; padding:13px 18px;} }
 
     /* סריקה */
     .scan{position:fixed; inset:0; z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; background:radial-gradient(60% 60% at 50% 40%,#12121A,#08080C); text-align:center; padding:20px;}
@@ -224,6 +234,7 @@
       <button class="cmp" id="openCmp">⚔️ <span class="lbl">יצירת השוואה משלך</span></button>
     </div></nav>
     <div id="homeBody"></div>
+    <button class="fab-cmp" id="fabCmp" aria-label="יצירת השוואה משלך"><span class="swd">⚔️</span> יצירת השוואה משלך</button>
     <div class="wrap foot">
       <div><span class="wm">המרכז הישראלי לרייטינג ברשתות</span></div>
       <div class="fn">מדד הרייטינג משוקלל ממעורבות, כמות תוכן, מומנטום, לייקים, חשיפה ותגובות — נתונים חיים מאינסטגרם. רכיבי עליית/ירידת עוקבים ייכנסו למדד עם צבירת היסטוריה. השוואות מוצגות למטרות מידע ובידור.</div>
@@ -430,6 +441,7 @@
       unpick:(h)=>{picks=picks.filter(x=>x!==h); renderCmp(); document.getElementById("cmpRes").innerHTML="";},
     };
     document.getElementById("openCmp").addEventListener("click",()=>openCmp());
+    document.getElementById("fabCmp").addEventListener("click",()=>openCmp());
     document.getElementById("ovBtn").addEventListener("click",()=>Radar.overview());
     ["pf","ov","br","cmp"].forEach(id=>{document.getElementById(id+"X").addEventListener("click",()=>document.getElementById(id+"Sheet").classList.remove("on"));
       document.getElementById(id+"Sheet").addEventListener("click",e=>{if(e.target.id===id+"Sheet")e.currentTarget.classList.remove("on");});});
