@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>המרכז הישראלי לרייטינג בדיגיטל</title>
-<meta name="description" content="מי באמת שולט ברשתות? מי נפל? מי התפוצץ? מי נעלם? בחרו זירה וקבלו את כל המידע הכי חם ברשת — בלייב! מבית אייקון ישראל + Daskalo.AI">
+<meta name="description" content="מי באמת שולט ברשתות? מי נפל? מי התפוצץ? מי נעלם? הרייטינג החם של הרשתות בישראל — בזמן אמת.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="alternate icon" type="image/png" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="המרכז הישראלי לרייטינג בדיגיטל">
 <meta property="og:title" content="המרכז הישראלי לרייטינג בדיגיטל">
-<meta property="og:description" content="מי באמת שולט ברשתות? מי נפל? מי התפוצץ? מי נעלם? בחרו זירה וקבלו את כל המידע הכי חם ברשת — בלייב! מבית אייקון ישראל + Daskalo.AI">
+<meta property="og:description" content="מי באמת שולט ברשתות? מי נפל? מי התפוצץ? מי נעלם? הרייטינג החם של הרשתות בישראל — בזמן אמת.">
 <meta property="og:url" content="https://bendaskalo.github.io/daskalo-radar/">
 <meta property="og:image" content="https://bendaskalo.github.io/daskalo-radar/og.png">
 <meta property="og:image:secure_url" content="https://bendaskalo.github.io/daskalo-radar/og.png">
@@ -22,7 +22,7 @@
 <meta property="og:locale" content="he_IL">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="המרכז הישראלי לרייטינג בדיגיטל">
-<meta name="twitter:description" content="מי באמת שולט ברשתות? מי נפל? מי התפוצץ? מי נעלם? בחרו זירה וקבלו את כל המידע הכי חם ברשת — בלייב! מבית אייקון ישראל + Daskalo.AI">
+<meta name="twitter:description" content="מי באמת שולט ברשתות? מי נפל? מי התפוצץ? מי נעלם? הרייטינג החם של הרשתות בישראל — בזמן אמת.">
 <meta name="twitter:image" content="https://bendaskalo.github.io/daskalo-radar/og.png">
 <style>*{margin:0}html,body{background:#0A0A0F}</style>
 </head>
@@ -197,7 +197,7 @@
         <path d="M14 30 L12 17 L19 22 L24 12 L29 22 L36 17 L34 30 Z" fill="#EBC868"/>
         <rect x="14" y="31" width="20" height="4" rx="1.5" fill="#EBC868"/>
       </svg>
-      <div class="brand"><span class="t">המרכז הישראלי לרייטינג ברשתות</span><span class="s">מבית אייקון ישראל + Daskalo.AI</span></div>
+      <div class="brand"><span class="t">המרכז הישראלי לרייטינג ברשתות</span><span class="s">רייטינג הרשתות בישראל · בזמן אמת</span></div>
       <div class="sp"></div>
       <button class="cmp" id="openCmp">⚔️ <span>בנה השוואה</span></button>
     </div></nav>
@@ -205,7 +205,7 @@
     <div id="homeBody"></div>
 
     <div class="wrap foot">
-      <div><span class="wm">המרכז הישראלי לרייטינג ברשתות</span> · מבית אייקון ישראל + Daskalo.AI</div>
+      <div><span class="wm">המרכז הישראלי לרייטינג ברשתות</span></div>
       <div class="fn">נתוני עוקבים ולייקים חיים מאינסטגרם. מדד ה"חום" מבוסס על מגמת הלייקים בפוסטים האחרונים (מעורבות), לא על שינוי עוקבים. השוואות מוצגות למטרות מידע ובידור.</div>
     </div>
   </div>
@@ -272,7 +272,7 @@
         <div class="c"><span class="tag">🔴 בלייב · ${ANALYSIS.asOf||""}</span>
         <h1>${esc(lead.n)}${vb(lead.v)}</h1>
         <div class="meta"><span><b>${fmt(lead.f)}</b> עוקבים</span><span>${GRP[lead.grp]?.ic||""} ${GRP[lead.grp]?.he||""}</span><span>👑 מוביל הרייטינג</span></div>
-        <div class="btns"><button class="play" onclick="Radar.compareWith('${lead.h}')">⚔️ השווה אותו</button><button class="more" onclick="Radar.openCmp()">בנה השוואה משלך</button></div>
+        <div class="btns"><button class="play" onclick="Radar.compareWith('${lead.h}')">⚔️ השווה את ${esc(lead.n)}</button></div>
         </div></div>`;
 
       H+='<div class="wrap">';
@@ -405,7 +405,7 @@
 <div class="a11y-modal" id="a11yModal" role="dialog" aria-modal="true" aria-label="הצהרת נגישות">
   <div class="box"><button class="x" id="a11yModalX" aria-label="סגירה">✕</button>
     <h3>הצהרת נגישות</h3>
-    <p>"המרכז הישראלי לרייטינג ברשתות" (מבית אייקון ישראל + Daskalo.AI) רואה חשיבות רבה במתן שירות שוויוני, ופועל להנגשת האתר בהתאם ל<b>תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג-2013</b> ולתקן הישראלי <b>ת"י 5568</b> ברמת AA (WCAG 2.0).</p>
+    <p>אתר "המרכז הישראלי לרייטינג ברשתות" רואה חשיבות רבה במתן שירות שוויוני, ופועל להנגשת האתר בהתאם ל<b>תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג-2013</b> ולתקן הישראלי <b>ת"י 5568</b> ברמת AA (WCAG 2.0).</p>
     <p><b>מה הונגש:</b> תפריט נגישות (הגדלת טקסט, ניגודיות, גווני אפור, הדגשת קישורים, גופן קריא, עצירת אנימציות, סמן גדול), מבנה סמנטי, ניווט מקלדת, סימון פוקוס, טקסט חלופי לתמונות ותמיכה ב-RTL.</p>
     <p><b>מגבלות ידועות:</b> ייתכנו רכיבים שטרם הונגשו במלואם; אנו פועלים לשיפור מתמיד.</p>
     <p><b>פניות בנושא נגישות:</b> רכז הנגישות — בן דסקלו · <a href="mailto:ben@b-films.co.il">ben@b-films.co.il</a>.</p>
