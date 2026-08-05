@@ -33,8 +33,7 @@
     :root{
       --ink:#0B0B0F; --surface:#15151C; --card:#1B1B24; --card2:#22222D;
       --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
-      --gold:#EBC868; --gold-deep:#B8892E;
-      --red:#E4344F; --red-soft:#FF5C74;
+      --gold:#EBC868; --gold-deep:#B8892E; --red:#E4344F;
       --up:#3AD17E; --down:#FF5470;
       --text:#F5F3EE; --muted:#9E9BAC; --r:16px;
     }
@@ -45,208 +44,188 @@
     .num{font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate;}
     img{display:block;}
     .wrap{max-width:1180px; margin:0 auto; padding:0 clamp(14px,3.5vw,34px);}
+    button{font-family:inherit;}
 
-    /* אווטאר עם תמונה אמיתית + fallback ראשי-תיבות */
     .ava{position:relative; border-radius:50%; overflow:hidden; flex:none; display:flex; align-items:center; justify-content:center; color:#0B0B0F; font-weight:900;}
     .ava .ini{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
     .ava img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
     .vb{color:#4AA3FF; font-size:.72em; vertical-align:.1em; margin-inline-start:3px;}
 
-    /* ===== NAV רשמי ===== */
-    .nav{position:sticky; top:0; z-index:50; background:linear-gradient(180deg,rgba(11,11,15,.96),rgba(11,11,15,.75) 70%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
-    .nav .in{display:flex; align-items:center; gap:14px; height:66px;}
-    .emblem{width:40px; height:40px; flex:none;}
-    .brand{display:flex; flex-direction:column; line-height:1.1;}
-    .brand .t{font-weight:900; font-size:clamp(15px,2.6vw,19px); letter-spacing:-.01em;}
-    .brand .s{font-size:11px; color:var(--gold); font-weight:700; letter-spacing:.04em;}
+    /* NAV */
+    .nav{position:sticky; top:0; z-index:50; background:linear-gradient(180deg,rgba(11,11,15,.97),rgba(11,11,15,.8) 70%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+    .nav .in{display:flex; align-items:center; gap:12px; height:64px;}
+    .emblem{width:38px; height:38px; flex:none;}
+    .brand{display:flex; flex-direction:column; line-height:1.12; min-width:0;}
+    .brand .t{font-weight:900; font-size:clamp(14px,2.6vw,18px); letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .brand .s{font-size:11px; color:var(--gold); font-weight:700;}
     .nav .sp{flex:1;}
-    .nav .cmp{cursor:pointer; font-family:inherit; font-weight:800; font-size:13px; color:#0B0B0F; background:var(--gold); border:0; padding:10px 18px; border-radius:100px; display:inline-flex; align-items:center; gap:7px;}
-    .nav .cmp:hover{background:#F2D57E;}
-    @media(max-width:520px){ .nav .cmp span{display:none;} }
+    .nav button{cursor:pointer; font-weight:800; font-size:13px; border-radius:100px; border:0; padding:9px 15px; display:inline-flex; align-items:center; gap:6px;}
+    .nav .browse{background:transparent; color:var(--text); border:1px solid var(--line2);}
+    .nav .cmp{color:#0B0B0F; background:var(--gold);} .nav .cmp:hover{background:#F2D57E;}
+    @media(max-width:560px){ .nav button .lbl{display:none;} .nav button{padding:9px 12px;} }
 
-    /* ===== סריקת רדאר (אינטרו 8ש') ===== */
+    /* סריקה */
     .scan{position:fixed; inset:0; z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; background:radial-gradient(60% 60% at 50% 40%,#12121A,#08080C); text-align:center; padding:20px;}
     .scan.off{display:none;}
-    .radar-wrap{position:relative; width:min(240px,66vw); aspect-ratio:1;}
-    .rr{position:absolute; border-radius:50%; border:1px solid var(--line2); inset:0;}
-    .rr.b{inset:16%;} .rr.c{inset:34%;} .rr.d{inset:52%;}
+    .radar-wrap{position:relative; width:min(230px,64vw); aspect-ratio:1;}
+    .rr{position:absolute; border-radius:50%; border:1px solid var(--line2); inset:0;} .rr.b{inset:16%;} .rr.c{inset:34%;} .rr.d{inset:52%;}
     .sweep{position:absolute; inset:0; border-radius:50%; overflow:hidden;}
     .sweep::before{content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 0deg,rgba(58,209,126,.55),rgba(58,209,126,.04) 45deg,transparent 90deg); animation:spin 1.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
     .rcore{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
-    .rpct{font-weight:900; font-size:clamp(38px,11vw,58px); letter-spacing:-.03em;} .rpct small{font-size:.4em; color:var(--muted);}
+    .rpct{font-weight:900; font-size:clamp(36px,11vw,54px); letter-spacing:-.03em;} .rpct small{font-size:.4em; color:var(--muted);}
     .blip{position:absolute; width:8px; height:8px; border-radius:50%; background:var(--up); box-shadow:0 0 12px var(--up); opacity:0; animation:blip 1.8s ease-out infinite;}
     @keyframes blip{0%{opacity:0;transform:scale(.4);}15%{opacity:1;}70%{opacity:.4;}100%{opacity:0;transform:scale(1.5);}}
-    .scan .ttl{font-weight:900; font-size:20px;} .scan .sb{color:var(--muted); font-size:14px; min-height:20px;}
-    .scan .skip{margin-top:6px; background:transparent; border:1px solid var(--line2); color:var(--muted); font-family:inherit; font-weight:700; font-size:12px; padding:8px 18px; border-radius:100px; cursor:pointer;}
-    .scan .skip:hover{color:var(--text);}
+    .scan .ttl{font-weight:900; font-size:19px;} .scan .sb{color:var(--muted); font-size:14px; min-height:20px;}
+    .scan .skip{margin-top:4px; background:transparent; border:1px solid var(--line2); color:var(--muted); font-weight:700; font-size:12px; padding:8px 18px; border-radius:100px; cursor:pointer;}
 
-    /* ===== HERO ביל-בורד ===== */
+    /* HOME + BILLBOARD */
     .home{display:none; padding-bottom:90px;} .home.on{display:block; animation:fade .5s ease both;}
     @keyframes fade{from{opacity:0;}to{opacity:1;}}
-    .bill{position:relative; min-height:min(64vh,520px); display:flex; align-items:flex-end; overflow:hidden; border-bottom:1px solid var(--line);}
-    .bill .bg{position:absolute; inset:0; background-size:cover; background-position:center 22%; filter:saturate(1.05);}
-    .bill .shade{position:absolute; inset:0; background:linear-gradient(0deg,var(--ink) 4%,rgba(11,11,15,.55) 45%,rgba(11,11,15,.25) 100%), linear-gradient(90deg,rgba(11,11,15,.85) 0%,transparent 55%);}
-    .bill .c{position:relative; z-index:2; padding:0 clamp(14px,3.5vw,34px) 34px; max-width:1180px; margin:0 auto; width:100%;}
-    .bill .tag{display:inline-flex; align-items:center; gap:8px; background:var(--red); color:#fff; font-weight:900; font-size:12px; letter-spacing:.06em; padding:6px 12px; border-radius:6px;}
-    .bill h1{margin:12px 0 6px; font-size:clamp(30px,7vw,58px); font-weight:900; letter-spacing:-.02em; line-height:1;}
-    .bill .meta{display:flex; align-items:center; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:15px; font-weight:600;}
-    .bill .meta b{color:var(--gold); font-size:22px; font-weight:900;}
-    .bill .btns{margin-top:16px; display:flex; gap:10px;}
-    .bill .play{cursor:pointer; font-family:inherit; font-weight:900; font-size:15px; padding:12px 26px; border-radius:8px; border:0; background:var(--gold); color:#0B0B0F; display:inline-flex; align-items:center; gap:8px;}
-    .bill .more{cursor:pointer; font-family:inherit; font-weight:800; font-size:15px; padding:12px 22px; border-radius:8px; border:0; background:rgba(255,255,255,.16); color:#fff;}
+    .bill{position:relative; min-height:min(60vh,480px); display:flex; align-items:flex-end; overflow:hidden; border-bottom:1px solid var(--line);}
+    .bill .bg{position:absolute; inset:0; background-size:cover; background-position:center 20%;}
+    .bill .shade{position:absolute; inset:0; background:linear-gradient(0deg,var(--ink) 3%,rgba(11,11,15,.5) 45%,rgba(11,11,15,.2)), linear-gradient(90deg,rgba(11,11,15,.82),transparent 55%);}
+    .bill .c{position:relative; z-index:2; padding:0 clamp(14px,3.5vw,34px) 30px; max-width:1180px; margin:0 auto; width:100%;}
+    .bill .tag{display:inline-flex; align-items:center; gap:7px; background:var(--red); color:#fff; font-weight:900; font-size:12px; padding:5px 11px; border-radius:6px;}
+    .bill h1{margin:12px 0 4px; font-size:clamp(28px,6.5vw,54px); font-weight:900; letter-spacing:-.02em; line-height:1;}
+    .bill .meta{display:flex; align-items:center; gap:12px; flex-wrap:wrap; color:var(--muted); font-size:14px; font-weight:600;}
+    .bill .meta .rt{color:var(--gold); font-weight:900;} .bill .meta .rt b{font-size:20px;}
+    .bill .btns{margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;}
+    .bill .btns button{cursor:pointer; font-weight:900; font-size:15px; padding:12px 22px; border-radius:9px; border:0;}
+    .bill .play{background:var(--gold); color:#0B0B0F;} .bill .more{background:rgba(255,255,255,.16); color:#fff;}
 
-    /* ===== שורות (rails) ===== */
-    .row-sec{margin-top:30px;}
+    /* שורות */
+    .row-sec{margin-top:28px;}
     .row-h{display:flex; align-items:baseline; gap:10px; margin:0 0 12px;}
-    .row-h h2{margin:0; font-size:clamp(18px,3.6vw,24px); font-weight:900; letter-spacing:-.01em;}
+    .row-h h2{margin:0; font-size:clamp(18px,3.6vw,23px); font-weight:900; letter-spacing:-.01em;}
     .row-h .sub{color:var(--muted); font-size:13px;}
     .rail{display:flex; gap:12px; overflow-x:auto; padding:4px 2px 14px; scroll-snap-type:x mandatory; scrollbar-width:thin;}
     .rail::-webkit-scrollbar{height:8px;} .rail::-webkit-scrollbar-thumb{background:var(--line2); border-radius:8px;}
 
-    /* כרטיס פוסטר */
-    .poster{scroll-snap-align:start; flex:none; width:clamp(132px,38vw,160px); cursor:pointer; transition:transform .18s;}
+    /* פוסטר */
+    .poster{scroll-snap-align:start; flex:none; width:clamp(128px,36vw,156px); cursor:pointer; transition:transform .18s;}
     .poster:hover{transform:translateY(-4px);}
     .poster .img{position:relative; width:100%; aspect-ratio:3/4; border-radius:12px; overflow:hidden; background:var(--card);}
-    .poster .img .ava{position:absolute; inset:0; border-radius:0; font-size:42px;}
-    .poster .img .grad{position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.85),transparent 55%);}
-    .poster .img .rankbig{position:absolute; top:8px; inset-inline-start:8px; font-weight:900; font-size:15px; background:var(--gold); color:#0B0B0F; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center;}
-    .poster .img .cap{position:absolute; bottom:8px; inset-inline:8px; z-index:2;}
-    .poster .img .cap .nm{font-weight:800; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-    .poster .img .cap .st{font-size:12px; color:var(--gold); font-weight:800;}
-    .poster .img .st2{position:absolute; top:8px; inset-inline-end:8px; font-size:11px; font-weight:800; padding:3px 7px; border-radius:6px; background:rgba(0,0,0,.5); backdrop-filter:blur(4px);}
-    .st2.up{color:var(--up);} .st2.down{color:var(--down);}
+    .poster .img .ava{position:absolute; inset:0; border-radius:0; font-size:40px;}
+    .poster .img .grad{position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.88),transparent 52%);}
+    .poster .rankbig{position:absolute; top:8px; inset-inline-start:8px; font-weight:900; font-size:14px; background:var(--gold); color:#0B0B0F; min-width:24px; height:24px; padding:0 5px; border-radius:7px; display:flex; align-items:center; justify-content:center;}
+    .poster .rtbadge{position:absolute; top:8px; inset-inline-end:8px; font-size:11px; font-weight:900; padding:3px 7px; border-radius:6px; background:rgba(235,200,104,.92); color:#0B0B0F;}
+    .poster .cap{position:absolute; bottom:8px; inset-inline:8px; z-index:2;}
+    .poster .cap .nm{font-weight:800; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .poster .cap .st{font-size:12px; color:var(--gold); font-weight:800;}
 
-    /* Top-10 השוואות */
+    /* Top-10 השוואות חמות */
     .cmp-rail .item{scroll-snap-align:start; flex:none; display:flex; align-items:center; cursor:pointer;}
-    .cmp-rail .rank{font-weight:900; font-size:clamp(70px,17vw,104px); line-height:.8; color:transparent; -webkit-text-stroke:2.5px var(--line2); margin-inline-end:-14px; letter-spacing:-.06em; transition:.18s;}
+    .cmp-rail .rank{font-weight:900; font-size:clamp(66px,16vw,98px); line-height:.8; color:transparent; -webkit-text-stroke:2.5px var(--line2); margin-inline-end:-12px; letter-spacing:-.06em; transition:.18s;}
     .cmp-rail .item:hover .rank{-webkit-text-stroke-color:var(--gold);}
-    .vspair{position:relative; width:clamp(150px,42vw,180px); aspect-ratio:16/10; border-radius:12px; overflow:hidden; background:var(--card); border:1px solid var(--line); display:flex;}
+    .vspair{position:relative; width:clamp(154px,44vw,186px); aspect-ratio:16/10; border-radius:12px; overflow:hidden; background:var(--card); border:1px solid var(--line); display:flex;}
     .vspair .half{position:relative; flex:1; overflow:hidden;}
-    .vspair .half .ava{position:absolute; inset:0; border-radius:0; font-size:26px;}
-    .vspair .vs{position:absolute; inset-inline-start:50%; top:50%; transform:translate(-50%,-50%); z-index:3; font-weight:900; font-size:15px; color:#fff; background:var(--red); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid var(--ink);}
-    .vspair .lbl{position:absolute; inset-inline:0; bottom:0; z-index:2; background:linear-gradient(0deg,rgba(0,0,0,.9),transparent); padding:16px 8px 7px; font-size:11px; font-weight:800; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .vspair .half+.half{border-inline-start:2px solid var(--ink);}
+    .vspair .half .ava{position:absolute; inset:0; border-radius:0; font-size:22px;}
+    .vspair .vs{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:3; font-weight:900; font-size:clamp(16px,4vw,20px); color:#fff; background:rgba(228,52,79,.5); backdrop-filter:blur(2px); padding:5px 11px; border-radius:9px; border:1.5px solid rgba(255,255,255,.55);}
+    .vspair .lbl{position:absolute; inset-inline:0; bottom:0; z-index:2; background:linear-gradient(0deg,rgba(0,0,0,.92),transparent); padding:16px 8px 7px; font-size:11px; font-weight:800; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
-    /* ===== הילייטס ===== */
-    .hl-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;} @media(min-width:720px){ .hl-grid{grid-template-columns:repeat(4,1fr);} }
-    .hl{position:relative; border-radius:var(--r); overflow:hidden; aspect-ratio:1/1.05; cursor:pointer; background:var(--card); border:1px solid var(--line);}
-    .hl .ava{position:absolute; inset:0; border-radius:0; font-size:40px;}
-    .hl .sh{position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.92) 10%,rgba(0,0,0,.2) 60%,rgba(0,0,0,.35));}
-    .hl .c{position:absolute; inset:0; padding:14px; display:flex; flex-direction:column; justify-content:space-between; z-index:2;}
-    .hl .kick{font-size:12px; font-weight:900; letter-spacing:.02em; align-self:flex-start; padding:5px 9px; border-radius:6px; background:rgba(0,0,0,.45); backdrop-filter:blur(4px);}
-    .hl .big{font-weight:900; font-size:clamp(20px,5vw,26px); line-height:1;}
-    .hl .nm{font-weight:800; font-size:14px; margin-top:3px;} .hl .u{color:var(--muted); font-size:12px;}
+    /* סקשן "מי הוריד עוקב" — מצב בהקמה */
+    .soon-card{border:1px dashed var(--line2); border-radius:var(--r); padding:20px; background:rgba(255,255,255,.02); display:flex; gap:14px; align-items:center;}
+    .soon-card .ic{font-size:34px;} .soon-card .tx{flex:1;} .soon-card .tx b{font-size:15px;} .soon-card .tx p{margin:4px 0 0; color:var(--muted); font-size:13px; line-height:1.5;}
+    .soon-card .badge{font-size:11px; font-weight:900; color:var(--gold); border:1px solid rgba(235,200,104,.4); border-radius:100px; padding:5px 10px; white-space:nowrap;}
 
-    /* ===== בונה השוואות (מודל) ===== */
-    .sheet{position:fixed; inset:0; z-index:120; background:rgba(6,6,10,.72); backdrop-filter:blur(6px); display:none; align-items:flex-start; justify-content:center; padding:20px; overflow:auto;}
+    /* מודל כללי (sheet) */
+    .sheet{position:fixed; inset:0; z-index:120; background:rgba(6,6,10,.74); backdrop-filter:blur(6px); display:none; align-items:flex-start; justify-content:center; padding:16px; overflow:auto;}
     .sheet.on{display:flex;}
-    .sheet .box{background:var(--surface); border:1px solid var(--line2); border-radius:20px; width:100%; max-width:860px; margin:auto; padding:22px; position:relative;}
-    .sheet .x{position:absolute; inset-inline-start:16px; top:16px; cursor:pointer; border:0; background:var(--card2); color:var(--text); width:34px; height:34px; border-radius:10px; font-size:18px; font-weight:800;}
-    .sheet h2{margin:0 0 4px; font-size:22px; font-weight:900;} .sheet .hint{margin:0 0 14px; color:var(--muted); font-size:13px;}
-    .search{width:100%; font-family:inherit; font-size:15px; color:var(--text); background:var(--card); border:1px solid var(--line2); border-radius:12px; padding:12px 14px; margin-bottom:10px;}
-    .search:focus{outline:2px solid var(--gold);}
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; min-height:4px;}
+    .sheet .box{background:var(--surface); border:1px solid var(--line2); border-radius:20px; width:100%; max-width:820px; margin:auto; padding:20px; position:relative;}
+    .sheet .x{position:absolute; inset-inline-start:14px; top:14px; cursor:pointer; border:0; background:var(--card2); color:var(--text); width:34px; height:34px; border-radius:10px; font-size:18px; font-weight:800;}
+    .sheet h2{margin:0 0 4px; font-size:21px; font-weight:900;} .sheet .hint{margin:0 0 14px; color:var(--muted); font-size:13px;}
+
+    /* פרופיל מלא */
+    .pf-top{display:flex; gap:16px; align-items:center; margin-bottom:14px;}
+    .pf-top .ava{width:84px; height:84px; font-size:28px;}
+    .pf-top .nm{font-weight:900; font-size:22px;} .pf-top .gr{color:var(--muted); font-size:13px; margin-top:2px;}
+    .pf-rank{display:inline-flex; align-items:center; gap:6px; margin-top:7px; background:var(--gold); color:#0B0B0F; font-weight:900; font-size:13px; padding:5px 11px; border-radius:100px;}
+    .pf-score{margin-inline-start:auto; text-align:center; flex:none;}
+    .pf-score .big{font-weight:900; font-size:40px; color:var(--gold); line-height:1;} .pf-score .lab{color:var(--muted); font-size:11px;}
+    .pf-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:9px; margin-bottom:14px;} @media(min-width:560px){ .pf-grid{grid-template-columns:repeat(3,1fr);} }
+    .pf-stat{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:11px 12px;}
+    .pf-stat .l{color:var(--muted); font-size:11px;} .pf-stat .v{font-weight:900; font-size:18px; margin-top:2px;} .pf-stat .v.up{color:var(--up);} .pf-stat .v.down{color:var(--down);}
+    .pf-break{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px;}
+    .pf-break h3{margin:0 0 10px; font-size:14px; font-weight:900; color:var(--gold);}
+    .pf-bar{display:flex; align-items:center; gap:10px; margin-bottom:9px;}
+    .pf-bar .bl{width:96px; flex:none; font-size:12px; font-weight:700;}
+    .pf-bar .tr{flex:1; height:9px; border-radius:6px; background:var(--card2); overflow:hidden;}
+    .pf-bar .tr i{display:block; height:100%; background:linear-gradient(90deg,var(--gold-deep),var(--gold)); border-radius:6px;}
+    .pf-bar .pv{width:36px; text-align:left; font-size:12px; font-weight:800; color:var(--muted);}
+    .pf-note{color:var(--muted); font-size:11.5px; line-height:1.5; margin-bottom:12px;}
+    .pf-cta{width:100%; cursor:pointer; font-weight:900; font-size:15px; color:#0B0B0F; background:var(--gold); border:0; border-radius:12px; padding:13px;}
+
+    /* בונה השוואות */
+    .search{width:100%; font-size:15px; color:var(--text); background:var(--card); border:1px solid var(--line2); border-radius:12px; padding:12px 14px; margin-bottom:10px;} .search:focus{outline:2px solid var(--gold);}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
     .chip{display:inline-flex; align-items:center; gap:7px; background:var(--gold); color:#0B0B0F; font-weight:800; font-size:13px; padding:5px 8px 5px 10px; border-radius:100px;}
     .chip .ava{width:22px; height:22px; font-size:9px;} .chip button{border:0; background:rgba(0,0,0,.2); color:#0B0B0F; width:18px; height:18px; border-radius:50%; cursor:pointer; font-weight:900; line-height:1;}
-    .pool{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:6px; max-height:230px; overflow:auto; padding:2px;}
-    .pool button{display:flex; align-items:center; gap:9px; text-align:right; cursor:pointer; font-family:inherit; color:var(--text); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:7px 9px;}
-    .pool button:hover{border-color:var(--gold);} .pool button:disabled{opacity:.4; cursor:not-allowed;}
-    .pool button .ava{width:30px; height:30px; font-size:11px;} .pool .nm{font-weight:700; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .pool .gr{color:var(--muted); font-size:11px;}
-    .go{width:100%; margin-top:12px; cursor:pointer; font-family:inherit; font-weight:900; font-size:16px; color:#fff; background:var(--red); border:0; border-radius:12px; padding:14px;}
-    .go:disabled{opacity:.45; cursor:not-allowed;}
-
-    /* תוצאת השוואה */
-    .vsres{display:grid; gap:10px; margin-top:14px;}
-    .vscols{display:grid; gap:10px; grid-template-columns:repeat(var(--n,2),1fr);}
-    .vscol{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 10px; text-align:center; position:relative;}
+    .pool{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:6px; max-height:220px; overflow:auto;}
+    .pool button{display:flex; align-items:center; gap:9px; text-align:right; cursor:pointer; color:var(--text); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:7px 9px;}
+    .pool button:hover{border-color:var(--gold);} .pool button:disabled{opacity:.4;}
+    .pool .ava{width:30px; height:30px; font-size:11px;} .pool .nm{font-weight:700; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .pool .gr{color:var(--muted); font-size:11px;}
+    .go{width:100%; margin-top:12px; cursor:pointer; font-weight:900; font-size:16px; color:#fff; background:var(--red); border:0; border-radius:12px; padding:14px;} .go:disabled{opacity:.45;}
+    .vscols{display:grid; gap:10px; margin-top:14px; grid-template-columns:repeat(var(--n,2),1fr);}
+    .vscol{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 8px; text-align:center; position:relative;}
     .vscol.win{border-color:var(--gold); box-shadow:0 0 0 1px rgba(235,200,104,.4);}
     .vscol .crown{position:absolute; top:-12px; inset-inline-start:50%; transform:translateX(-50%); font-size:22px;}
-    .vscol .ava{width:64px; height:64px; margin:0 auto 8px; font-size:22px;}
-    .vscol .nm{font-weight:900; font-size:15px;} .vscol .gr{color:var(--muted); font-size:11px; margin-bottom:8px;}
-    .stat{border-top:1px solid var(--line); padding:8px 0 2px; margin-top:6px;}
-    .stat .lab{color:var(--muted); font-size:11px;} .stat .val{font-weight:900; font-size:16px;} .stat .val.lead{color:var(--gold);}
-    .verdict{background:linear-gradient(180deg,var(--card2),var(--card)); border:1px solid var(--gold); border-radius:14px; padding:14px; text-align:center; font-weight:800;}
-    .verdict b{color:var(--gold);}
+    .vscol .ava{width:60px; height:60px; margin:0 auto 8px; font-size:20px;}
+    .vscol .nm{font-weight:900; font-size:14px;} .vscol .gr{color:var(--muted); font-size:11px; margin-bottom:6px;}
+    .stat{border-top:1px solid var(--line); padding:7px 0 2px; margin-top:5px;} .stat .lab{color:var(--muted); font-size:11px;} .stat .val{font-weight:900; font-size:15px;} .stat .val.lead{color:var(--gold);}
+    .verdict{background:linear-gradient(180deg,var(--card2),var(--card)); border:1px solid var(--gold); border-radius:14px; padding:14px; text-align:center; font-weight:800; margin-top:10px;} .verdict b{color:var(--gold);}
 
-    /* סקירה כללית */
+    /* סקירה */
     .ov-sec{margin-top:16px;} .ov-sec:first-child{margin-top:6px;}
-    .ov-t{font-weight:900; font-size:14px; margin-bottom:6px; color:var(--gold); display:flex; align-items:center; gap:6px;}
-    .ovrow{display:flex; align-items:center; gap:10px; padding:8px 0; border-top:1px solid var(--line);}
-    .ovrow:first-of-type{border-top:0;}
-    .ovrow .ava{width:36px; height:36px; font-size:12px;}
-    .ovrow .rk{width:20px; text-align:center; font-weight:900; color:var(--muted); font-size:13px; flex:none;}
-    .ovnm{flex:1; font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-    .ovval{font-weight:900; font-size:14px; text-align:left;}
-    .ovempty{color:var(--muted); font-size:13px; padding:6px 0;}
+    .ov-t{font-weight:900; font-size:14px; margin-bottom:6px; color:var(--gold);}
+    .ovrow{display:flex; align-items:center; gap:10px; padding:8px 0; border-top:1px solid var(--line); cursor:pointer;} .ovrow:first-of-type{border-top:0;}
+    .ovrow .ava{width:36px; height:36px; font-size:12px;} .ovrow .rk{width:20px; text-align:center; font-weight:900; color:var(--muted); font-size:13px; flex:none;}
+    .ovnm{flex:1; font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .ovval{font-weight:900; font-size:14px; text-align:left;} .ovempty{color:var(--muted); font-size:13px; padding:6px 0;}
 
-    .foot{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); text-align:center; color:var(--muted); font-size:12px; line-height:1.8;}
-    .foot .wm{color:var(--gold); font-weight:900;} .foot .fn{font-size:10.5px; opacity:.7; max-width:460px; margin:6px auto 0;}
+    .foot{margin-top:40px; padding-top:20px; border-top:1px solid var(--line); text-align:center; color:var(--muted); font-size:12px; line-height:1.8;}
+    .foot .wm{color:var(--gold); font-weight:900;} .foot .fn{font-size:10.5px; opacity:.7; max-width:520px; margin:6px auto 0;}
     @media(prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important;} .sweep::before{animation:none;} }
   </style>
 
-  <!-- אינטרו: סריקת רדאר 8 שניות -->
+  <!-- סריקה -->
   <div class="scan" id="scan">
-    <div class="radar-wrap">
-      <div class="rr"></div><div class="rr b"></div><div class="rr c"></div><div class="rr d"></div>
-      <div class="sweep"></div>
-      <div class="blip" style="left:64%;top:30%;animation-delay:.2s"></div>
-      <div class="blip" style="left:32%;top:60%;animation-delay:.9s"></div>
-      <div class="blip" style="left:70%;top:66%;animation-delay:1.4s"></div>
-      <div class="rcore"><div class="rpct num" id="pct">0<small>%</small></div></div>
-    </div>
-    <div class="ttl" id="scanTtl">מפעיל את הרדאר…</div>
-    <div class="sb" id="scanSub">מתחבר לרשתות</div>
+    <div class="radar-wrap"><div class="rr"></div><div class="rr b"></div><div class="rr c"></div><div class="rr d"></div><div class="sweep"></div>
+      <div class="blip" style="left:64%;top:30%;animation-delay:.2s"></div><div class="blip" style="left:32%;top:60%;animation-delay:.9s"></div><div class="blip" style="left:70%;top:66%;animation-delay:1.4s"></div>
+      <div class="rcore"><div class="rpct num" id="pct">0<small>%</small></div></div></div>
+    <div class="ttl" id="scanTtl">מפעיל את הרדאר…</div><div class="sb" id="scanSub">מתחבר לרשתות</div>
     <button class="skip" id="skipBtn">דלג ←</button>
   </div>
 
-  <!-- דף הבית -->
+  <!-- בית -->
   <div class="home" id="home">
     <nav class="nav"><div class="wrap in">
-      <svg class="emblem" viewBox="0 0 48 48" aria-hidden="true">
-        <circle cx="24" cy="24" r="22" fill="none" stroke="#EBC868" stroke-width="2"/>
-        <circle cx="24" cy="24" r="17" fill="none" stroke="#EBC868" stroke-width="1" opacity=".5"/>
-        <path d="M14 30 L12 17 L19 22 L24 12 L29 22 L36 17 L34 30 Z" fill="#EBC868"/>
-        <rect x="14" y="31" width="20" height="4" rx="1.5" fill="#EBC868"/>
-      </svg>
+      <svg class="emblem" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="#EBC868" stroke-width="2"/><circle cx="24" cy="24" r="17" fill="none" stroke="#EBC868" stroke-width="1" opacity=".5"/><path d="M14 30 L12 17 L19 22 L24 12 L29 22 L36 17 L34 30 Z" fill="#EBC868"/><rect x="14" y="31" width="20" height="4" rx="1.5" fill="#EBC868"/></svg>
       <div class="brand"><span class="t">המרכז הישראלי לרייטינג ברשתות</span><span class="s">רייטינג הרשתות בישראל · בזמן אמת</span></div>
       <div class="sp"></div>
-      <button class="cmp" id="openCmp">⚔️ <span>יצירת השוואה</span></button>
+      <button class="browse" id="ovBtn">📊 <span class="lbl">סקירה כללית</span></button>
+      <button class="cmp" id="openCmp">⚔️ <span class="lbl">יצירת השוואה משלך</span></button>
     </div></nav>
-
     <div id="homeBody"></div>
-
     <div class="wrap foot">
       <div><span class="wm">המרכז הישראלי לרייטינג ברשתות</span></div>
-      <div class="fn">נתוני עוקבים ולייקים חיים מאינסטגרם. מדד ה"חום" מבוסס על מגמת הלייקים בפוסטים האחרונים (מעורבות), לא על שינוי עוקבים. השוואות מוצגות למטרות מידע ובידור.</div>
+      <div class="fn">מדד הרייטינג משוקלל ממעורבות, כמות תוכן, מומנטום, לייקים, חשיפה ותגובות — נתונים חיים מאינסטגרם. רכיבי עליית/ירידת עוקבים ייכנסו למדד עם צבירת היסטוריה. השוואות מוצגות למטרות מידע ובידור.</div>
     </div>
   </div>
 
-  <!-- מודל בונה השוואות -->
-  <div class="sheet" id="cmpSheet">
-    <div class="box">
-      <button class="x" id="cmpX" aria-label="סגירה">✕</button>
-      <h2>⚔️ יצירת השוואה</h2>
-      <p class="hint">בחרו 2–4 דמויות מכל הקטגוריות, והשוו ביניהן ראש בראש.</p>
-      <input class="search" id="cmpSearch" placeholder="חיפוש לפי שם… (למשל: ליאור סושרד, אדוה דדון, ביבי)">
-      <div class="chips" id="cmpChips"></div>
-      <div class="pool" id="cmpPool"></div>
-      <button class="go" id="cmpGo" disabled>השוו עכשיו</button>
-      <div class="vsres" id="cmpRes"></div>
-    </div>
-  </div>
-
-  <!-- מודל סקירה כללית -->
-  <div class="sheet" id="ovSheet">
-    <div class="box">
-      <button class="x" id="ovX" aria-label="סגירה">✕</button>
-      <h2>📊 סקירה כללית</h2>
-      <p class="hint">כל הרייטינג במבט אחד · <span id="ovDate"></span></p>
-      <div id="ovBody"></div>
-    </div>
-  </div>
+  <!-- מודלים -->
+  <div class="sheet" id="pfSheet"><div class="box"><button class="x" id="pfX" aria-label="סגירה">✕</button><div id="pfBody"></div></div></div>
+  <div class="sheet" id="ovSheet"><div class="box"><button class="x" id="ovX" aria-label="סגירה">✕</button><h2>📊 סקירה כללית</h2><p class="hint">כל הרייטינג במבט אחד · <span id="ovDate"></span></p><div id="ovBody"></div></div></div>
+  <div class="sheet" id="brSheet"><div class="box"><button class="x" id="brX" aria-label="סגירה">✕</button><h2>🔎 עיון לפי קטגוריה</h2><p class="hint">לחצו על דמות לנתונים מלאים.</p><div id="brBody"></div></div></div>
+  <div class="sheet" id="cmpSheet"><div class="box"><button class="x" id="cmpX" aria-label="סגירה">✕</button>
+    <h2>⚔️ יצירת השוואה משלך</h2><p class="hint">בחרו 2–4 דמויות מכל הקטגוריות, והשוו ביניהן ראש בראש.</p>
+    <input class="search" id="cmpSearch" placeholder="חיפוש לפי שם… (למשל: ליאור סושרד, אדוה דדון, ביבי)">
+    <div class="chips" id="cmpChips"></div><div class="pool" id="cmpPool"></div>
+    <button class="go" id="cmpGo" disabled>השוו עכשיו</button><div id="cmpRes"></div>
+  </div></div>
 
   <script>
-    const ANALYSIS = {"asOf":"2026-08-05","celebs":[{"n":"אדוה דדון","h":"adva_dadon","cat":"עיתונאות","f":191394,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/adva_dadon.jpg","avg7":8770,"momentum":-49.5,"topLikes":22627,"topUrl":"https://www.instagram.com/p/DbdkRQqgkzK/","topCap":"Always us 🤍","posts7":7},{"n":"נועה קירל","h":"noakirel","cat":"מוזיקה","f":1841283,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/noakirel.jpg","avg7":17995,"momentum":-9.1,"topLikes":27220,"topUrl":"https://www.instagram.com/p/DbYoZDBDM_j/","topCap":"דברים שקרו לאחרונה","posts7":3},{"n":"נינט טייב","h":"n.tayeb","cat":"מוזיקה","f":267262,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/n.tayeb.jpg","avg7":1630,"momentum":-9,"topLikes":1630,"topUrl":"https://www.instagram.com/p/Dbn2-uCoB7U/","topCap":"אני מחליטה שאני לא נותנת למצבי הרוח של טראמפ לחרד לי את הימים\n\nאם תהיה מלחמה( בטל ומבוטל כפול שלוש)- אני אדע \n\nעד אז- נעולה בחדר חזרות עם הלהקה הכי בת זוממת ריגושים במזרח התיכון, לקראת ההופעה באמפי ת״","posts7":1},{"n":"עדן בן זקן","h":"edenben_zaken","cat":"מוזיקה","f":1118526,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/edenben_zaken.jpg","avg7":15463,"momentum":32.8,"topLikes":15463,"topUrl":"https://www.instagram.com/p/DbnoLtHjFDM/","topCap":null,"posts7":1},{"n":"אנה זק","h":"annazak12","cat":"מוזיקה","f":1349032,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/annazak12.jpg","avg7":12556,"momentum":86.3,"topLikes":15475,"topUrl":"https://www.instagram.com/p/DbgTI58COmq/","topCap":"all roads lead to gelato","posts7":2},{"n":"שרית חדד","h":"sarithadadofficial","cat":"מוזיקה","f":273264,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/sarithadadofficial.jpg","avg7":null,"momentum":-41.3,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"פאר טסי","h":"peertasi","cat":"מוזיקה","f":240021,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/peertasi.jpg","avg7":null,"momentum":14,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"נסרין קדרי","h":"nasrinkadry","cat":"מוזיקה","f":387808,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/nasrinkadry.jpg","avg7":null,"momentum":13.6,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"שירה האס","h":"shirahaas","cat":"שחקנים","f":415349,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/shirahaas.jpg","avg7":null,"momentum":-32.1,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"רותם סלע","h":"rotemsela1","cat":"טלוויזיה","f":1278453,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/rotemsela1.jpg","avg7":19032,"momentum":-26.1,"topLikes":19032,"topUrl":"https://www.instagram.com/p/DbbE37hs9Dz/","topCap":"⁨\tאיזה הוא העשיר השמח בחלקו? \n\n׳הקייטנה של נלי ולירון׳ עם רותם סלע זמין בכל הפלטפורמות! 🎧⁩","posts7":1},{"n":"ליאור רז","h":"liorraz","cat":"שחקנים","f":458916,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/liorraz.jpg","avg7":null,"momentum":-6.6,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"גיא זוארץ","h":"guyzu_aretz","cat":"טלוויזיה","f":315566,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/guyzu_aretz.jpg","avg7":3404,"momentum":-92.8,"topLikes":3404,"topUrl":"https://www.instagram.com/p/DbYLOasihwh/","topCap":"ט״ו באב שמח 🤍🧚🏻‍♂️🙌","posts7":1},{"n":"ליאור סושרד","h":"liorsuchard","cat":"בידור","f":463971,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/liorsuchard.jpg","avg7":737,"momentum":-96.2,"topLikes":1216,"topUrl":"https://www.instagram.com/p/DbgbzRjM71x/","topCap":"@mcuban reaction says it all 😂","posts7":2},{"n":"אגם בוחבוט","h":"agam__buhbut","cat":"משפיענים","f":532682,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/agam__buhbut.jpg","avg7":6103,"momentum":-7.6,"topLikes":6583,"topUrl":"https://www.instagram.com/p/DbgdBtosPvO/","topCap":"בוקר טוב ☀️","posts7":2},{"n":"עומר אדם","h":"omeradam","cat":"מוזיקה","f":1459221,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/omeradam.jpg","avg7":null,"momentum":-10.2,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"יובל דיין","h":"yuvaldayan1","cat":"מוזיקה","f":138649,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/yuvaldayan1.jpg","avg7":538,"momentum":-85.3,"topLikes":637,"topUrl":"https://www.instagram.com/p/DbgZHmWMQBL/","topCap":"רגע של נס שהזכיר לי כמה אנחנו העם הכי חזק שיש וכמה כוח יש למוזיקה 🥹🤍 #יובלדיין #עדשתחזור","posts7":2},{"n":"אושר כהן","h":"oshercohen","cat":"מוזיקה","f":330543,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/oshercohen.jpg","avg7":null,"momentum":20.7,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"גל גדות","h":"gal_gadot","cat":"שחקנים","f":103717779,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/gal_gadot.jpg","avg7":52949,"momentum":2.5,"topLikes":52949,"topUrl":"https://www.instagram.com/p/Dbn_1WNRm3r/","topCap":"For The Runner, I had to learn how to run.\n\nWhen a movie has you hit the ground running… literally 😅, you call the best.\n\nHuge thanks to Olympic coach @malachi_davis_ for getting me ready for the rol","posts7":1},{"n":"יעל שלביה","h":"yaelshelbia","cat":"דוגמנות","f":1440118,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/yaelshelbia.jpg","avg7":10216,"momentum":-26.8,"topLikes":10216,"topUrl":"https://www.instagram.com/p/DboRLAvkVOX/","topCap":null,"posts7":1},{"n":"בנימין נתניהו","h":"b.netanyahu","cat":"פוליטיקה","f":3846607,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/b.netanyahu.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"יאיר לפיד","h":"yairlapid","cat":"פוליטיקה","f":165662,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/yairlapid.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"נפתלי בנט","h":"naftalibennett","cat":"פוליטיקה","f":413304,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/naftalibennett.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"בצלאל סמוטריץ׳","h":"bezalel_smotrich","cat":"פוליטיקה","f":36344,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/bezalel_smotrich.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"אביגדור ליברמן","h":"avigdor.liberman","cat":"פוליטיקה","f":61991,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/avigdor.liberman.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"בני גנץ","h":"gantzbe","cat":"פוליטיקה","f":141617,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/gantzbe.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"חדשות 12","h":"n12news","cat":"תקשורת","f":577460,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/n12news.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"קשת 12","h":"keshet12","cat":"תקשורת","f":342602,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/keshet12.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"וואלה","h":"wallanews","cat":"תקשורת","f":115432,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/wallanews.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0},{"n":"כלכליסט","h":"calcalist","cat":"תקשורת","f":81866,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/calcalist.jpg","avg7":null,"momentum":null,"topLikes":null,"topUrl":null,"topCap":null,"posts7":0}],"stats":{"total":29,"daysTracked":2}};
+    const ANALYSIS = {"asOf":"2026-08-05","celebs":[{"n":"אדוה דדון","h":"adva_dadon","cat":"עיתונאות","f":191394,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/adva_dadon.jpg","avg7":8770,"avgC7":269,"momentum":-49.5,"posts7":7,"engageRate":0.04582170809952245,"topLikes":22627,"topUrl":"https://www.instagram.com/p/DbdkRQqgkzK/","topCap":"Always us 🤍","rating":65.3,"ratingParts":{"engage":1,"momentum":0.22858541360744003,"content":0.5833333333333334,"likes":0.8347080845831998,"reach":0.2087990194779614,"comments":0.7239830988904542},"ratingRank":1},{"n":"נועה קירל","h":"noakirel","cat":"מוזיקה","f":1841283,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/noakirel.jpg","avg7":17995,"avgC7":173,"momentum":-9.1,"posts7":3,"engageRate":0.00977307670792594,"topLikes":27220,"topUrl":"https://www.instagram.com/p/DbYoZDBDM_j/","topCap":"דברים שקרו לאחרונה","rating":46.4,"ratingParts":{"engage":0.2132848624215254,"momentum":0.42633382280959375,"content":0.25,"likes":0.9007825405128341,"reach":0.4933356177057192,"comments":0.6671645814172968},"ratingRank":8},{"n":"נינט טייב","h":"n.tayeb","cat":"מוזיקה","f":267262,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/n.tayeb.jpg","avg7":1630,"avgC7":66,"momentum":-9,"posts7":1,"engageRate":0.0060988842409321195,"topLikes":1630,"topUrl":"https://www.instagram.com/p/Dbn2-uCoB7U/","topCap":"אני מחליטה שאני לא נותנת למצבי הרוח של טראמפ לחרד לי את הימים\n\nאם תהיה מלחמה( בטל ומבוטל כפול שלוש)- אני אדע \n\nעד אז- נעולה בחדר חזרות עם הלהקה הכי בת זוממת ריגושים במזרח התיכון, לקראת ההופעה באמפי ת״","rating":33.5,"ratingParts":{"engage":0.13310032501812566,"momentum":0.4268232990699951,"content":0.08333333333333333,"likes":0.6800476527531449,"reach":0.2507646074182313,"comments":0.5437472228358299},"ratingRank":18},{"n":"עדן בן זקן","h":"edenben_zaken","cat":"מוזיקה","f":1118526,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/edenben_zaken.jpg","avg7":15463,"avgC7":193,"momentum":32.8,"posts7":1,"engageRate":0.013824443955705992,"topLikes":15463,"topUrl":"https://www.instagram.com/p/DbnoLtHjFDM/","topCap":null,"rating":49.3,"ratingParts":{"engage":0.30170075558248494,"momentum":0.6314243759177679,"content":0.08333333333333333,"likes":0.886841809770532,"reach":0.430687654395494,"comments":0.6812348734064292},"ratingRank":6},{"n":"אנה זק","h":"annazak12","cat":"מוזיקה","f":1349032,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/annazak12.jpg","avg7":12556,"avgC7":163,"momentum":86.3,"posts7":2,"engageRate":0.009307414501657485,"topLikes":15475,"topUrl":"https://www.instagram.com/p/DbgTI58COmq/","topCap":"all roads lead to gelato","rating":52.2,"ratingParts":{"engage":0.20312238211291136,"momentum":0.8932941752325012,"content":0.16666666666666666,"likes":0.8676973320379109,"reach":0.45423801049042584,"comments":0.6595103276217029},"ratingRank":5},{"n":"שרית חדד","h":"sarithadadofficial","cat":"מוזיקה","f":273264,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/sarithadadofficial.jpg","avg7":0,"avgC7":0,"momentum":-41.3,"posts7":0,"engageRate":0,"topLikes":null,"topUrl":null,"topCap":null,"rating":7.9,"ratingParts":{"engage":0,"momentum":0.26872246696035246,"content":0,"likes":0,"reach":0.25355593334955207,"comments":0},"ratingRank":29},{"n":"פאר טסי","h":"peertasi","cat":"מוזיקה","f":240021,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/peertasi.jpg","avg7":0,"avgC7":0,"momentum":14,"posts7":0,"engageRate":0,"topLikes":null,"topUrl":null,"topCap":null,"rating":12.6,"ratingParts":{"engage":0,"momentum":0.5394028389623103,"content":0,"likes":0,"reach":0.23725309690779525,"comments":0},"ratingRank":26},{"n":"נסרין קדרי","h":"nasrinkadry","cat":"מוזיקה","f":387808,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/nasrinkadry.jpg","avg7":0,"avgC7":0,"momentum":13.6,"posts7":0,"engageRate":0,"topLikes":null,"topUrl":null,"topCap":null,"rating":13.2,"ratingParts":{"engage":0,"momentum":0.5374449339207048,"content":0,"likes":0,"reach":0.29755474607028265,"comments":0},"ratingRank":24},{"n":"שירה האס","h":"shirahaas","cat":"שחקנים","f":415349,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/shirahaas.jpg","avg7":0,"avgC7":0,"momentum":-32.1,"posts7":0,"engageRate":0,"topLikes":null,"topUrl":null,"topCap":null,"rating":9.3,"ratingParts":{"engage":0,"momentum":0.31375428291727847,"content":0,"likes":0,"reach":0.30617784542322857,"comments":0},"ratingRank":28},{"n":"רותם סלע","h":"rotemsela1","cat":"טלוויזיה","f":1278453,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/rotemsela1.jpg","avg7":19032,"avgC7":561,"momentum":-26.1,"posts7":1,"engageRate":0.014886742023367304,"topLikes":19032,"topUrl":"https://www.instagram.com/p/DbbE37hs9Dz/","topCap":"⁨\tאיזה הוא העשיר השמח בחלקו? \n\n׳הקייטנה של נלי ולירון׳ עם רותם סלע זמין בכל הפלטפורמות! 🎧⁩","rating":46.5,"ratingParts":{"engage":0.32488404821212796,"momentum":0.3431228585413607,"content":0.08333333333333333,"likes":0.9059332503956651,"reach":0.44748411527894005,"comments":0.818784358072358},"ratingRank":7},{"n":"ליאור רז","h":"liorraz","cat":"שחקנים","f":458916,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/liorraz.jpg","avg7":0,"avgC7":0,"momentum":-6.6,"posts7":0,"engageRate":0,"topLikes":null,"topUrl":null,"topCap":null,"rating":11.7,"ratingParts":{"engage":0,"momentum":0.43857072931962804,"content":0,"likes":0,"reach":0.3187146932631079,"comments":0},"ratingRank":27},{"n":"גיא זוארץ","h":"guyzu_aretz","cat":"טלוויזיה","f":315566,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/guyzu_aretz.jpg","avg7":3404,"avgC7":76,"momentum":-92.8,"posts7":1,"engageRate":0.010786966910250153,"topLikes":3404,"topUrl":"https://www.instagram.com/p/DbYLOasihwh/","topCap":"ט״ו באב שמח 🤍🧚🏻‍♂️🙌","rating":30.8,"ratingParts":{"engage":0.23541171548693476,"momentum":0.016642192853646626,"content":0.08333333333333333,"likes":0.7477174718408646,"reach":0.27164571056786174,"comments":0.5617371704603411},"ratingRank":20},{"n":"ליאור סושרד","h":"liorsuchard","cat":"בידור","f":463971,"v":1,"exists":1,"grp":"famous","g":"M","pic":"img/liorsuchard.jpg","avg7":737,"avgC7":13,"momentum":-96.2,"posts7":2,"engageRate":0.0015884613477997547,"topLikes":1216,"topUrl":"https://www.instagram.com/p/DbgbzRjM71x/","topCap":"@mcuban reaction says it all 😂","rating":22,"ratingParts":{"engage":0.034666131265768105,"momentum":0,"content":0.16666666666666666,"likes":0.6071417740068994,"reach":0.3200915569253415,"comments":0.34128061758071854},"ratingRank":22},{"n":"אגם בוחבוט","h":"agam__buhbut","cat":"משפיענים","f":532682,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/agam__buhbut.jpg","avg7":6103,"avgC7":125,"momentum":-7.6,"posts7":2,"engageRate":0.011457117004141308,"topLikes":6583,"topUrl":"https://www.instagram.com/p/DbgdBtosPvO/","topCap":"בוקר טוב ☀️","rating":42.2,"ratingParts":{"engage":0.25003688162948934,"momentum":0.4336759667156143,"content":0.16666666666666666,"likes":0.8013805966217311,"reach":0.3374490022024608,"comments":0.625423804733898},"ratingRank":12},{"n":"עומר אדם","h":"omeradam","cat":"מוזיקה","f":1459221,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/omeradam.jpg","avg7":0,"avgC7":0,"momentum":-10.2,"posts7":0,"engageRate":0,"topLikes":null,"topUrl":null,"topCap":null,"rating":13.1,"ratingParts":{"engage":0,"momentum":0.4209495839451786,"content":0,"likes":0,"reach":0.46410624887667795,"comments":0},"ratingRank":25},{"n":"יובל דיין","h":"yuvaldayan1","cat":"מוזיקה","f":138649,"v":1,"exists":1,"grp":"singers","g":"F","pic":"img/yuvaldayan1.jpg","avg7":538,"avgC7":20,"momentum":-85.3,"posts7":2,"engageRate":0.003880302057714084,"topLikes":637,"topUrl":"https://www.instagram.com/p/DbgZHmWMQBL/","topCap":"רגע של נס שהזכיר לי כמה אנחנו העם הכי חזק שיש וכמה כוח יש למוזיקה 🥹🤍 #יובלדיין #עדשתחזור","rating":22.4,"ratingParts":{"engage":0.08468261482715272,"momentum":0.05335291238374941,"content":0.16666666666666666,"likes":0.5782528094038617,"reach":0.1682797255704506,"comments":0.3937150156325263},"ratingRank":21},{"n":"אושר כהן","h":"oshercohen","cat":"מוזיקה","f":330543,"v":1,"exists":1,"grp":"singers","g":"M","pic":"img/oshercohen.jpg","avg7":0,"avgC7":0,"momentum":20.7,"posts7":0,"engageRate":0,"topLikes":null,"topUrl":null,"topCap":null,"rating":13.6,"ratingParts":{"engage":0,"momentum":0.5721977484092021,"content":0,"likes":0,"reach":0.2774735879168826,"comments":0},"ratingRank":23},{"n":"גל גדות","h":"gal_gadot","cat":"שחקנים","f":103717779,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/gal_gadot.jpg","avg7":52949,"avgC7":21,"momentum":2.5,"posts7":1,"engageRate":0.0005105103532924668,"topLikes":52949,"topUrl":"https://www.instagram.com/p/Dbn_1WNRm3r/","topCap":"For The Runner, I had to learn how to run.\n\nWhen a movie has you hit the ground running… literally 😅, you call the best.\n\nHuge thanks to Olympic coach @malachi_davis_ for getting me ready for the rol","rating":45.4,"ratingParts":{"engage":0.0111412335870078,"momentum":0.4831130690161527,"content":0.08333333333333333,"likes":1,"reach":1,"comments":0.39973094392918646},"ratingRank":10},{"n":"יעל שלביה","h":"yaelshelbia","cat":"דוגמנות","f":1440118,"v":1,"exists":1,"grp":"famous","g":"F","pic":"img/yaelshelbia.jpg","avg7":10216,"avgC7":148,"momentum":-26.8,"posts7":1,"engageRate":0.007093863141770327,"topLikes":10216,"topUrl":"https://www.instagram.com/p/DboRLAvkVOX/","topCap":null,"rating":39.3,"ratingParts":{"engage":0.15481446318768416,"momentum":0.33969652471855116,"content":0.08333333333333333,"likes":0.8487377549573071,"reach":0.46245000811806336,"comments":0.647106020195018},"ratingRank":13},{"n":"בנימין נתניהו","h":"b.netanyahu","cat":"פוליטיקה","f":3846607,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/b.netanyahu.jpg","avg7":20637,"avgC7":2281,"momentum":-72.7,"posts7":12,"engageRate":0.00536498789712596,"topLikes":80505,"topUrl":"https://www.instagram.com/p/DbYvNOPM4Zx/","topCap":"אף אחד לא יעצור אותי מלהילחם על האמת של ישראל 🇮🇱","rating":52.6,"ratingParts":{"engage":0.1170839787437316,"momentum":0.11502692119432206,"content":1,"likes":0.9133763829443885,"reach":0.5859316588173364,"comments":1},"ratingRank":4},{"n":"יאיר לפיד","h":"yairlapid","cat":"פוליטיקה","f":165662,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/yairlapid.jpg","avg7":1319,"avgC7":79,"momentum":108.1,"posts7":9,"engageRate":0.007961994905289083,"topLikes":3492,"topUrl":"https://www.instagram.com/p/DbiDK60s5Rl/","topCap":"בטקס הסיום יעלי הצדיעה למפקד.\nהיא לבשה מדים וכומתה כתומה ואבא שלה ניגב את העיניים וקיווה שלא רואים.\nהכיתה שלה, כיתה של צעירים עם צרכים מיוחדים - התנדבה כל השנה בבסיס של חטיבת החילוץ וההצלה של צה”ל. \nה","rating":53.4,"ratingParts":{"engage":0.17376032530249702,"momentum":1,"content":0.75,"likes":0.6605974756045963,"reach":0.19065208674382136,"comments":0.566679904735031},"ratingRank":2},{"n":"נפתלי בנט","h":"naftalibennett","cat":"פוליטיקה","f":413304,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/naftalibennett.jpg","avg7":1376,"avgC7":73,"momentum":-68.9,"posts7":9,"engageRate":0.0033292685287342975,"topLikes":4551,"topUrl":"https://www.instagram.com/p/DboDHbWspDt/","topCap":"מי שאוהב את ישראל אני אוהב אותו! אין עליך נייט\n@natebuzz","rating":36.3,"ratingParts":{"engage":0.07265701491317812,"momentum":0.13362701908957414,"content":0.75,"likes":0.6644841246308958,"reach":0.30555749748434313,"comments":0.5565979854368979},"ratingRank":15},{"n":"בצלאל סמוטריץ׳","h":"bezalel_smotrich","cat":"פוליטיקה","f":36344,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/bezalel_smotrich.jpg","avg7":497,"avgC7":45,"momentum":-77.2,"posts7":9,"engageRate":0.013674884437596301,"topLikes":2017,"topUrl":"https://www.instagram.com/p/Dbi4-KLKzI0/","topCap":"איזנקוט? טרופר? מישהו שמע אותם?","rating":35.9,"ratingParts":{"engage":0.2984368109520304,"momentum":0.0930004894762604,"content":0.75,"likes":0.5709792282553608,"reach":0,"comments":0.4951166030483298},"ratingRank":16},{"n":"אביגדור ליברמן","h":"avigdor.liberman","cat":"פוליטיקה","f":61991,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/avigdor.liberman.jpg","avg7":1312,"avgC7":82,"momentum":-94.9,"posts7":11,"engageRate":0.021164362568759983,"topLikes":7406,"topUrl":"https://www.instagram.com/p/Dbfc9lwSg4G/","topCap":"במשמרת שלי לא יהיה למשתמטים זמן להפגין מול בתי קפה, הם יהיו עסוקים בלעלות על מדים!","rating":44.5,"ratingParts":{"engage":0.46188506379535327,"momentum":0.006363191385217803,"content":0.9166666666666666,"likes":0.6601086376202521,"reach":0.06710956810371989,"comments":0.5714406559858394},"ratingRank":11},{"n":"בני גנץ","h":"gantzbe","cat":"פוליטיקה","f":141617,"v":1,"exists":1,"grp":"politicians","g":"M","pic":"img/gantzbe.jpg","avg7":427,"avgC7":55,"momentum":-76.6,"posts7":12,"engageRate":0.003015174731847165,"topLikes":1920,"topUrl":"https://www.instagram.com/p/DbbXkdGo4Tk/","topCap":"ממשלת נקמה? יש פה עם באמצע!","rating":34.9,"ratingParts":{"engage":0.06580232071005204,"momentum":0.09593734703866866,"content":1,"likes":0.5570530131083367,"reach":0.17094180814401633,"comments":0.5205550086302826},"ratingRank":17},{"n":"חדשות 12","h":"n12news","cat":"תקשורת","f":577460,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/n12news.jpg","avg7":4400,"avgC7":143,"momentum":-71.2,"posts7":12,"engageRate":0.00761957538184463,"topLikes":15120,"topUrl":"https://www.instagram.com/p/Dbnzg9otOEB/","topCap":"ארונו עטוף הדגל של סמל ראשון מייקל סווינטון, בן 30, שנהרג בעיראק בעת סילוק רחפן איראני, נחת השבוע בארה”ב. משפחתו ואשתו קיבלו את פניו בטקס פרידה כואב ומרגש, והוא יובא למנוחות בסוף השבוע הקרוב בצפון קרו","rating":45.6,"ratingParts":{"engage":0.16628745845299556,"momentum":0.12236906510034262,"content":1,"likes":0.7713071022734183,"reach":0.34759362655837195,"comments":0.6426919692523074},"ratingRank":9},{"n":"קשת 12","h":"keshet12","cat":"תקשורת","f":342602,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/keshet12.jpg","avg7":1329,"avgC7":42,"momentum":-43.7,"posts7":9,"engageRate":0.003879136724245626,"topLikes":3513,"topUrl":"https://www.instagram.com/p/DbmxbtgtvhQ/","topCap":"ברוכים הבאים לצה״ל: אלמוג בוקר ליווה את המתגייסים והמתגייסות  הטריים לחיל שיריון 🫡🇮🇱","rating":38,"ratingParts":{"engage":0.08465718291907268,"momentum":0.25697503671071953,"content":0.75,"likes":0.6612913373241935,"reach":0.281977218403485,"comments":0.4863951547864652},"ratingRank":14},{"n":"וואלה","h":"wallanews","cat":"תקשורת","f":115432,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/wallanews.jpg","avg7":2860,"avgC7":129,"momentum":-68.1,"posts7":12,"engageRate":0.02477649178737265,"topLikes":21885,"topUrl":"https://www.instagram.com/p/Dbld_QuIWpN/","topCap":"דולפינה בשם פראגול נצפתה כשהיא נושאת את הוולד המת שלה בשפך הנהר לשנו שבאוסטרליה המערבית, לאחר שמת זמן קצר בלבד לאחר לידתו. דולפינים נוספים נראו כשהם נשארים בקרבת מקום בזמן שנישאה את הוולד, מה שמשקף את","rating":53,"ratingParts":{"engage":0.5407151504164653,"momentum":0.13754282917278515,"content":1,"likes":0.731713787779425,"reach":0.1452463012211835,"comments":0.6294653567033673},"ratingRank":3},{"n":"כלכליסט","h":"calcalist","cat":"תקשורת","f":81866,"v":1,"exists":1,"grp":"media","g":null,"pic":"img/calcalist.jpg","avg7":71,"avgC7":17,"momentum":-41.2,"posts7":12,"engageRate":0.0008672709061148706,"topLikes":167,"topUrl":"https://www.instagram.com/p/DbnKhNGFljq/","topCap":"שכר הבכירים מתנהג כמו המחירים בסופר: תמיד יש נימוקים להעלאתו, אך גם כשיש את כל הסיבות להפחתה, דבר לא קורה.⁠\n⁠\nכשברקע פיטורי הענק בחברת התוכנה לפני כשבועיים, בעלי המניות במאנדיי  יתבקשו לאשר העלאה של כ","rating":31.5,"ratingParts":{"engage":0.01892707500626563,"momentum":0.26921194322075376,"content":1,"likes":0.3931806089358575,"reach":0.1020615070101304,"comments":0.3737803826779614},"ratingRank":19}],"weights":{"engage":0.28,"momentum":0.18,"content":0.14,"likes":0.2,"reach":0.12,"comments":0.08},"stats":{"total":29,"daysTracked":2}};
     const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
     const C = ANALYSIS.celebs || [];
     const byH = Object.fromEntries(C.map(c=>[c.h,c]));
@@ -255,27 +234,12 @@
     const esc = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
     const initials = n => (n||"").replace(/[^֐-׿א-ת ]/g,"").split(" ").slice(0,2).map(w=>w[0]||"").join("");
     function grad(str){let s=0;for(const ch of (str||"x"))s=(s*31+ch.charCodeAt(0))>>>0;const a=s%360,b=(a+48)%360;return `linear-gradient(145deg,hsl(${a} 70% 58%),hsl(${b} 74% 44%))`;}
-    // אווטאר: תמונה אמיתית עם fallback לראשי-תיבות
-    function ava(c,cls){return `<div class="ava ${cls||''}" style="background:${grad(c.n)}"><span class="ini">${esc(initials(c.n))}</span><img src="${esc(c.pic)}" alt="${esc(c.n)}" loading="lazy" onerror="this.remove()"></div>`;}
+    function ava(c){return `<div class="ava" style="background:${grad(c.n)}"><span class="ini">${esc(initials(c.n))}</span><img src="${esc(c.pic)}" alt="${esc(c.n)}" loading="lazy" onerror="this.remove()"></div>`;}
     const vb=v=>v?'<span class="vb">✔</span>':'';
     const GRP={singers:{he:"זמרים",ic:"🎤"},famous:{he:"מפורסמים",ic:"🎬"},politicians:{he:"פוליטיקאים",ic:"🏛️"},media:{he:"ערוצי תקשורת",ic:"📺"}};
-
     const sortF=a=>[...a].sort((x,y)=>y.f-x.f);
+    const sortR=a=>[...a].sort((x,y)=>y.rating-x.rating);
     const withMom=a=>a.filter(c=>c.momentum!=null);
-
-    // ===== הילייטס שבועיים =====
-    function highlights(){
-      const lead=sortF(C)[0];
-      const rise=withMom(C).sort((a,b)=>b.momentum-a.momentum)[0];
-      const bomb=C.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes)[0];
-      const fall=withMom(C).sort((a,b)=>a.momentum-b.momentum)[0];
-      return [
-        {c:lead,kick:"👑 המוביל",big:kfmt(lead.f),u:"עוקבים"},
-        {c:rise,kick:"🚀 הזינוק",big:"▲ "+rise.momentum+"%",u:"מומנטום מעורבות"},
-        {c:bomb,kick:"💣 התפוצצות",big:kfmt(bomb.topLikes),u:"לייקים על פוסט"},
-        {c:fall,kick:"📉 הצניחה",big:"▼ "+fall.momentum+"%",u:"מומנטום מעורבות"},
-      ].filter(x=>x.c);
-    }
 
     // ===== Top-10 השוואות חמות (מבחר מערכת) =====
     const HOT=[["b.netanyahu","yairlapid","קרב ראשי הממשלה"],["noakirel","annazak12","מלכות הפופ"],
@@ -284,127 +248,135 @@
       ["sarithadadofficial","nasrinkadry","הדיוות"],["n12news","keshet12","מלחמת הרייטינג"],
       ["rotemsela1","adva_dadon","נשות המסך"],["peertasi","oshercohen","זמרי הרחוב"]];
 
-    // ===== בניית דף הבית =====
+    // ===== בית =====
     function buildHome(){
-      const HL=highlights(); const lead=sortF(C)[0];
+      const top=sortR(C); const lead=top[0];
       let H="";
-      // ביל-בורד = המוביל
-      H+=`<div class="bill"><div class="bg" style="background-image:url('${esc(lead.pic)}')"></div><div class="shade"></div>
-        <div class="c"><span class="tag">🔴 בלייב · ${ANALYSIS.asOf||""}</span>
+      H+=`<div class="bill"><div class="bg" style="background-image:url('${esc(lead.pic)}')"></div><div class="shade"></div><div class="c">
+        <span class="tag">🔴 מוביל הרייטינג · ${ANALYSIS.asOf||""}</span>
         <h1>${esc(lead.n)}${vb(lead.v)}</h1>
-        <div class="meta"><span><b>${fmt(lead.f)}</b> עוקבים</span><span>${GRP[lead.grp]?.ic||""} ${GRP[lead.grp]?.he||""}</span><span>👑 מוביל הרייטינג</span></div>
-        <div class="btns"><button class="play" onclick="Radar.overview()">📊 סקירה כללית מלאה</button><button class="more" onclick="Radar.openCmp()">⚔️ יצירת השוואה</button></div>
-        </div></div>`;
+        <div class="meta"><span class="rt"><b>${lead.rating}</b> מדד רייטינג</span><span>${fmt(lead.f)} עוקבים</span><span>${GRP[lead.grp]?.ic||""} ${GRP[lead.grp]?.he||""}</span></div>
+        <div class="btns"><button class="play" onclick="Radar.profile('${lead.h}')">📊 סקירה כללית מלאה</button><button class="more" onclick="Radar.openCmp()">⚔️ יצירת השוואה משלך</button></div>
+      </div></div><div class="wrap">`;
 
-      H+='<div class="wrap">';
-      // הילייטס
-      H+=`<div class="row-sec"><div class="row-h"><h2>ההיילייטס של השבוע</h2><span class="sub">מה הכי חם ברשת עכשיו</span></div><div class="hl-grid">`;
-      HL.forEach(x=>{H+=`<div class="hl" onclick="Radar.compareWith('${x.c.h}')">${ava(x.c)}<div class="sh"></div><div class="c"><span class="kick">${x.kick}</span><div><div class="big">${x.big}</div><div class="nm">${esc(x.c.n)}${vb(x.c.v)}</div><div class="u">${x.u}</div></div></div></div>`;});
+      // 1) השוואות חמות
+      H+=`<div class="row-sec"><div class="row-h"><h2>🔥 ההשוואות החמות של השבוע</h2></div><div class="rail cmp-rail">`;
+      HOT.forEach((p,i)=>{const cs=p.slice(0,-1).map(h=>byH[h]).filter(Boolean); if(cs.length<2)return; const lbl=p[p.length-1];
+        H+=`<div class="item" onclick="Radar.compare([${p.slice(0,-1).map(h=>`'${h}'`).join(",")}])"><div class="rank num">${i+1}</div>
+          <div class="vspair">${cs.map(c=>`<div class="half">${ava(c)}</div>`).join("")}<div class="vs">VS</div><div class="lbl">${esc(lbl)}</div></div></div>`;});
       H+=`</div></div>`;
 
-      // Top-10 השוואות
-      H+=`<div class="row-sec"><div class="row-h"><h2>🔥 10 ההשוואות החמות של השבוע</h2></div><div class="rail cmp-rail">`;
-      HOT.forEach((p,i)=>{const a=byH[p[0]],b=byH[p[1]]; if(!a||!b)return;
-        H+=`<div class="item" onclick="Radar.compare(['${p[0]}','${p[1]}'])"><div class="rank num">${i+1}</div>
-          <div class="vspair"><div class="half">${ava(a)}</div><div class="half">${ava(b)}</div><div class="vs">VS</div><div class="lbl">${esc(p[2])}</div></div></div>`;});
+      // 2) מדד הרייטינג — 10 הגדולים
+      H+=`<div class="row-sec"><div class="row-h"><h2>🏆 מדד הרייטינג — 10 הגדולים</h2><span class="sub">הציון החם של השבוע</span></div><div class="rail">`;
+      top.slice(0,10).forEach((c,i)=>{H+=`<div class="poster" onclick="Radar.profile('${c.h}')"><div class="img">${ava(c)}<div class="grad"></div><div class="rankbig num">${i+1}</div><div class="rtbadge num">${c.rating}</div><div class="cap"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="st">מדד ${c.rating}</div></div></div></div>`;});
       H+=`</div></div>`;
 
-      // שורות קטגוריה
-      ["famous","singers","politicians","media"].forEach(g=>{
-        const list=sortF(C.filter(c=>c.grp===g)); if(!list.length)return;
-        H+=`<div class="row-sec"><div class="row-h"><h2>${GRP[g].ic} ${GRP[g].he}</h2><span class="sub">${list.length} דמויות · לפי עוקבים</span></div><div class="rail">`;
-        list.forEach((c,i)=>{H+=poster(c,i+1);});
-        H+=`</div></div>`;
-      });
+      // 3) מי הוריד עוקב ממי (בהקמה)
+      H+=`<div class="row-sec"><div class="row-h"><h2>💔 מי הוריד עוקב ממי</h2></div>
+        <div class="soon-card"><span class="ic">🕵️</span><div class="tx"><b>הפיצ'ר הכי חם בהקמה</b><p>זיהוי מי הפסיק לעקוב אחרי מי דורש מעקב יומי על רשימות העוקבים של כל דמות. אנחנו מקימים את התשתית — וברגע שתהיה, זה יופיע כאן בזמן אמת.</p></div><span class="badge">בהקמה ▸</span></div></div>`;
 
-      // מובילי עוקבים (כל הקטגוריות)
-      H+=`<div class="row-sec"><div class="row-h"><h2>👑 מובילי העוקבים בישראל</h2><span class="sub">כל הקטגוריות יחד</span></div><div class="rail">`;
-      sortF(C).slice(0,15).forEach((c,i)=>{H+=poster(c,i+1,true);});
+      // עיון לפי קטגוריה (משני)
+      H+=`<div class="row-sec"><div class="row-h"><h2>🔎 עיון לפי קטגוריה</h2></div>`;
+      ["famous","singers","politicians","media"].forEach(g=>{const list=sortR(C.filter(c=>c.grp===g)); if(!list.length)return;
+        H+=`<div style="margin-bottom:6px;color:var(--muted);font-weight:800;font-size:13px">${GRP[g].ic} ${GRP[g].he}</div><div class="rail" style="margin-bottom:14px">`;
+        list.forEach(c=>{H+=`<div class="poster" onclick="Radar.profile('${c.h}')"><div class="img">${ava(c)}<div class="grad"></div><div class="rtbadge num">${c.rating}</div><div class="cap"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="st">${kfmt(c.f)} עוקבים</div></div></div></div>`;});
+        H+=`</div>`;});
       H+=`</div></div>`;
-
-      H+='</div>';
       document.getElementById("homeBody").innerHTML=H;
     }
-    function poster(c,rank,showRank){
-      const mom=c.momentum!=null?`<div class="st2 ${c.momentum>=0?'up':'down'}">${c.momentum>=0?'▲':'▼'} ${Math.abs(c.momentum)}%</div>`:"";
-      return `<div class="poster" onclick="Radar.compareWith('${c.h}')"><div class="img">${ava(c)}<div class="grad"></div>${showRank?`<div class="rankbig num">${rank}</div>`:mom}<div class="cap"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="st">${kfmt(c.f)} עוקבים</div></div></div></div>`;
+
+    // ===== פרופיל מלא =====
+    const BRK=[["engage","מעורבות"],["likes","לייקים"],["momentum","מומנטום"],["content","תוכן שפורסם"],["reach","חשיפה"],["comments","תגובות"]];
+    function buildProfile(h){
+      const c=byH[h]; if(!c)return;
+      const stat=(l,v,cls)=>`<div class="pf-stat"><div class="l">${l}</div><div class="v ${cls||''}">${v}</div></div>`;
+      let bars="";
+      BRK.forEach(([k,lab])=>{const p=Math.round((c.ratingParts?.[k]||0)*100); bars+=`<div class="pf-bar"><div class="bl">${lab}</div><div class="tr"><i style="width:${p}%"></i></div><div class="pv num">${p}</div></div>`;});
+      const mom=c.momentum==null?"—":(c.momentum>=0?"▲ ":"▼ ")+c.momentum+"%";
+      let H=`<div class="pf-top">${ava(c)}<div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''} · @${esc(c.h)}</div><span class="pf-rank">🏆 מקום ${c.ratingRank} במדד הרייטינג</span></div>
+        <div class="pf-score"><div class="big num">${c.rating}</div><div class="lab">מדד רייטינג</div></div></div>
+        <div class="pf-grid">
+          ${stat("עוקבים",fmt(c.f))}
+          ${stat("לייקים ממוצעים (7 ימים)",fmt(c.avg7))}
+          ${stat("אחוז מעורבות",(c.engageRate*100).toFixed(2)+"%")}
+          ${stat("פוסטים (7 ימים)",c.posts7)}
+          ${stat("תגובות ממוצעות",fmt(c.avgC7))}
+          ${stat("מומנטום",mom,c.momentum>=0?"up":"down")}
+        </div>
+        <div class="pf-break"><h3>מה מרכיב את מדד הרייטינג</h3>${bars}</div>
+        <div class="pf-note">מדד הרייטינג הוא ציון משוקלל (0–100) של מעורבות הקהל, כמות התוכן, מומנטום, לייקים, חשיפה ותגובות — יחסית לכל הדמויות במערכת. לכן דמות קטנה ופעילה יכולה לעקוף כוכב עם יותר עוקבים.</div>
+        <button class="pf-cta" onclick="Radar.compareWith('${c.h}')">⚔️ השוו את ${esc(c.n)} לדמות אחרת</button>`;
+      document.getElementById("pfBody").innerHTML=H;
     }
+
+    // ===== סקירה =====
+    function ovRow(c,val,rk){return `<div class="ovrow" onclick="Radar.profile('${c.h}')">${rk?`<div class="rk num">${rk}</div>`:""}${ava(c)}<div class="ovnm">${esc(c.n)}${vb(c.v)}</div><div class="ovval">${val}</div></div>`;}
+    function ovSec(t,rows){return `<div class="ov-sec"><div class="ov-t">${t}</div>${rows}</div>`;}
+    function buildOverview(){
+      const rt=sortR(C).slice(0,5), rise=withMom(C).sort((a,b)=>b.momentum-a.momentum).slice(0,3), fall=withMom(C).sort((a,b)=>a.momentum-b.momentum).slice(0,3);
+      const bomb=C.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes)[0], vanished=C.filter(c=>!c.exists);
+      let H="";
+      H+=ovSec("🏆 מובילי מדד הרייטינג", rt.map((c,i)=>ovRow(c,`<span style="color:var(--gold)">${c.rating}</span>`,i+1)).join(""));
+      H+=ovSec("🚀 הכי בזינוק (מומנטום)", rise.length?rise.map(c=>ovRow(c,`<span style="color:var(--up)">▲ ${c.momentum}%</span>`)).join(""):'<div class="ovempty">אין נתונים</div>');
+      H+=ovSec("📉 הכי בצניחה", fall.length?fall.map(c=>ovRow(c,`<span style="color:var(--down)">▼ ${c.momentum}%</span>`)).join(""):'<div class="ovempty">אין נתונים</div>');
+      if(bomb)H+=ovSec("💣 הפוסט הכי חזק (7 ימים)", ovRow(bomb,`<span style="color:var(--gold)">${kfmt(bomb.topLikes)} לייקים</span>`));
+      H+=ovSec("👻 נעלמו מהרשת", vanished.length?vanished.map(c=>ovRow(c,'<span style="color:var(--down)">נעלם/ה</span>')).join(""):'<div class="ovempty">כל הדמויות פעילות ברשת ✅</div>');
+      document.getElementById("ovBody").innerHTML=H; document.getElementById("ovDate").textContent=ANALYSIS.asOf||"";
+    }
+
+    // ===== עיון =====
+    function buildBrowse(){let H="";["famous","singers","politicians","media"].forEach(g=>{const list=sortR(C.filter(c=>c.grp===g));if(!list.length)return;
+      H+=`<div class="ov-sec"><div class="ov-t">${GRP[g].ic} ${GRP[g].he}</div>`+list.map((c,i)=>ovRow(c,`<span style="color:var(--gold)">מדד ${c.rating}</span>`,i+1)).join("")+`</div>`;});
+      document.getElementById("brBody").innerHTML=H;}
 
     // ===== בונה השוואות =====
     let picks=[];
-    function openCmp(pre){ picks=pre?pre.slice(0,4):[]; document.getElementById("cmpSheet").classList.add("on"); document.getElementById("cmpRes").innerHTML=""; renderCmp(); document.getElementById("cmpSearch").focus(); }
+    function openCmp(pre){picks=pre?pre.slice(0,4):[]; document.getElementById("cmpSheet").classList.add("on"); document.getElementById("cmpRes").innerHTML=""; renderCmp(); setTimeout(()=>document.getElementById("cmpSearch").focus(),50);}
     function renderCmp(){
       const q=document.getElementById("cmpSearch").value.trim();
-      const chips=document.getElementById("cmpChips");
-      chips.innerHTML=picks.map(h=>{const c=byH[h];return `<span class="chip">${ava(c)} ${esc(c.n)} <button onclick="Radar.unpick('${h}')" aria-label="הסר">✕</button></span>`;}).join("");
-      const pool=document.getElementById("cmpPool");
+      document.getElementById("cmpChips").innerHTML=picks.map(h=>{const c=byH[h];return `<span class="chip">${ava(c)} ${esc(c.n)} <button onclick="Radar.unpick('${h}')" aria-label="הסר">✕</button></span>`;}).join("");
       const list=C.filter(c=>!picks.includes(c.h)&&(!q||c.n.includes(q)||c.h.includes(q.toLowerCase())));
-      pool.innerHTML=sortF(list).slice(0,60).map(c=>`<button ${picks.length>=4?"disabled":""} onclick="Radar.pick('${c.h}')">${ava(c)}<div style="min-width:0"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.he||""} · ${kfmt(c.f)}</div></div></button>`).join("")||'<div style="color:var(--muted);padding:10px">לא נמצאו תוצאות</div>';
+      document.getElementById("cmpPool").innerHTML=sortR(list).slice(0,60).map(c=>`<button ${picks.length>=4?"disabled":""} onclick="Radar.pick('${c.h}')">${ava(c)}<div style="min-width:0"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.he||""} · מדד ${c.rating}</div></div></button>`).join("")||'<div style="color:var(--muted);padding:10px">לא נמצאו תוצאות</div>';
       document.getElementById("cmpGo").disabled=picks.length<2;
     }
     function renderResult(){
       const cs=picks.map(h=>byH[h]); if(cs.length<2)return;
-      const metrics=[{k:"f",lab:"עוקבים",fmt:fmt,hi:"max"},{k:"momentum",lab:"מומנטום (חום)",fmt:v=>v==null?"—":(v>=0?"▲ ":"▼ ")+v+"%",hi:"max"},{k:"topLikes",lab:"פוסט חזק (7ימים)",fmt:kfmt,hi:"max"}];
+      const metrics=[{k:"rating",lab:"מדד רייטינג",f:v=>v},{k:"f",lab:"עוקבים",f:fmt},{k:"engageRate",lab:"מעורבות",f:v=>(v*100).toFixed(2)+"%"},{k:"momentum",lab:"מומנטום",f:v=>v==null?"—":(v>=0?"▲ ":"▼ ")+v+"%"},{k:"topLikes",lab:"פוסט חזק",f:kfmt}];
       const wins={}; picks.forEach(h=>wins[h]=0);
       metrics.forEach(m=>{let best=-Infinity,bh=null; cs.forEach(c=>{const v=c[m.k]; if(v!=null&&v>best){best=v;bh=c.h;}}); if(bh)wins[bh]++; m._bh=bh;});
       let champ=picks[0]; picks.forEach(h=>{if(wins[h]>wins[champ])champ=h;});
       let H=`<div class="vscols" style="--n:${cs.length}">`;
-      cs.forEach(c=>{H+=`<div class="vscol ${c.h===champ?'win':''}">${c.h===champ?'<div class="crown">👑</div>':''}${ava(c,'')}<div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''}</div>`+
-        metrics.map(m=>`<div class="stat"><div class="lab">${m.lab}</div><div class="val ${m._bh===c.h?'lead':''}">${m.fmt(c[m.k])}</div></div>`).join("")+`</div>`;});
-      H+=`</div><div class="verdict">🏆 המנצח בהשוואה: <b>${esc(byH[champ].n)}</b> — מוביל ב-${wins[champ]} מתוך ${metrics.length} מדדים</div>`;
+      cs.forEach(c=>{H+=`<div class="vscol ${c.h===champ?'win':''}">${c.h===champ?'<div class="crown">👑</div>':''}${ava(c)}<div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''}</div>`+metrics.map(m=>`<div class="stat"><div class="lab">${m.lab}</div><div class="val ${m._bh===c.h?'lead':''}">${m.f(c[m.k])}</div></div>`).join("")+`</div>`;});
+      H+=`</div><div class="verdict">🏆 המנצח/ת: <b>${esc(byH[champ].n)}</b> — מוביל/ה ב-${wins[champ]} מתוך ${metrics.length} מדדים</div>`;
       document.getElementById("cmpRes").innerHTML=H;
-      document.getElementById("cmpRes").scrollIntoView({behavior:reduce?"auto":"smooth",block:"nearest"});
     }
 
-    // ===== סקירה כללית =====
-    function ovRow(c,val,rk){return `<div class="ovrow">${rk?`<div class="rk num">${rk}</div>`:""}${ava(c)}<div class="ovnm">${esc(c.n)}${vb(c.v)}</div><div class="ovval">${val}</div></div>`;}
-    function ovSec(t,rows){return `<div class="ov-sec"><div class="ov-t">${t}</div>${rows}</div>`;}
-    function buildOverview(){
-      const lead=sortF(C).slice(0,5);
-      const rise=withMom(C).sort((a,b)=>b.momentum-a.momentum).slice(0,3);
-      const fall=withMom(C).sort((a,b)=>a.momentum-b.momentum).slice(0,3);
-      const bomb=C.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes)[0];
-      const vanished=C.filter(c=>!c.exists);
-      let H="";
-      H+=ovSec("👑 מובילי העוקבים", lead.map((c,i)=>ovRow(c,`<span style="color:var(--gold)">${kfmt(c.f)}</span>`,i+1)).join(""));
-      H+=ovSec("🚀 הכי בזינוק (מומנטום מעורבות)", rise.length?rise.map(c=>ovRow(c,`<span style="color:var(--up)">▲ ${c.momentum}%</span>`)).join(""):'<div class="ovempty">אין נתונים</div>');
-      H+=ovSec("📉 הכי בצניחה", fall.length?fall.map(c=>ovRow(c,`<span style="color:var(--down)">▼ ${c.momentum}%</span>`)).join(""):'<div class="ovempty">אין נתונים</div>');
-      if(bomb)H+=ovSec("💣 הפוסט הכי חזק (7 ימים)", ovRow(bomb,`<span style="color:var(--gold)">${kfmt(bomb.topLikes)} לייקים</span>`));
-      H+=ovSec("👻 נעלמו מהרשת", vanished.length?vanished.map(c=>ovRow(c,'<span style="color:var(--down)">נעלם/ה</span>')).join(""):'<div class="ovempty">כל הדמויות פעילות ברשת ✅</div>');
-      document.getElementById("ovBody").innerHTML=H;
-      document.getElementById("ovDate").textContent=ANALYSIS.asOf||"";
-    }
-    function openOverview(){buildOverview(); document.getElementById("ovSheet").classList.add("on");}
-
-    // ===== API גלובלי לאירועי onclick =====
     window.Radar={
-      openCmp:()=>openCmp(),
-      overview:()=>openOverview(),
-      compare:(arr)=>openCmp(arr),
-      compareWith:(h)=>openCmp([h]),
+      profile:(h)=>{buildProfile(h); document.getElementById("pfSheet").classList.add("on");},
+      openCmp:()=>openCmp(), overview:()=>{buildOverview();document.getElementById("ovSheet").classList.add("on");},
+      browse:()=>{buildBrowse();document.getElementById("brSheet").classList.add("on");},
+      compare:(arr)=>openCmp(arr), compareWith:(h)=>openCmp([h]),
       pick:(h)=>{if(picks.length<4&&!picks.includes(h))picks.push(h); renderCmp();},
       unpick:(h)=>{picks=picks.filter(x=>x!==h); renderCmp(); document.getElementById("cmpRes").innerHTML="";},
     };
     document.getElementById("openCmp").addEventListener("click",()=>openCmp());
-    document.getElementById("cmpX").addEventListener("click",()=>document.getElementById("cmpSheet").classList.remove("on"));
-    document.getElementById("cmpSheet").addEventListener("click",e=>{if(e.target.id==="cmpSheet")e.currentTarget.classList.remove("on");});
+    document.getElementById("ovBtn").addEventListener("click",()=>Radar.overview());
+    ["pf","ov","br","cmp"].forEach(id=>{document.getElementById(id+"X").addEventListener("click",()=>document.getElementById(id+"Sheet").classList.remove("on"));
+      document.getElementById(id+"Sheet").addEventListener("click",e=>{if(e.target.id===id+"Sheet")e.currentTarget.classList.remove("on");});});
     document.getElementById("cmpSearch").addEventListener("input",renderCmp);
     document.getElementById("cmpGo").addEventListener("click",renderResult);
-    document.getElementById("ovX").addEventListener("click",()=>document.getElementById("ovSheet").classList.remove("on"));
-    document.getElementById("ovSheet").addEventListener("click",e=>{if(e.target.id==="ovSheet")e.currentTarget.classList.remove("on");});
 
-    // ===== סריקת אינטרו 8 שניות =====
+    // ===== סריקה 8ש' =====
     const scan=document.getElementById("scan"),home=document.getElementById("home");
-    function enterHome(){ buildHome(); scan.classList.add("off"); home.classList.add("on"); }
+    function enterHome(){buildHome(); scan.classList.add("off"); home.classList.add("on");}
     (function(){
-      const stages=[[0,"מפעיל את הרדאר…","מתחבר לרשתות"],[22,"סורק חשבונות…","מאמת זהויות"],[46,"מושך עוקבים ולייקים…","אלפי נקודות מידע"],[72,"מדרג את הכוכבים…","מרכיב את הרייטינג"],[92,"מסיים…","טוען את הבית"]];
+      const stages=[[0,"מפעיל את הרדאר…","מתחבר לרשתות"],[22,"סורק חשבונות…","מאמת זהויות"],[46,"מחשב מדד רייטינג…","מעורבות · תוכן · מומנטום"],[72,"מדרג את הכוכבים…","מרכיב את הבית"],[92,"מסיים…","טוען"]];
       const DUR=reduce?300:8000,t0=performance.now();
       const pct=document.getElementById("pct"),tt=document.getElementById("scanTtl"),sb=document.getElementById("scanSub");
       document.getElementById("skipBtn").addEventListener("click",enterHome);
       (function tick(t){const p=Math.min(1,(t-t0)/DUR),pc=Math.round(p*100); pct.innerHTML=pc+'<small>%</small>';
         for(let i=stages.length-1;i>=0;i--){if(pc>=stages[i][0]){tt.textContent=stages[i][1];sb.textContent=stages[i][2];break;}}
-        if(p<1&&!home.classList.contains("on"))requestAnimationFrame(tick); else if(!home.classList.contains("on"))enterHome();
-      })(t0);
+        if(p<1&&!home.classList.contains("on"))requestAnimationFrame(tick); else if(!home.classList.contains("on"))enterHome();})(t0);
     })();
   </script>
 </div>
@@ -435,14 +407,10 @@
 <div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="תפריט נגישות">
   <h2>נגישות</h2><p class="hint">התאמת האתר לצרכים שלך</p>
   <div class="a11y-grid">
-    <button data-act="bigger"><span class="i">🔎</span>הגדלת טקסט</button>
-    <button data-act="smaller"><span class="i">🔍</span>הקטנת טקסט</button>
-    <button data-act="contrast" aria-pressed="false"><span class="i">◑</span>ניגודיות</button>
-    <button data-act="gray" aria-pressed="false"><span class="i">⬤</span>גווני אפור</button>
-    <button data-act="links" aria-pressed="false"><span class="i">🔗</span>הדגשת קישורים</button>
-    <button data-act="readable" aria-pressed="false"><span class="i">🅰️</span>גופן קריא</button>
-    <button data-act="nomotion" aria-pressed="false"><span class="i">⏸️</span>עצירת תנועה</button>
-    <button data-act="cursor" aria-pressed="false"><span class="i">➚</span>סמן גדול</button>
+    <button data-act="bigger"><span class="i">🔎</span>הגדלת טקסט</button><button data-act="smaller"><span class="i">🔍</span>הקטנת טקסט</button>
+    <button data-act="contrast" aria-pressed="false"><span class="i">◑</span>ניגודיות</button><button data-act="gray" aria-pressed="false"><span class="i">⬤</span>גווני אפור</button>
+    <button data-act="links" aria-pressed="false"><span class="i">🔗</span>הדגשת קישורים</button><button data-act="readable" aria-pressed="false"><span class="i">🅰️</span>גופן קריא</button>
+    <button data-act="nomotion" aria-pressed="false"><span class="i">⏸️</span>עצירת תנועה</button><button data-act="cursor" aria-pressed="false"><span class="i">➚</span>סמן גדול</button>
   </div>
   <div class="a11y-foot"><button class="a11y-reset" data-act="reset">איפוס הגדרות</button><button class="a11y-state" id="a11yStateBtn">הצהרת נגישות</button></div>
 </div>
@@ -452,7 +420,7 @@
     <p>אתר "המרכז הישראלי לרייטינג ברשתות" רואה חשיבות רבה במתן שירות שוויוני, ופועל להנגשת האתר בהתאם ל<b>תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג-2013</b> ולתקן הישראלי <b>ת"י 5568</b> ברמת AA (WCAG 2.0).</p>
     <p><b>מה הונגש:</b> תפריט נגישות (הגדלת טקסט, ניגודיות, גווני אפור, הדגשת קישורים, גופן קריא, עצירת אנימציות, סמן גדול), מבנה סמנטי, ניווט מקלדת, סימון פוקוס, טקסט חלופי לתמונות ותמיכה ב-RTL.</p>
     <p><b>מגבלות ידועות:</b> ייתכנו רכיבים שטרם הונגשו במלואם; אנו פועלים לשיפור מתמיד.</p>
-    <p><b>פניות בנושא נגישות:</b> רכז הנגישות — בן דסקלו · <a href="mailto:ben@b-films.co.il">ben@b-films.co.il</a>.</p>
+    <p><b>פניות בנושא נגישות:</b> רכז/ת הנגישות — בן דסקלו · <a href="mailto:ben@b-films.co.il">ben@b-films.co.il</a>.</p>
     <p style="color:#777;font-size:12px">עודכן באוגוסט 2026.</p>
   </div>
 </div>
@@ -470,7 +438,7 @@
   document.querySelector(".a11y-reset").addEventListener("click",function(){act("reset");});
   var btn=document.getElementById("a11yBtn"),panel=document.getElementById("a11yPanel");
   btn.addEventListener("click",function(){var on=panel.classList.toggle("on");btn.setAttribute("aria-expanded",on?"true":"false");});
-  document.addEventListener("keydown",function(e){if(e.key==="Escape"){panel.classList.remove("on");btn.setAttribute("aria-expanded","false");document.getElementById("a11yModal").classList.remove("on");document.getElementById("cmpSheet").classList.remove("on");document.getElementById("ovSheet").classList.remove("on");}});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"){panel.classList.remove("on");btn.setAttribute("aria-expanded","false");["a11yModal","pfSheet","ovSheet","brSheet","cmpSheet"].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove("on");});}});
   var modal=document.getElementById("a11yModal");
   document.getElementById("a11yStateBtn").addEventListener("click",function(){modal.classList.add("on");});
   document.getElementById("a11yModalX").addEventListener("click",function(){modal.classList.remove("on");});
