@@ -520,7 +520,7 @@
     }
     function renderResult(){
       const cs=picks.map(h=>cmpByH[h]); if(cs.length<2)return;
-      const metrics=[{k:"rating",lab:"מדד רייטינג",f:v=>v},{k:"growthDelta",lab:"שינוי עוקבים (24ש')",f:v=>v==null?"—":(v>=0?"+":"")+fmt(v)},{k:"engageRate",lab:"מעורבות",f:v=>(v*100).toFixed(2)+"%"},{k:"avgViews7",lab:"צפיות ממוצעות",f:v=>v==null?"—":kfmt(v)},{k:"f",lab:"עוקבים",f:fmt},{k:"topLikes",lab:"פוסט חזק",f:kfmt}];
+      const metrics=[{k:"rating",lab:"מדד רייטינג",f:v=>v},{k:"growthDelta",lab:"שינוי עוקבים (24ש')",f:v=>v==null?"—":(v>=0?"+":"")+fmt(v)},{k:"engageRate",lab:"מעורבות",f:v=>(v*100).toFixed(2)+"%"},{k:"momentum",lab:"מומנטום",f:v=>v==null?"—":(v>=0?"▲ ":"▼ ")+v+"%"},{k:"avgViews7",lab:"צפיות ממוצעות",f:v=>v==null?"—":kfmt(v)},{k:"posts7",lab:"פרסומים (7 ימים)",f:v=>v==null?"—":v},{k:"f",lab:"עוקבים",f:fmt},{k:"topLikes",lab:"פוסט חזק",f:kfmt}];
       metrics.forEach(m=>{let best=-Infinity,bh=null; cs.forEach(c=>{const v=c[m.k]; if(v!=null&&v>best){best=v;bh=c.h;}}); m._bh=bh;});
       // המנצח = מדד הרייטינג הכולל הגבוה ביותר (לא ספירת שדות)
       let champ=picks[0]; picks.forEach(h=>{if((cmpByH[h].rating||0)>(cmpByH[champ].rating||0))champ=h;});
