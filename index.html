@@ -42,7 +42,8 @@
     html,body,:root[data-theme]{background:var(--ink);}
     *{box-sizing:border-box;}
     .app{background:var(--ink); color:var(--text); min-height:100vh; width:100%; overflow-x:hidden;
-      font-family:"SF Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased;}
+      font-family:"SF Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+    html{overflow-x:hidden;}
     .num{font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate;}
     img{display:block;}
     .wrap{max-width:1180px; margin:0 auto; padding:0 clamp(14px,3.5vw,34px);}
@@ -62,9 +63,13 @@
     .brand .s{font-size:11px; color:var(--gold); font-weight:700;}
     .nav .sp{flex:1;}
     .nav button{cursor:pointer; font-weight:800; font-size:13px; border-radius:100px; border:0; padding:9px 15px; display:inline-flex; align-items:center; gap:6px;}
-    .nav .browse{background:transparent; color:var(--text); border:1px solid var(--line2);}
-    .nav .cmp{color:#0B0B0F; background:var(--gold);} .nav .cmp:hover{background:#F2D57E;}
-    @media(max-width:560px){ .nav .browse .lbl{display:none;} .nav .browse{padding:9px 12px;} .nav .cmp{display:none;} }
+    .menu-btn{background:transparent!important; color:var(--text); border:1px solid var(--line2)!important; width:42px; height:42px; padding:0!important; justify-content:center; border-radius:12px!important;}
+    .drawer{position:absolute; top:66px; inset-inline-end:16px; z-index:60; width:min(320px,calc(100vw - 32px)); background:#131318; border:1px solid var(--line2); border-radius:16px; padding:8px; box-shadow:0 24px 60px -12px rgba(0,0,0,.7); display:flex; flex-direction:column; gap:2px;}
+    .drawer[hidden]{display:none;}
+    .dit{display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:right; background:transparent; border:0; border-radius:11px; padding:12px 14px; cursor:pointer; color:var(--text);}
+    .dit:hover{background:rgba(235,200,104,.08);}
+    .dit b{font-weight:800; font-size:15px;} .dit span{font-size:12.5px; color:var(--muted); font-weight:600;}
+    @media(max-width:560px){ .nav .in{height:58px; gap:9px;} .bizcta{padding:8px 13px!important; font-size:12.5px;} }
 
     /* בורר תקופת זמן */
     .timebar{position:sticky; top:64px; z-index:40; background:rgba(11,11,15,.93); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
@@ -129,7 +134,8 @@
     /* שורות */
     .row-sec{margin-top:28px;}
     .row-h{display:flex; align-items:baseline; gap:10px; margin:0 0 12px;}
-    .row-h h2{margin:0; font-size:clamp(18px,3.6vw,23px); font-weight:900; letter-spacing:-.01em;}
+    .row-h h2{margin:0; font-size:clamp(18px,3.6vw,23px); font-weight:900; letter-spacing:-.01em; display:flex; align-items:center; gap:9px;}
+    .row-h h2::before{content:""; width:4px; height:.95em; border-radius:4px; background:linear-gradient(180deg,#F5D888,#C9A24B); flex:none;}
     .row-h .sub{color:var(--muted); font-size:13px;}
     .rail{display:flex; gap:12px; overflow-x:auto; padding:4px 2px 14px; scroll-snap-type:x mandatory; scrollbar-width:thin;}
     .rail::-webkit-scrollbar{height:8px;} .rail::-webkit-scrollbar-thumb{background:var(--line2); border-radius:8px;}
@@ -254,10 +260,15 @@
       <svg class="emblem" viewBox="0 0 48 48" aria-hidden="true"><g transform="rotate(-11 24 24)"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#EBC868" stroke-width="1.5" stroke-dasharray="1.5 2.2"/><circle cx="24" cy="24" r="18" fill="none" stroke="#EBC868" stroke-width="1.3"/><path d="M14 27 L12 14 L19 20 L24 9 L29 20 L36 14 L34 27 Z" fill="#EBC868"/><rect x="14.5" y="28.5" width="19" height="3.1" rx="1.5" fill="#EBC868"/><circle cx="24" cy="10.5" r="1.7" fill="#FF7DA8"/><text x="24" y="39.5" text-anchor="middle" fill="#EBC868" font-size="6.4" font-weight="900" font-family="Arial" letter-spacing="0.3">מאומת</text></g></svg>
       <div class="brand"><span class="t">רייטינג העולם החדש</span><span class="s">רייטינג מאומת · בזמן אמת ✓</span></div>
       <div class="sp"></div>
-      <button class="bizcta" id="bizBtn">💼 <span class="lbl">לעסקים · בניית קמפיין</span></button>
-      <button class="browse" id="valBtn">💰 <span class="lbl">הערכת שווי</span></button>
-      <button class="browse" id="ovBtn">📊 <span class="lbl">סקירה</span></button>
-      <button class="cmp" id="openCmp">⚔️ <span class="lbl">השוואה</span></button>
+      <button class="bizcta" id="bizBtn"><span class="lbl">לעסקים</span></button>
+      <button class="menu-btn" id="menuBtn" aria-label="תפריט"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg></button>
+    </div>
+    <div class="drawer" id="drawer" hidden>
+      <button class="dit" id="valBtn"><b>הערכת שווי</b><span>ניתוח וטווח מחיר לכל יוצר</span></button>
+      <button class="dit" id="openCmp"><b>השוואת יוצרים</b><span>ראש בראש · עד 4 דמויות</span></button>
+      <button class="dit" onclick="document.getElementById('drawer').hidden=true;Radar.biz()"><b>בניית קמפיין</b><span>מהתקציב ועד ההמלצה</span></button>
+      <button class="dit" id="ovBtn"><b>סקירה כללית</b><span>כל המדד במבט אחד</span></button>
+      <button class="dit" onclick="document.getElementById('drawer').hidden=true;document.getElementById('applySheet').classList.add('on')"><b>הגשת מועמדות</b><span>הצטרפות למדד</span></button>
     </div></nav>
     <div class="timebar" id="timebar"><div class="wrap tb-in">
       <span class="tb-lbl">📅 תקופה</span>
@@ -287,8 +298,8 @@
 
   <!-- מודלים -->
   <div class="sheet" id="pfSheet"><div class="box"><button class="x" id="pfX" aria-label="סגירה">✕</button><div id="pfBody"></div></div></div>
-  <div class="sheet" id="ovSheet"><div class="box"><button class="x" id="ovX" aria-label="סגירה">✕</button><h2>📊 סקירה כללית</h2><p class="hint">כל הרייטינג במבט אחד · <span id="ovDate"></span></p><div id="ovBody"></div></div></div>
-  <div class="sheet" id="brSheet"><div class="box"><button class="x" id="brX" aria-label="סגירה">✕</button><h2>🔎 עיון לפי קטגוריה</h2><p class="hint">לחצו על דמות לנתונים מלאים.</p><div id="brBody"></div></div></div>
+  <div class="sheet" id="ovSheet"><div class="box"><button class="x" id="ovX" aria-label="סגירה">✕</button><h2>סקירה כללית</h2><p class="hint">כל הרייטינג במבט אחד · <span id="ovDate"></span></p><div id="ovBody"></div></div></div>
+  <div class="sheet" id="brSheet"><div class="box"><button class="x" id="brX" aria-label="סגירה">✕</button><h2>עיון לפי קטגוריה</h2><p class="hint">לחצו על דמות לנתונים מלאים.</p><div id="brBody"></div></div></div>
   <div class="sheet" id="cmpSheet"><div class="box"><button class="x" id="cmpX" aria-label="סגירה">✕</button>
     <h2>⚔️ יצירת השוואה משלך</h2><p class="hint">בחרו 2–4 דמויות והשוו ראש בראש · הנתונים על <b>7 הימים האחרונים</b>.</p>
     <input class="search" id="cmpSearch" placeholder="חיפוש לפי שם… (למשל: ליאור סושרד, אדוה דדון, ביבי)">
@@ -299,7 +310,7 @@
   <!-- מודל הגשת מועמדות -->
   <div class="sheet" id="applySheet"><div class="box">
     <button class="x" id="applyX" aria-label="סגירה">✕</button>
-    <h2>🏆 הגשת מועמדות לרייטינג</h2>
+    <h2>הגשת מועמדות לרייטינג</h2>
     <p class="hint">לא ראיתם את עצמכם? מלאו פרטים ונבדוק את הכניסה. תנאי סף: חשבון מאומת (וי כחול) + 50K עוקבים ומעלה.</p>
     <input id="apName" class="fld" placeholder="שם מלא">
     <input id="apHandle" class="fld" placeholder="שם משתמש באינסטגרם (למשל @name)">
@@ -341,12 +352,13 @@
   @media(max-width:560px){.valprices,.vgrid{grid-template-columns:1fr}}
   .rtbadge.kmand{background:linear-gradient(180deg,#F5D888,#C9A24B);color:#161018;font-weight:900}
   .kbelow{font-size:12.5px;color:var(--muted,#9a99ad);margin-top:12px;padding:0 4px}
-  .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:10px}
-  .cat-tile{display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--card,#15151c);border:1px solid var(--line2,#2a2a35);border-radius:14px;padding:15px 8px;cursor:pointer;color:var(--text,#eee);transition:transform .14s,border-color .14s}
-  .cat-tile:hover{border-color:var(--gold,#EBC868);transform:translateY(-3px)}
-  .cat-tile .ci{font-size:30px;line-height:1}
-  .cat-tile .cl{font-weight:800;font-size:13px;text-align:center}
-  .cat-tile .cc{font-size:11px;color:var(--muted,#9a99ad);font-weight:700}
+  .cat-rail{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity;scrollbar-width:none}
+  .cat-rail::-webkit-scrollbar{display:none}
+  .cat-tile{scroll-snap-align:start;flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:3px;background:linear-gradient(155deg,#191921,#121218);border:1px solid var(--line2,#2a2a35);border-radius:14px;padding:14px 20px;cursor:pointer;color:var(--text,#eee);transition:border-color .15s,transform .15s;position:relative;overflow:hidden}
+  .cat-tile::after{content:"";position:absolute;inset-inline-start:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:linear-gradient(180deg,#F5D888,#C9A24B);opacity:.85}
+  .cat-tile:hover{border-color:var(--gold,#EBC868);transform:translateY(-2px)}
+  .cat-tile .cl{font-weight:900;font-size:16px;letter-spacing:-.01em;padding-inline-start:8px}
+  .cat-tile .cc{font-size:11.5px;color:var(--muted,#9a99ad);font-weight:700;padding-inline-start:8px}
   .cat-mode{padding-top:20px}
   .cat-head{display:flex;align-items:center;gap:14px;margin:0 0 18px;flex-wrap:wrap}
   .cat-head h1{font-size:30px;font-weight:900;letter-spacing:-.02em}
@@ -391,10 +403,31 @@
   .cs-row{display:flex;justify-content:space-between;font-size:14.5px;padding:3px 0}.cs-row b{font-weight:900}.cs-row b.gold{color:#EBC868;font-size:16px}
   .cart-go{width:100%;background:linear-gradient(180deg,#F5D888,#D9B45A);border:none;color:#161018;border-radius:12px;padding:13px;font-weight:900;font-size:16px;cursor:pointer}
   @media(max-width:560px){.biz-title{font-size:17px}.biz-grid{grid-template-columns:1fr;padding:0 14px}.biz-filters{padding:14px}}
+  .wiz{max-width:520px;margin:26px auto;padding:26px 22px;background:linear-gradient(165deg,#17171f,#101016);border:1px solid var(--line2,#2a2a35);border-radius:20px}
+  .wiz-t{font-size:26px;font-weight:900;letter-spacing:-.02em}
+  .wiz-s{color:var(--muted,#9a99ad);font-size:14px;font-weight:600;margin-top:6px;line-height:1.55}
+  .wiz-l{display:block;font-weight:800;font-size:14px;margin:20px 0 8px}
+  .wiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .wiz-opts button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:right;background:#14141a;border:1.5px solid var(--line2,#2a2a35);border-radius:13px;padding:13px 14px;cursor:pointer;color:var(--text,#eee)}
+  .wiz-opts button.on{border-color:var(--gold,#EBC868);background:rgba(235,200,104,.07)}
+  .wiz-opts b{font-weight:800;font-size:14.5px}.wiz-opts span{font-size:12px;color:var(--muted,#9a99ad)}
+  .wiz-f{width:100%}
+  .wiz-go{width:100%;margin-top:24px;background:linear-gradient(180deg,#F5D888,#D9B45A);border:none;color:#161018;border-radius:13px;padding:14px;font-weight:900;font-size:16px;cursor:pointer}
+  .wiz-skip{width:100%;margin-top:10px;background:none;border:none;color:var(--muted,#9a99ad);font-weight:700;font-size:13.5px;cursor:pointer}
+  .wiz-skip:hover{color:var(--text,#eee)}
+  .rec-note{margin:0 20px 14px;padding:13px 16px;background:rgba(58,209,126,.09);border:1px solid rgba(58,209,126,.35);border-radius:12px;font-size:14px;line-height:1.5;color:#c9f2da}
+  .rec-note b{color:#48d98a}
+  @media(max-width:560px){
+    .poster{width:clamp(102px,29vw,126px)} .rail{gap:9px}
+    .poster .cap .nm{font-size:12.5px} .poster .cap .st{font-size:10.5px} .poster .img .ava{font-size:30px}
+    .row-sec{margin-bottom:6px} .row-h h2{font-size:17px} .row-h .sub{font-size:11.5px}
+    .cat-hero{height:185px} .cat-hero .cht .nm{font-size:26px}
+    .cat-tile{padding:11px 16px} .cat-tile .cl{font-size:14.5px}
+  }
   </style>
   <div class="sheet" id="valSheet"><div class="box">
     <button class="x" id="valX" aria-label="סגירה">✕</button>
-    <h2>💰 הערכת שווי משפיען</h2>
+    <h2>הערכת שווי משפיען</h2>
     <p class="hint">כלי לחברות ומפרסמים: בדקו את השווי הריאלי של משפיען <b>לפני</b> סגירת עסקה — מבוסס חשיפה אמיתית, מעורבות ורייטינג חי. הזינו שם / שם משתמש / לינק לפרופיל.</p>
     <input id="valSearch" class="fld" placeholder="שם, @שם משתמש או לינק לאינסטגרם" autocomplete="off">
     <div id="valPool"></div>
@@ -403,7 +436,7 @@
 
   <!-- 💼 מרקטפלייס עסקי -->
   <div class="biz" id="biz" hidden>
-    <div class="biz-top"><div class="biz-title">💼 מרקטפלייס המשפיענים<span>מצא · הערך · בנה קמפיין — במקום אחד</span></div><button class="biz-x" id="bizX">✕ חזרה לרייטינג</button></div>
+    <div class="biz-top"><div class="biz-title">מרקטפלייס המשפיענים<span>מצא · הערך · בנה קמפיין — במקום אחד</span></div><button class="biz-x" id="bizX">✕ חזרה לרייטינג</button></div>
     <div class="biz-filters" id="bizFilters"></div>
     <div class="biz-results" id="bizResults"></div>
     <div class="biz-cart" id="bizCart"></div>
@@ -540,8 +573,8 @@
     function mandatesRow(){
       const pols=C.filter(c=>c.grp==='politicians'); const M=computeMandates(pols); if(M.seats.length<2)return"";
       const below=M.below.length?`<div class="kbelow">מתחת לאחוז החסימה (3.25%): ${M.below.map(c=>esc(c.n)).join(" · ")}</div>`:"";
-      let h=`<div class="row-sec"><div class="row-h"><h2>🏛️ הכנסת של האינסטגרם</h2><span class="sub">מנדטים לפי הכוח ברשת · לא סקר</span></div><div class="rail">`;
-      M.seats.forEach((s,i)=>{h+=`<div class="poster" onclick="Radar.profile('${s.c.h}')"><div class="img">${ava(s.c)}<div class="grad"></div><div class="rankbig num">${i+1}</div><div class="rtbadge kmand num">${s.seats}</div><div class="cap"><div class="nm">${esc(s.c.n)}${vb(s.c.v)}</div><div class="st">🏛️ ${s.seats} מנדטים</div></div></div></div>`;});
+      let h=`<div class="row-sec"><div class="row-h"><h2>הכנסת של האינסטגרם</h2><span class="sub">מנדטים לפי הכוח ברשת · לא סקר</span></div><div class="rail">`;
+      M.seats.forEach((s,i)=>{h+=`<div class="poster" onclick="Radar.profile('${s.c.h}')"><div class="img">${ava(s.c)}<div class="grad"></div><div class="rankbig num">${i+1}</div><div class="rtbadge kmand num">${s.seats}</div><div class="cap"><div class="nm">${esc(s.c.n)}${vb(s.c.v)}</div><div class="st">${s.seats} מנדטים</div></div></div></div>`;});
       return h+`</div>${below}</div>`;
     }
     function buildHome(){
@@ -549,12 +582,12 @@
       if(activeFilter){
         // ===== מצב קטגוריה (אותה תבנית, תוכן מסונן) =====
         const base=all.filter(c=>activeFilter.type==='grp'?c.grp===activeFilter.key:c.cat===activeFilter.key);
-        const t=sortR(base); let H=`<div class="wrap cat-mode"><div class="cat-head"><button class="cat-back" onclick="Radar.allCats()">→ חזרה להכל</button><h1>${activeFilter.icon} ${esc(activeFilter.label)}</h1><span class="cnt">${base.length} דמויות</span></div>`;
-        if(t[0])H+=`<div class="cat-hero" onclick="Radar.profile('${t[0].h}')">${ava(t[0])}<div class="chg"></div><div class="cht"><span class="badge">🏆 מוביל/ת הקטגוריה</span><div class="nm">${esc(t[0].n)}${vb(t[0].v)}</div><div class="st">מדד ${t[0].rating} · ${kfmt(t[0].f)} עוקבים</div></div></div>`;
-        H+=prow("🏆 טופ הקטגוריה",null,t.slice(0,12),c=>`מדד ${c.rating}`,true);
-        H+=prow("🆕 חדשים בקטגוריה",null,byNew(base).slice(0,12),c=>`${kfmt(c.f)} עוקבים`);
-        H+=prow("🚀 בזינוק בקטגוריה",null,withMom(base).sort((a,b)=>b.momentum-a.momentum).slice(0,12),c=>`▲ ${c.momentum}%`);
-        H+=prow("📋 כל הדמויות",null,t,c=>`${kfmt(c.f)} עוקבים`);
+        const t=sortR(base); let H=`<div class="wrap cat-mode"><div class="cat-head"><button class="cat-back" onclick="Radar.allCats()">→ חזרה להכל</button><h1>${esc(activeFilter.label)}</h1><span class="cnt">${base.length} דמויות</span></div>`;
+        if(t[0])H+=`<div class="cat-hero" onclick="Radar.profile('${t[0].h}')">${ava(t[0])}<div class="chg"></div><div class="cht"><span class="badge">מוביל/ת הקטגוריה</span><div class="nm">${esc(t[0].n)}${vb(t[0].v)}</div><div class="st">מדד ${t[0].rating} · ${kfmt(t[0].f)} עוקבים</div></div></div>`;
+        H+=prow("טופ הקטגוריה",null,t.slice(0,12),c=>`מדד ${c.rating}`,true);
+        H+=prow("חדשים בקטגוריה",null,byNew(base).slice(0,12),c=>`${kfmt(c.f)} עוקבים`);
+        H+=prow("בזינוק בקטגוריה",null,withMom(base).sort((a,b)=>b.momentum-a.momentum).slice(0,12),c=>`▲ ${c.momentum}%`);
+        H+=prow("כל הדמויות",null,t,c=>`${kfmt(c.f)} עוקבים`);
         document.getElementById("homeBody").innerHTML=H+`</div>`; return;
       }
       // ===== מצב ראשי — הירו =====
@@ -563,32 +596,32 @@
       const bomb=all.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes)[0];
       const hotp=HOT.map(p=>[byH[p[0]],byH[p[1]],p[2]]).find(x=>x[0]&&x[1]);
       const feat=[];
-      feat.push(slP(rlead,"🏆 מוביל מדד הרייטינג",`מדד ${rlead.rating}`,`${fmt(rlead.f)} עוקבים`));
+      feat.push(slP(rlead,"מוביל מדד הרייטינג",`מדד ${rlead.rating}`,`${fmt(rlead.f)} עוקבים`));
       if(hotp)feat.push(slC(hotp[0],hotp[1],hotp[2]));
-      if(rise)feat.push(slP(rise,"🚀 הכי בזינוק השבוע",`▲ ${rise.momentum}%`,"מומנטום מעורבות"));
-      if(bomb)feat.push(slP(bomb,"💣 הפוסט שהתפוצץ",`${kfmt(bomb.topLikes)} לייקים`,"בשבוע האחרון"));
-      feat.push(slP(flead,"👑 מלך/ת העוקבים",`${fmt(flead.f)}`,"עוקבים"));
+      if(rise)feat.push(slP(rise,"הכי בזינוק השבוע",`▲ ${rise.momentum}%`,"מומנטום מעורבות"));
+      if(bomb)feat.push(slP(bomb,"הפוסט שהתפוצץ",`${kfmt(bomb.topLikes)} לייקים`,"בשבוע האחרון"));
+      feat.push(slP(flead,"מלך/ת העוקבים",`${fmt(flead.f)}`,"עוקבים"));
       let H=`<div class="bill">`+feat.map((s,i)=>s.replace('__A__',i===0?' active':'')).join("")+`<div class="bill-dots">`+feat.map((_,i)=>`<button class="${i===0?'on':''}" aria-label="שקופית ${i+1}"></button>`).join("")+`</div></div><div class="wrap">`;
-      // אריחי קטגוריות
-      H+=`<div class="row-sec"><div class="row-h"><h2>🗂️ הקטגוריות</h2><span class="sub">לחצו לצלילה לקטגוריה</span></div><div class="cat-grid">`;
-      const tiles=[["grp","singers","🎤","מוזיקה"],["grp","famous","🎬","בידור"],["grp","media","📺","תקשורת"],["grp","politicians","🏛️","פוליטיקה"]];
-      NICHES.forEach(([k,ic,lbl])=>{if(all.some(c=>c.cat===k))tiles.push(["cat",k,ic,lbl]);});
-      tiles.forEach(([type,key,ic,lbl])=>{const cnt=all.filter(c=>type==='grp'?c.grp===key:c.cat===key).length; if(!cnt)return; H+=`<button class="cat-tile" onclick="Radar.filter('${type}','${key}')"><span class="ci">${ic}</span><span class="cl">${lbl}</span><span class="cc">${cnt}</span></button>`;});
+      // קרוסלת קטגוריות — טקסט נקי
+      H+=`<div class="row-sec"><div class="row-h"><h2>קטגוריות</h2></div><div class="cat-rail">`;
+      const tiles=[["grp","singers","מוזיקה"],["grp","famous","בידור"],["grp","media","תקשורת"],["grp","politicians","פוליטיקה"]];
+      NICHES.forEach(([k,ic,lbl])=>{if(all.some(c=>c.cat===k))tiles.push(["cat",k,lbl]);});
+      tiles.forEach(([type,key,lbl])=>{const cnt=all.filter(c=>type==='grp'?c.grp===key:c.cat===key).length; if(!cnt)return; H+=`<button class="cat-tile" onclick="Radar.filter('${type}','${key}')"><span class="cl">${lbl}</span><span class="cc">${cnt} יוצרים</span></button>`;});
       H+=`</div></div>`;
       // שורות נושאיות
-      H+=prow("🆕 חדשים בפלטפורמה","הצטרפו לאחרונה למדד",byNew(all).slice(0,14),c=>`${kfmt(c.f)} עוקבים`);
-      H+=prow("🏆 טופ 10 מדד הרייטינג","הציון החם של השבוע",top.slice(0,10),c=>`מדד ${c.rating}`,true);
-      H+=prow("🚀 בזינוק עכשיו","המומנטום הגבוה השבוע",withMom(all).sort((a,b)=>b.momentum-a.momentum).slice(0,14),c=>`▲ ${c.momentum}%`);
-      H+=prow("💥 הכי מדוברים","הפוסטים שהתפוצצו",all.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes).slice(0,14),c=>`${kfmt(c.topLikes)} לייקים`);
-      H+=prow("👑 מלכי המעורבות","הכי מחוברים לקהל",[...all].filter(c=>c.engageRate>0).sort((a,b)=>b.engageRate-a.engageRate).slice(0,14),c=>`${(c.engageRate*100).toFixed(1)}% מעורבות`);
-      NICHES.forEach(([k,ic,lbl])=>{const list=sortR(all.filter(c=>c.cat===k)); if(list.length>=4)H+=prow(`${ic} ${lbl}`,null,list.slice(0,16),c=>`${kfmt(c.f)} עוקבים`);});
+      H+=prow("חדשים בפלטפורמה","הצטרפו לאחרונה למדד",byNew(all).slice(0,14),c=>`${kfmt(c.f)} עוקבים`);
+      H+=prow("טופ 10 · מדד הרייטינג","הציון החם של השבוע",top.slice(0,10),c=>`מדד ${c.rating}`,true);
+      H+=prow("בזינוק עכשיו","המומנטום הגבוה השבוע",withMom(all).sort((a,b)=>b.momentum-a.momentum).slice(0,14),c=>`▲ ${c.momentum}%`);
+      H+=prow("הכי מדוברים","הפוסטים שהתפוצצו",all.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes).slice(0,14),c=>`${kfmt(c.topLikes)} לייקים`);
+      H+=prow("מלכי המעורבות","הכי מחוברים לקהל",[...all].filter(c=>c.engageRate>0).sort((a,b)=>b.engageRate-a.engageRate).slice(0,14),c=>`${(c.engageRate*100).toFixed(1)}% מעורבות`);
+      NICHES.forEach(([k,ic,lbl])=>{const list=sortR(all.filter(c=>c.cat===k)); if(list.length>=4)H+=prow(lbl,null,list.slice(0,16),c=>`${kfmt(c.f)} עוקבים`);});
       // השוואות חמות
-      H+=`<div class="row-sec"><div class="row-h"><h2>🔥 ההשוואות החמות</h2></div><div class="rail cmp-rail">`;
+      H+=`<div class="row-sec"><div class="row-h"><h2>ההשוואות החמות</h2></div><div class="rail cmp-rail">`;
       HOT.forEach((p,i)=>{const cs=p.slice(0,-1).map(h=>byH[h]).filter(Boolean); if(cs.length<2)return; const lbl=p[p.length-1]; H+=`<div class="item" onclick="Radar.compare([${p.slice(0,-1).map(h=>`'${h}'`).join(",")}])"><div class="rank num">${i+1}</div><div class="vspair">${cs.map(c=>`<div class="half">${ava(c)}</div>`).join("")}<div class="vs">VS</div><div class="lbl">${esc(lbl)}</div></div></div>`;});
       H+=`</div></div>`;
       H+=mandatesRow();
       // מי הוריד עוקב ממי (בהקמה)
-      H+=`<div class="row-sec"><div class="row-h"><h2>💔 מי הוריד עוקב ממי</h2></div><div class="soon-card"><span class="ic">🕵️</span><div class="tx"><b>הפיצ'ר הכי חם בהקמה</b><p>זיהוי מי הפסיק לעקוב אחרי מי — בקרוב בזמן אמת.</p></div><span class="badge">בהקמה ▸</span></div></div>`;
+      H+=`<div class="row-sec"><div class="row-h"><h2>מי הוריד עוקב ממי</h2></div><div class="soon-card"><div class="tx"><b>הפיצ'ר הכי חם בהקמה</b><p>זיהוי מי הפסיק לעקוב אחרי מי — בקרוב בזמן אמת.</p></div><span class="badge">בהקמה ▸</span></div></div>`;
       document.getElementById("homeBody").innerHTML=H+`</div>`;
       initBillboard();
     }
@@ -801,7 +834,7 @@
     function buildBizFilters(){
       const niches=[...new Set(cmpRows.filter(priceable).map(c=>c.cat).filter(Boolean))];
       get("bizFilters").innerHTML=`
-        <input id="fQ" class="bzf" placeholder="🔍 חיפוש שם / @" value="${esc(BIZ.q)}">
+        <input id="fQ" class="bzf" placeholder="חיפוש שם / @" value="${esc(BIZ.q)}">
         <select id="fNiche" class="bzf"><option value="">כל הנישות</option>${niches.map(n=>`<option ${BIZ.niche===n?'selected':''}>${esc(n)}</option>`).join("")}</select>
         <select id="fFol" class="bzf">${[['','כל הגדלים'],['s','עד 100K'],['m','100K–500K'],['l','500K–1M'],['xl','מיליון+']].map(([v,l])=>`<option value="${v}" ${BIZ.fol===v?'selected':''}>${l}</option>`).join("")}</select>
         <select id="fBud" class="bzf">${[['','כל תקציב'],['1000','רילס עד ₪1,000'],['3000','עד ₪3,000'],['5000','עד ₪5,000'],['10000','עד ₪10,000']].map(([v,l])=>`<option value="${v}" ${BIZ.bud===v?'selected':''}>${l}</option>`).join("")}</select>
@@ -826,18 +859,64 @@
         list.slice(0,72).map(x=>{const c=x.c,e=x.e,inC=campaign.includes(c.h);
           return `<div class="bcard"><div class="bc-top" onclick="Radar.value('${c.h}')">${ava(c)}<div class="bc-id"><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="bc-sub">${esc(c.cat||GRP[c.grp]?.he||'')} · ${kfmt(c.f)} עוקבים</div></div><div class="bc-rt num">${c.rating}</div></div>
             <div class="bc-stats"><div><b>${(c.engageRate*100).toFixed(1)}%</b><span>מעורבות</span></div><div><b>${e.sp.avgV!=null?kfmt(e.sp.avgV):'—'}</b><span>צפיות/רילס</span></div><div><b class="gold">₪${kfmt(e.reelLow)}–${kfmt(e.reelHigh)}</b><span>רילס</span></div></div>
-            <div class="bc-act"><button class="bc-det" onclick="Radar.value('${c.h}')">📊 פרטים</button><button class="bc-add ${inC?'on':''}" onclick="Radar.camp('${c.h}')">${inC?'✓ בקמפיין':'➕ הוסף'}</button></div></div>`;}).join("")+`</div>`;
+            <div class="bc-act"><button class="bc-det" onclick="Radar.value('${c.h}')">פרטים</button><button class="bc-add ${inC?'on':''}" onclick="Radar.camp('${c.h}')">${inC?'✓ בקמפיין':'+ הוסף'}</button></div></div>`;}).join("")+`</div>`;
     }
     function renderCart(){ ensureBizData();
       const items=campaign.map(h=>bizData.find(x=>x.c.h===h)).filter(Boolean), box=get("bizCart");
-      if(!items.length){box.innerHTML=`<div class="cart-empty">🛒 הסל ריק<br><span>הוסיפו משפיענים לבניית הקמפיין</span></div>`;return;}
+      if(!items.length){box.innerHTML=`<div class="cart-empty">הסל ריק<br><span>הוסיפו משפיענים לבניית הקמפיין</span></div>`;return;}
       const reach=items.reduce((s,x)=>s+(x.e.sp.avgV||0),0), lo=items.reduce((s,x)=>s+x.e.reelLow,0), hi=items.reduce((s,x)=>s+x.e.reelHigh,0);
-      box.innerHTML=`<div class="cart-h">🛒 הקמפיין שלי <span>${items.length}</span></div>
+      box.innerHTML=`<div class="cart-h">הקמפיין שלי <span>${items.length}</span></div>
         <div class="cart-list">${items.map(x=>`<div class="cart-it">${ava(x.c)}<span class="cn">${esc(x.c.n)}</span><span class="cp">₪${kfmt(x.e.reelLow)}–${kfmt(x.e.reelHigh)}</span><button onclick="Radar.camp('${x.c.h}')" aria-label="הסר">✕</button></div>`).join("")}</div>
         <div class="cart-sum"><div class="cs-row"><span>חשיפה משוערת (רילס)</span><b>${kfmt(reach)} צפיות</b></div><div class="cs-row"><span>תקציב כולל (רילס)</span><b class="gold">₪${fmt(lo)}–₪${fmt(hi)}</b></div></div>
-        <button class="cart-go" onclick="Radar.quote()">📩 קבל הצעת מחיר לקמפיין</button>`;
+        <button class="cart-go" onclick="Radar.quote()">קבלת הצעת מחיר לקמפיין</button>`;
     }
-    window.Radar.biz=()=>{get("biz").hidden=false;document.body.style.overflow='hidden';buildBizFilters();buildBizResults();renderCart();};
+    // אשף קמפיין — שואל, ואז ממליץ. נגיש גם לפיצרייה השכונתית וגם למותג בינלאומי.
+    let wizDone=false;
+    function buildBizWizard(){
+      get("bizFilters").innerHTML=""; get("bizCart").innerHTML="";
+      const niches=[...new Set(cmpRows.filter(priceable).map(c=>c.cat).filter(Boolean))];
+      get("bizResults").innerHTML=`<div class="wiz">
+        <div class="wiz-t">בואו נבנה לכם קמפיין</div>
+        <div class="wiz-s">שלוש שאלות — והמערכת תרכיב המלצה מדויקת מתוך ${cmpRows.filter(priceable).length} יוצרים מאומתים.</div>
+        <label class="wiz-l">מה חשוב לכם יותר?</label>
+        <div class="wiz-opts" id="wGoal">
+          <button data-v="reach" class="on"><b>חשיפה רחבה</b><span>שכמה שיותר אנשים יראו</span></button>
+          <button data-v="engage"><b>קהילה מעורבת</b><span>קהל שמגיב וסומך על היוצר</span></button>
+        </div>
+        <label class="wiz-l">באיזה תחום?</label>
+        <select id="wNiche" class="bzf wiz-f"><option value="">כל התחומים</option>${niches.map(n=>`<option>${esc(n)}</option>`).join("")}</select>
+        <label class="wiz-l">מה התקציב הכולל? (₪)</label>
+        <input id="wBud" class="bzf wiz-f" type="number" inputmode="numeric" placeholder="למשל 5,000" min="300">
+        <button class="wiz-go" id="wGo">קבלו המלצת קמפיין</button>
+        <button class="wiz-skip" id="wSkip">או חיפוש חופשי בכל היוצרים ←</button>
+      </div>`;
+      get("wGoal").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{get("wGoal").querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");}));
+      get("wSkip").addEventListener("click",()=>{wizDone=true;openBrowse();});
+      get("wGo").addEventListener("click",()=>{
+        const goal=get("wGoal").querySelector(".on").dataset.v, niche=get("wNiche").value, bud=+get("wBud").value||0;
+        if(!bud){get("wBud").focus();get("wBud").style.borderColor="#FF5470";return;}
+        recommendCampaign(goal,niche,bud); wizDone=true;
+      });
+    }
+    function recommendCampaign(goal,niche,bud){
+      ensureBizData();
+      let cand=bizData.filter(x=>!niche||x.c.cat===niche);
+      if(!cand.length)cand=bizData.slice();
+      const score=x=>goal==='reach'?(x.e.sp.avgV||x.c.f*0.05):(x.c.engageRate*1000+x.c.rating);
+      cand=cand.slice().sort((a,b)=>score(b)-score(a));
+      const sel=[]; let mid=0;
+      for(const x of cand){ const m=(x.e.reelLow+x.e.reelHigh)/2; if(mid+m<=bud&&sel.length<8){sel.push(x);mid+=m;} }
+      if(!sel.length){ const cheap=cand.slice().sort((a,b)=>a.e.reelLow-b.e.reelLow)[0]; if(cheap)sel.push(cheap); }
+      campaign=sel.map(x=>x.c.h); BIZ.niche=niche||''; BIZ.recNote=true;
+      openBrowse();
+      window.scrollTo(0,0);
+    }
+    function openBrowse(){ buildBizFilters(); buildBizResults(); renderCart();
+      if(BIZ.recNote){ const n=campaign.length, box=get("bizResults");
+        box.insertAdjacentHTML("afterbegin",`<div class="rec-note"><b>המלצת המערכת מוכנה — ${n} יוצרים בקמפיין שלכם.</b> ההרכב נבחר לפי היעד והתקציב שהגדרתם. אפשר להסיר ולהוסיף חופשי.</div>`); BIZ.recNote=false; }
+    }
+    window.Radar.biz=()=>{get("biz").hidden=false;document.body.style.overflow='hidden';
+      if(!wizDone&&!campaign.length)buildBizWizard(); else openBrowse();};
     window.Radar.closeBiz=()=>{get("biz").hidden=true;document.body.style.overflow='';};
     window.Radar.camp=(h)=>{const i=campaign.indexOf(h);if(i<0)campaign.push(h);else campaign.splice(i,1);buildBizResults();renderCart();};
     window.Radar.quote=()=>{ensureBizData();const items=campaign.map(h=>bizData.find(x=>x.c.h===h)).filter(Boolean);if(!items.length)return;
@@ -846,6 +925,10 @@
       location.href="mailto:ben@b-films.co.il?subject="+encodeURIComponent("בקשת הצעת מחיר — קמפיין משפיענים")+"&body="+body;};
     get("bizBtn").addEventListener("click",()=>Radar.biz());
     get("bizX").addEventListener("click",()=>Radar.closeBiz());
+    // תפריט המבורגר
+    get("menuBtn").addEventListener("click",e=>{e.stopPropagation();const d=get("drawer");d.hidden=!d.hidden;});
+    document.querySelectorAll(".dit").forEach(b=>b.addEventListener("click",()=>{get("drawer").hidden=true;}));
+    document.addEventListener("click",e=>{const d=get("drawer");if(!d.hidden&&!d.contains(e.target)&&e.target.id!=="menuBtn")d.hidden=true;});
     document.getElementById("valBtn").addEventListener("click",()=>{document.getElementById("valSheet").classList.add("on");setTimeout(()=>document.getElementById("valSearch").focus(),60);});
     document.getElementById("valX").addEventListener("click",()=>document.getElementById("valSheet").classList.remove("on"));
     document.getElementById("valSheet").addEventListener("click",e=>{if(e.target.id==="valSheet")e.currentTarget.classList.remove("on");});
