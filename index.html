@@ -42,8 +42,8 @@
     html,body,:root[data-theme]{background:var(--ink);}
     *{box-sizing:border-box;}
     .app{background:var(--ink); color:var(--text); min-height:100vh; width:100%; overflow-x:hidden;
-      font-family:"SF Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
-    html{overflow-x:hidden;}
+      font-family:"SF Hebrew",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; overflow-x:clip; position:relative;}
+    html{overflow-x:hidden; overflow-x:clip;}
     .num{font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate;}
     img{display:block;}
     .wrap{max-width:1180px; margin:0 auto; padding:0 clamp(14px,3.5vw,34px);}
@@ -137,7 +137,7 @@
     .row-h h2{margin:0; font-size:clamp(18px,3.6vw,23px); font-weight:900; letter-spacing:-.01em; display:flex; align-items:center; gap:9px;}
     .row-h h2::before{content:""; width:4px; height:.95em; border-radius:4px; background:linear-gradient(180deg,#F5D888,#C9A24B); flex:none;}
     .row-h .sub{color:var(--muted); font-size:13px;}
-    .rail{display:flex; gap:12px; overflow-x:auto; padding:4px 2px 14px; scroll-snap-type:x mandatory; scrollbar-width:thin;}
+    .rail{display:flex; gap:12px; overflow-x:auto; padding:4px 2px 14px; scroll-snap-type:x proximity; scrollbar-width:thin; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;}
     .rail::-webkit-scrollbar{height:8px;} .rail::-webkit-scrollbar-thumb{background:var(--line2); border-radius:8px;}
 
     /* פוסטר */
@@ -374,7 +374,7 @@
   .cat-hero .cht .st{color:var(--gold,#EBC868);font-weight:800;margin-top:4px}
   /* ===== מרקטפלייס עסקי ===== */
   .bizcta{background:linear-gradient(180deg,#F5D888,#D9B45A);color:#161018;font-weight:900;border:none;border-radius:11px;padding:10px 16px;cursor:pointer;white-space:nowrap}
-  .biz{position:fixed;inset:0;z-index:200;background:var(--bg,#0A0A0F);overflow-y:auto;padding-bottom:130px}
+  .biz{position:fixed;inset:0;z-index:200;background:var(--bg,#0A0A0F);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:150px}
   .biz-top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;background:rgba(10,10,15,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line2,#2a2a35)}
   .biz-title{font-size:22px;font-weight:900}.biz-title span{display:block;font-size:12.5px;color:var(--muted,#9a99ad);font-weight:700;margin-top:2px}
   .biz-x{background:var(--card,#15151c);border:1px solid var(--line2,#2a2a35);color:var(--text,#eee);border-radius:999px;padding:9px 15px;font-weight:800;cursor:pointer;white-space:nowrap}
@@ -394,8 +394,15 @@
   .bc-det{flex:1;background:transparent;border:1px solid var(--line2,#2a2a35);color:var(--text,#eee);border-radius:10px;padding:9px;font-weight:800;cursor:pointer}
   .bc-add{flex:1;background:var(--gold,#EBC868);border:none;color:#161018;border-radius:10px;padding:9px;font-weight:900;cursor:pointer}
   .bc-add.on{background:#3AD17E;color:#08120b}
-  .biz-cart{position:fixed;bottom:0;left:0;right:0;z-index:10;background:rgba(16,16,22,.97);backdrop-filter:blur(12px);border-top:2px solid var(--gold,#EBC868);padding:14px 20px;max-height:58vh;overflow-y:auto}
-  .cart-empty{text-align:center;color:var(--muted,#9a99ad);font-weight:700;line-height:1.6}.cart-empty span{font-size:13px}
+  .biz-cart{position:fixed;bottom:0;left:0;right:0;z-index:10;background:rgba(16,16,22,.97);backdrop-filter:blur(12px);border-top:2px solid var(--gold,#EBC868);padding:12px 20px;max-height:52vh;overflow-y:auto;overscroll-behavior:contain}
+  .biz-cart.slim{padding:0}
+  .cart-bar{display:flex;align-items:center;gap:12px;width:100%;background:transparent;border:0;color:var(--text,#eee);padding:14px 20px;cursor:pointer;font-family:inherit}
+  .biz-cart:not(.slim) .cart-bar{padding:2px 0 10px}
+  .cart-bar.muted{color:var(--muted,#9a99ad);font-weight:700;font-size:13.5px;justify-content:center}
+  .cb-n{font-weight:900;font-size:15px}.cb-n b{background:var(--gold,#EBC868);color:#161018;border-radius:999px;padding:1px 9px;font-size:13px;margin-inline-start:4px}
+  .cb-sum{flex:1;text-align:center;color:#EBC868;font-weight:800;font-size:13.5px}
+  .cb-arr{color:var(--muted,#9a99ad);font-weight:800;font-size:12.5px;white-space:nowrap}
+  .cart-list{max-height:30vh;overflow-y:auto;overscroll-behavior:contain}
   .cart-h{font-size:17px;font-weight:900;margin-bottom:10px}.cart-h span{background:var(--gold,#EBC868);color:#161018;border-radius:999px;padding:1px 9px;font-size:14px;margin-inline-start:6px}
   .cart-list{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
   .cart-it{display:flex;align-items:center;gap:9px}.cart-it .ava{width:30px;height:30px;flex:none}.cart-it .cn{flex:1;font-weight:700;font-size:14px}.cart-it .cp{font-size:12.5px;color:#EBC868;font-weight:800}.cart-it button{background:none;border:none;color:var(--muted,#9a99ad);cursor:pointer;font-size:15px}
@@ -862,15 +869,22 @@
             <div class="bc-stats"><div><b>${(c.engageRate*100).toFixed(1)}%</b><span>מעורבות</span></div><div><b>${e.sp.avgV!=null?kfmt(e.sp.avgV):'—'}</b><span>צפיות/רילס</span></div><div><b class="gold">₪${kfmt(e.reelLow)}–${kfmt(e.reelHigh)}</b><span>רילס</span></div></div>
             <div class="bc-act"><button class="bc-det" onclick="Radar.value('${c.h}')">פרטים</button><button class="bc-add ${inC?'on':''}" onclick="Radar.camp('${c.h}')">${inC?'✓ בקמפיין':'+ הוסף'}</button></div></div>`;}).join("")+`</div>`;
     }
+    let cartOpen=false;
     function renderCart(){ ensureBizData();
       const items=campaign.map(h=>bizData.find(x=>x.c.h===h)).filter(Boolean), box=get("bizCart");
-      if(!items.length){box.innerHTML=`<div class="cart-empty">הסל ריק<br><span>הוסיפו משפיענים לבניית הקמפיין</span></div>`;return;}
+      box.classList.toggle("slim",!cartOpen);
+      if(!items.length){cartOpen=false;box.classList.add("slim");box.innerHTML=`<div class="cart-bar muted">הסל ריק · הוסיפו יוצרים לקמפיין</div>`;return;}
       const reach=items.reduce((s,x)=>s+(x.e.sp.avgV||0),0), lo=items.reduce((s,x)=>s+x.e.reelLow,0), hi=items.reduce((s,x)=>s+x.e.reelHigh,0);
-      box.innerHTML=`<div class="cart-h">הקמפיין שלי <span>${items.length}</span></div>
+      if(!cartOpen){
+        box.innerHTML=`<button class="cart-bar" onclick="Radar.cartToggle()"><span class="cb-n">הקמפיין שלי <b>${items.length}</b></span><span class="cb-sum">₪${kfmt(lo)}–${kfmt(hi)} · ${kfmt(reach)} צפיות</span><span class="cb-arr">▴ פתיחה</span></button>`;
+        return;
+      }
+      box.innerHTML=`<button class="cart-bar open" onclick="Radar.cartToggle()"><span class="cb-n">הקמפיין שלי <b>${items.length}</b></span><span class="cb-arr">▾ צמצום</span></button>
         <div class="cart-list">${items.map(x=>`<div class="cart-it">${ava(x.c)}<span class="cn">${esc(x.c.n)}</span><span class="cp">₪${kfmt(x.e.reelLow)}–${kfmt(x.e.reelHigh)}</span><button onclick="Radar.camp('${x.c.h}')" aria-label="הסר">✕</button></div>`).join("")}</div>
         <div class="cart-sum"><div class="cs-row"><span>חשיפה משוערת (רילס)</span><b>${kfmt(reach)} צפיות</b></div><div class="cs-row"><span>תקציב כולל (רילס)</span><b class="gold">₪${fmt(lo)}–₪${fmt(hi)}</b></div></div>
         <button class="cart-go" onclick="Radar.quote()">קבלת הצעת מחיר לקמפיין</button>`;
     }
+    window.Radar.cartToggle=()=>{cartOpen=!cartOpen;renderCart();};
     // אשף קמפיין — שואל, ואז ממליץ. נגיש גם לפיצרייה השכונתית וגם למותג בינלאומי.
     let wizDone=false;
     function buildBizWizard(){
