@@ -271,7 +271,7 @@
       <button class="dit" onclick="document.getElementById('drawer').hidden=true;document.getElementById('applySheet').classList.add('on')"><b>הגשת מועמדות</b><span>הצטרפות למדד</span></button>
     </div></nav>
     <div class="timebar" id="timebar"><div class="wrap tb-in">
-      <span class="tb-lbl">📅 תקופה</span>
+      <span class="tb-lbl">תקופה</span>
       <div class="tb-chips">
         <button data-win="7d" class="on">7 ימים אחרונים</button>
         <button data-win="today">היום</button>
@@ -290,7 +290,7 @@
         </svg>
       </div>
       <div class="stamp-cap">חותמת האמינות של <b>רייטינג העולם החדש</b></div>
-      <button class="apply-cta" id="applyBtn">🏆 לא רואים את עצמכם? הגישו מועמדות</button>
+      <button class="apply-cta" id="applyBtn">לא רואים את עצמכם? הגישו מועמדות</button>
       <div><span class="wm">רייטינג העולם החדש</span></div>
       <div class="fn">מדד הרייטינג משוקלל בעיקר ממדדים דינמיים: עליית עוקבים, מעורבות, כמות פרסומים, עומק שיח, צפיות ומומנטום — עם רכיב חשיפה מאוזן. נתונים חיים מאינסטגרם, מתעדכן יומית. השוואות מוצגות למטרות מידע ובידור.</div>
     </div>
@@ -301,7 +301,7 @@
   <div class="sheet" id="ovSheet"><div class="box"><button class="x" id="ovX" aria-label="סגירה">✕</button><h2>סקירה כללית</h2><p class="hint">כל הרייטינג במבט אחד · <span id="ovDate"></span></p><div id="ovBody"></div></div></div>
   <div class="sheet" id="brSheet"><div class="box"><button class="x" id="brX" aria-label="סגירה">✕</button><h2>עיון לפי קטגוריה</h2><p class="hint">לחצו על דמות לנתונים מלאים.</p><div id="brBody"></div></div></div>
   <div class="sheet" id="cmpSheet"><div class="box"><button class="x" id="cmpX" aria-label="סגירה">✕</button>
-    <h2>⚔️ יצירת השוואה משלך</h2><p class="hint">בחרו 2–4 דמויות והשוו ראש בראש · הנתונים על <b>7 הימים האחרונים</b>.</p>
+    <h2>יצירת השוואה משלך</h2><p class="hint">בחרו 2–4 דמויות והשוו ראש בראש · הנתונים על <b>7 הימים האחרונים</b>.</p>
     <input class="search" id="cmpSearch" placeholder="חיפוש לפי שם… (למשל: ליאור סושרד, אדוה דדון, ביבי)">
     <div class="chips" id="cmpChips"></div><div class="pool" id="cmpPool"></div>
     <button class="go" id="cmpGo" disabled>השוו עכשיו</button><div id="cmpRes"></div>
@@ -528,13 +528,13 @@
           <span class="tag">${tag} · ${ANALYSIS.asOf||""}</span>
           <h1>${esc(c.n)}${vb(c.v)}</h1>
           <div class="meta"><span class="rt"><b>${statBig}</b></span>${statSub?`<span>${statSub}</span>`:""}<span>${GRP[c.grp]?.ic||""} ${GRP[c.grp]?.he||""}</span></div>
-          <div class="btns"><button class="play" onclick="event.stopPropagation();Radar.profile('${c.h}')">📊 לנתונים המלאים</button></div>
+          <div class="btns"><button class="play" onclick="event.stopPropagation();Radar.profile('${c.h}')">לנתונים המלאים</button></div>
         </div></div>`;
     }
     function slC(a,b,label){
       return `<div class="slide__A__"><div class="bg" style="background-image:url('${esc(a.pic)}');background-position:center ${focusOf(a.h)}"></div><div class="shade"></div>
         <div class="c" style="cursor:pointer" onclick="Radar.compare(['${a.h}','${b.h}'])">
-          <span class="tag">🔥 ההשוואה הכי חמה</span>
+          <span class="tag">ההשוואה הכי חמה</span>
           <h1 style="font-size:clamp(24px,5.5vw,44px)">${esc(a.n)} <span style="color:var(--red)">🆚</span> ${esc(b.n)}</h1>
           <div class="meta"><span>${esc(label)}</span></div>
           <div class="btns"><button class="play" onclick="event.stopPropagation();Radar.compare(['${a.h}','${b.h}'])">⚔️ צפו בהשוואה</button></div>
@@ -642,7 +642,7 @@
       let bars="";
       BRK.forEach(([k,lab])=>{const p=Math.round((c.ratingParts?.[k]||0)*100); bars+=`<div class="pf-bar"><div class="bl">${lab}</div><div class="tr"><i style="width:${p}%"></i></div><div class="pv num">${p}</div></div>`;});
       const mom=c.momentum==null?"—":(c.momentum>=0?"▲ ":"▼ ")+c.momentum+"%";
-      let H=`<div class="pf-top">${ava(c)}<div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''} · @${esc(c.h)}</div><span class="pf-rank">🏆 מקום ${c.ratingRank} במדד הרייטינג</span></div>
+      let H=`<div class="pf-top">${ava(c)}<div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''} · @${esc(c.h)}</div><span class="pf-rank">מקום ${c.ratingRank} במדד הרייטינג</span></div>
         <div class="pf-score"><div class="big num">${c.rating}</div><div class="lab">מדד רייטינג</div></div></div>
         <div class="pf-grid">
           ${stat("עוקבים",fmt(c.f))}
@@ -673,14 +673,14 @@
       H+=ovSec("🏆 מובילי מדד הרייטינג", rt.map((c,i)=>ovRow(c,`<span style="color:var(--gold)">${c.rating}</span>`,i+1)).join(""));
       H+=ovSec("📈 עלו הכי הרבה עוקבים (24ש')", up.length?up.map(c=>ovRow(c,`<span style="color:var(--up)">+${fmt(c.growthDelta)}</span>`)).join(""):'<div class="ovempty">נאסף — תוצאות מלאות ממחר</div>');
       H+=ovSec("📉 ירדו הכי הרבה עוקבים (24ש')", dn.length?dn.map(c=>ovRow(c,`<span style="color:var(--down)">${fmt(c.growthDelta)}</span>`)).join(""):'<div class="ovempty">נאסף — תוצאות מלאות ממחר</div>');
-      if(bomb)H+=ovSec("💣 הפוסט הכי חזק (7 ימים)", ovRow(bomb,`<span style="color:var(--gold)">${kfmt(bomb.topLikes)} לייקים</span>`));
+      if(bomb)H+=ovSec("הפוסט הכי חזק (7 ימים)", ovRow(bomb,`<span style="color:var(--gold)">${kfmt(bomb.topLikes)} לייקים</span>`));
       H+=ovSec("👻 נעלמו מהרשת", vanished.length?vanished.map(c=>ovRow(c,'<span style="color:var(--down)">נעלם/ה</span>')).join(""):'<div class="ovempty">כל הדמויות פעילות ברשת ✅</div>');
       document.getElementById("ovBody").innerHTML=H; document.getElementById("ovDate").textContent=ANALYSIS.asOf||"";
     }
 
     // ===== עיון =====
     function buildBrowse(){let H="";["famous","singers","politicians","media"].forEach(g=>{const list=sortR(C.filter(c=>c.grp===g));if(!list.length)return;
-      H+=`<div class="ov-sec"><div class="ov-t">${GRP[g].ic} ${GRP[g].he}</div>`+list.map((c,i)=>ovRow(c,`<span style="color:var(--gold)">מדד ${c.rating}</span>`,i+1)).join("")+`</div>`;});
+      H+=`<div class="ov-sec"><div class="ov-t">${GRP[g].he}</div>`+list.map((c,i)=>ovRow(c,`<span style="color:var(--gold)">מדד ${c.rating}</span>`,i+1)).join("")+`</div>`;});
       document.getElementById("brBody").innerHTML=H;}
 
     // ===== בונה השוואות =====
@@ -701,9 +701,9 @@
       metrics.forEach(m=>{let best=-Infinity,bh=null; cs.forEach(c=>{const v=c[m.k]; if(v!=null&&v>best){best=v;bh=c.h;}}); m._bh=bh;});
       // המנצח = מדד הרייטינג הכולל הגבוה ביותר (לא ספירת שדות)
       let champ=picks[0]; picks.forEach(h=>{if((cmpByH[h].rating||0)>(cmpByH[champ].rating||0))champ=h;});
-      let H=`<div class="cmp-period">📊 ההשוואה מחושבת על <b>7 הימים האחרונים</b></div><div class="vscols" style="--n:${cs.length}">`;
+      let H=`<div class="cmp-period">ההשוואה מחושבת על <b>7 הימים האחרונים</b></div><div class="vscols" style="--n:${cs.length}">`;
       cs.forEach(c=>{H+=`<div class="vscol ${c.h===champ?'win':''}">${c.h===champ?'<div class="crown">👑</div>':''}${ava(c)}<div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${GRP[c.grp]?.ic||''} ${GRP[c.grp]?.he||''}</div>`+metrics.map(m=>`<div class="stat"><div class="lab">${m.lab}</div><div class="val ${m._bh===c.h?'lead':''}">${m.f(c[m.k])}</div></div>`).join("")+`</div>`;});
-      H+=`</div><div class="verdict">🏆 המנצח/ת: <b>${esc(cmpByH[champ].n)}</b> — מדד הרייטינג הגבוה ביותר (${cmpByH[champ].rating})</div>`;
+      H+=`</div><div class="verdict">המנצח/ת: <b>${esc(cmpByH[champ].n)}</b> — מדד הרייטינג הגבוה ביותר (${cmpByH[champ].rating})</div>`;
       document.getElementById("cmpRes").innerHTML=H;
     }
 
@@ -767,10 +767,10 @@
       let heat,heatLabel,multLow,multHigh;
       const rising=(mom!=null&&mom>=30)||(gp!=null&&gp>=0.3);
       const declining=(mom!=null&&mom<=-30)||(gp!=null&&gp<=-0.2);
-      if(rising){heat="hot";heatLabel="🔥 בשיא / מתפוצץ";multLow=1.15;multHigh=1.4;}
-      else if(mom!=null&&mom>=10){heat="warm";heatLabel="📈 במגמת עלייה";multLow=1.05;multHigh=1.15;}
-      else if(declining){heat="cold";heatLabel="📉 בתקופה חלשה";multLow=0.7;multHigh=0.88;}
-      else{heat="stable";heatLabel="⚖️ יציב";multLow=0.95;multHigh=1.05;}
+      if(rising){heat="hot";heatLabel="בשיא · מתפוצץ";multLow=1.15;multHigh=1.4;}
+      else if(mom!=null&&mom>=10){heat="warm";heatLabel="במגמת עלייה";multLow=1.05;multHigh=1.15;}
+      else if(declining){heat="cold";heatLabel="בתקופה חלשה";multLow=0.7;multHigh=0.88;}
+      else{heat="stable";heatLabel="יציב";multLow=0.95;multHigh=1.05;}
       // מגמת רייטינג (יציבה, עד 3 חודשים) — משפיע ישירות על המחיר
       const ratingTraj = sr>=50?1.1 : sr>=35?1.0 : sr>=22?0.93 : 0.87;
       const reelLow=niceRound(baseLow*engBoost*multLow*ratingTraj), reelHigh=niceRound(baseHigh*engBoost*multHigh*ratingTraj);
@@ -791,10 +791,10 @@
       <div class="valcard">
         <div class="valhead">${ava(c)}<div><div class="vn">${esc(c.n)}${vb(c.v)}</div><div class="vsub">${GRP[c.grp]?.ic||""} ${GRP[c.grp]?.he||""} · ${kfmt(c.f)} עוקבים</div></div><div class="vheat ${e.heat}">${e.heatLabel}</div></div>
         <div class="valprices">
-          <div class="vp"><div class="vpk">🎬 רילס ממומן</div><div class="vpv">${priceStr(e.reelLow,e.reelHigh)}</div></div>
-          <div class="vp"><div class="vpk">📱 סטורי בודד</div><div class="vpv">${priceStr(e.storyLow,e.storyHigh)}<span class="est"> · הערכה</span></div></div>
+          <div class="vp"><div class="vpk">רילס ממומן</div><div class="vpv">${priceStr(e.reelLow,e.reelHigh)}</div></div>
+          <div class="vp"><div class="vpk">סטורי בודד</div><div class="vpv">${priceStr(e.storyLow,e.storyHigh)}<span class="est"> · הערכה</span></div></div>
         </div>
-        <div class="valsec"><div class="vst">🔎 הניתוח שמאחורי המחיר</div><div class="vgrid">
+        <div class="valsec"><div class="vst">הניתוח שמאחורי המחיר</div><div class="vgrid">
           <div class="vg"><span>עוקבים אמיתיים</span><b>${fmt(e.f)}${c.v?" ✓":""}</b></div>
           <div class="vg"><span>מעורבות טיפוסית</span><b class="${e.erClass}">${e.erPct.toFixed(2)}% · ${e.erLabel}</b></div>
           <div class="vg"><span>ממוצע צפיות ברילס</span><b>${e.sp.avgV!=null?fmt(e.sp.avgV):"—"}</b></div>
@@ -804,7 +804,7 @@
           <div class="vg"><span>מומנטום נוכחי (7 ימים)</span><b>${c.momentum!=null?(c.momentum>0?"+":"")+c.momentum+"%":"—"}</b></div>
           <div class="vg"><span>שינוי עוקבים (יום)</span><b>${c.growthDelta!=null?(c.growthDelta>0?"+":"")+fmt(c.growthDelta):"—"}</b></div>
         </div></div>
-        <div class="valsec"><div class="vst">🧮 איך חושב המחיר</div><div class="vcalc">${e.basis==="blend"
+        <div class="valsec"><div class="vst">איך חושב המחיר</div><div class="vcalc">${e.basis==="blend"
           ? `בסיס משוקלל: <b>${fmt(e.V)}</b> צפיות ממוצעות ברילס × ₪${e.CPM[0]}–${e.CPM[1]} CPM, בשילוב שווי חשיפה לפי רמת <b>${kfmt(e.f)}</b> עוקבים.`
           : `בסיס: שווי לפי רמת <b>${kfmt(e.f)}</b> עוקבים (אין רילס אחרונים למדידת חשיפה).`}
           מוכפל ב: מעורבות בפועל <b>×${e.engBoost.toFixed(2)}</b> · מגמת רייטינג יציבה <b>×${e.ratingTraj}</b> · מומנטום נוכחי <b>×${e.multLow}–${e.multHigh}</b> (${e.heatLabel}).
@@ -820,7 +820,7 @@
       const pool=document.getElementById("valPool"), res=document.getElementById("valRes");
       if(!q){pool.innerHTML="";res.innerHTML="";return;}
       const handle=valExtractHandle(q);
-      if(cmpByH[handle]&&cmpByH[handle].grp==='politicians'){res.innerHTML=`<div class="valempty">🏛️ פוליטיקאים אינם כלולים בתמחור — הם למדד ולבידור בלבד.</div>`;pool.innerHTML="";return;}
+      if(cmpByH[handle]&&cmpByH[handle].grp==='politicians'){res.innerHTML=`<div class="valempty">פוליטיקאים אינם כלולים בתמחור — הם למדד ולבידור בלבד.</div>`;pool.innerHTML="";return;}
       if(cmpByH[handle]){renderValueCard(cmpByH[handle]);return;}
       const list=cmpRows.filter(c=>c.grp!=='politicians'&&(c.n.includes(q)||c.h.includes(handle))).sort((a,b)=>b.f-a.f).slice(0,8);
       if(list.length===1){renderValueCard(list[0]);return;}
@@ -828,7 +828,7 @@
       pool.innerHTML = list.length ? list.map(c=>`<button class="valpick" onclick="Radar.value('${c.h}')">${ava(c)}<div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${kfmt(c.f)} עוקבים · מדד ${c.rating}</div></div></button>`).join("")
         : `<div class="valempty">לא נמצא בין ${cmpRows.length} המשפיענים במעקב שלנו.<br>בקרוב: הערכה לכל לינק בעולם (דורש חיבור שרת).</div>`;
     }
-    window.Radar.value=(h)=>{const c=cmpByH[h]; if(!c)return; get("valPool").innerHTML=""; if(c.grp==='politicians'){get("valRes").innerHTML=`<div class="valempty">🏛️ פוליטיקאים אינם כלולים בתמחור — הם למדד ולבידור בלבד.</div>`;return;} renderValueCard(c);};
+    window.Radar.value=(h)=>{const c=cmpByH[h]; if(!c)return; get("valPool").innerHTML=""; if(c.grp==='politicians'){get("valRes").innerHTML=`<div class="valempty">פוליטיקאים אינם כלולים בתמחור — הם למדד ולבידור בלבד.</div>`;return;} renderValueCard(c);};
     window.Radar.filter=(type,key)=>{const lbl=type==='grp'?(GRP[key]?.he||key):(NICHE_LBL[key]||key); const ic=type==='grp'?(GRP[key]?.ic||"⭐"):(NICHE_IC[key]||"⭐"); activeFilter={type,key,label:lbl,icon:ic}; buildHome(); window.scrollTo(0,0);};
     window.Radar.allCats=()=>{activeFilter=null; buildHome(); window.scrollTo(0,0);};
 
@@ -983,9 +983,10 @@
 
 <!-- ===== תוסף נגישות (ת״י 5568 · WCAG 2.0 AA) ===== -->
 <style>
-  .a11y-btn{position:fixed; bottom:18px; inset-inline-start:18px; z-index:9998; width:54px; height:54px; border-radius:50%; border:2px solid #fff; background:#1449C4; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 20px rgba(0,0,0,.5);}
-  .a11y-btn:focus-visible{outline:3px solid #EBC868; outline-offset:3px;} .a11y-btn svg{width:28px; height:28px;}
-  .a11y-panel{position:fixed; bottom:80px; inset-inline-start:18px; z-index:9999; width:290px; max-width:calc(100vw - 36px); background:#fff; color:#111; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.55); padding:16px; display:none; font-family:Arial,"Arial Hebrew",sans-serif; direction:rtl; max-height:82vh; overflow:auto;}
+  .a11y-btn{position:fixed; top:62%; left:0; transform:translateY(-50%); z-index:9998; width:42px; height:46px; border-radius:0 13px 13px 0; border:2px solid #fff; border-left:0; background:#1449C4; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 20px rgba(0,0,0,.5); opacity:.88;}
+  .a11y-btn:hover{opacity:1;}
+  .a11y-btn:focus-visible{outline:3px solid #EBC868; outline-offset:3px;} .a11y-btn svg{width:24px; height:24px;}
+  .a11y-panel{position:fixed; top:62%; left:52px; transform:translateY(-50%); z-index:9999; width:290px; max-width:calc(100vw - 70px); background:#fff; color:#111; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.55); padding:16px; display:none; font-family:Arial,"Arial Hebrew",sans-serif; direction:rtl; max-height:78vh; overflow:auto;}
   .a11y-panel.on{display:block;} .a11y-panel h2{margin:0 0 4px; font-size:17px; color:#111;} .a11y-panel .hint{margin:0 0 12px; font-size:12px; color:#555;}
   .a11y-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   .a11y-grid button{cursor:pointer; font-family:inherit; font-size:13px; font-weight:700; color:#111; background:#F1F3F8; border:2px solid #E0E4EC; border-radius:10px; padding:10px 6px; display:flex; flex-direction:column; align-items:center; gap:4px;}
