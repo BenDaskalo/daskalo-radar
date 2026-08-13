@@ -411,6 +411,7 @@
   .wiz-opts button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:right;background:#14141a;border:1.5px solid var(--line2,#2a2a35);border-radius:13px;padding:13px 14px;cursor:pointer;color:var(--text,#eee)}
   .wiz-opts button.on{border-color:var(--gold,#EBC868);background:rgba(235,200,104,.07)}
   .wiz-opts b{font-weight:800;font-size:14.5px}.wiz-opts span{font-size:12px;color:var(--muted,#9a99ad)}
+  .wiz-bud button:last-child{grid-column:1/-1}
   .wiz-f{width:100%}
   .wiz-go{width:100%;margin-top:24px;background:linear-gradient(180deg,#F5D888,#D9B45A);border:none;color:#161018;border-radius:13px;padding:14px;font-weight:900;font-size:16px;cursor:pointer}
   .wiz-skip{width:100%;margin-top:10px;background:none;border:none;color:var(--muted,#9a99ad);font-weight:700;font-size:13.5px;cursor:pointer}
@@ -837,7 +838,7 @@
         <input id="fQ" class="bzf" placeholder="חיפוש שם / @" value="${esc(BIZ.q)}">
         <select id="fNiche" class="bzf"><option value="">כל הנישות</option>${niches.map(n=>`<option ${BIZ.niche===n?'selected':''}>${esc(n)}</option>`).join("")}</select>
         <select id="fFol" class="bzf">${[['','כל הגדלים'],['s','עד 100K'],['m','100K–500K'],['l','500K–1M'],['xl','מיליון+']].map(([v,l])=>`<option value="${v}" ${BIZ.fol===v?'selected':''}>${l}</option>`).join("")}</select>
-        <select id="fBud" class="bzf">${[['','כל תקציב'],['1000','רילס עד ₪1,000'],['3000','עד ₪3,000'],['5000','עד ₪5,000'],['10000','עד ₪10,000']].map(([v,l])=>`<option value="${v}" ${BIZ.bud===v?'selected':''}>${l}</option>`).join("")}</select>
+        <select id="fBud" class="bzf">${[['','כל מחיר לרילס'],['3000','עד ₪3,000'],['8000','עד ₪8,000'],['15000','עד ₪15,000'],['30000','עד ₪30,000'],['999999','₪30,000+']].map(([v,l])=>`<option value="${v}" ${BIZ.bud===v?'selected':''}>${l}</option>`).join("")}</select>
         <select id="fEng" class="bzf">${[['','כל מעורבות'],['1','מעורבות 1%+'],['3','3%+'],['5','5%+']].map(([v,l])=>`<option value="${v}" ${BIZ.eng===v?'selected':''}>${l}</option>`).join("")}</select>
         <label class="bzchk"><input type="checkbox" id="fVer" ${BIZ.ver?'checked':''}> מאומתים בלבד ✓</label>`;
       const upd=()=>{BIZ.q=get("fQ").value;BIZ.niche=get("fNiche").value;BIZ.fol=get("fFol").value;BIZ.bud=get("fBud").value;BIZ.eng=get("fEng").value;BIZ.ver=get("fVer").checked;buildBizResults();};
@@ -849,7 +850,7 @@
       if(BIZ.niche&&c.cat!==BIZ.niche)return false;
       if(BIZ.ver&&!c.v)return false;
       if(BIZ.fol==='s'&&f>=1e5)return false; if(BIZ.fol==='m'&&(f<1e5||f>=5e5))return false; if(BIZ.fol==='l'&&(f<5e5||f>=1e6))return false; if(BIZ.fol==='xl'&&f<1e6)return false;
-      if(BIZ.bud&&e.reelLow>+BIZ.bud)return false;
+      if(BIZ.bud==='999999'){if(e.reelHigh<30000)return false;} else if(BIZ.bud&&e.reelLow>+BIZ.bud)return false;
       if(BIZ.eng&&(c.engageRate*100)<+BIZ.eng)return false;
       return true;
     }
@@ -885,35 +886,47 @@
         </div>
         <label class="wiz-l">באיזה תחום?</label>
         <select id="wNiche" class="bzf wiz-f"><option value="">כל התחומים</option>${niches.map(n=>`<option>${esc(n)}</option>`).join("")}</select>
-        <label class="wiz-l">מה התקציב הכולל? (₪)</label>
-        <input id="wBud" class="bzf wiz-f" type="number" inputmode="numeric" placeholder="למשל 5,000" min="300">
+        <label class="wiz-l">מה התקציב הכולל לקמפיין?</label>
+        <div class="wiz-opts wiz-bud" id="wBud">
+          <button data-min="0" data-max="5000"><b>עד ₪5,000</b><span>קמפיין ראשון · עסק מקומי</span></button>
+          <button data-min="5000" data-max="15000" class="on"><b>₪5–15 אלף</b><span>קמפיין ממוקד</span></button>
+          <button data-min="15000" data-max="30000"><b>₪15–30 אלף</b><span>קמפיין רב-ערוצי</span></button>
+          <button data-min="30000" data-max="100000"><b>₪30–100 אלף</b><span>מהלך מותג</span></button>
+          <button data-min="100000" data-max="400000"><b>₪100 אלף+</b><span>קמפיין ארצי</span></button>
+        </div>
         <button class="wiz-go" id="wGo">קבלו המלצת קמפיין</button>
         <button class="wiz-skip" id="wSkip">או חיפוש חופשי בכל היוצרים ←</button>
       </div>`;
-      get("wGoal").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{get("wGoal").querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");}));
+      ["wGoal","wBud"].forEach(gid=>get(gid).querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{get(gid).querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");})));
       get("wSkip").addEventListener("click",()=>{wizDone=true;openBrowse();});
       get("wGo").addEventListener("click",()=>{
-        const goal=get("wGoal").querySelector(".on").dataset.v, niche=get("wNiche").value, bud=+get("wBud").value||0;
-        if(!bud){get("wBud").focus();get("wBud").style.borderColor="#FF5470";return;}
-        recommendCampaign(goal,niche,bud); wizDone=true;
+        const goal=get("wGoal").querySelector(".on").dataset.v, niche=get("wNiche").value;
+        const bb=get("wBud").querySelector(".on");
+        recommendCampaign(goal,niche,+bb.dataset.min,+bb.dataset.max); wizDone=true;
       });
     }
-    function recommendCampaign(goal,niche,bud){
+    // המלצה אמיתית: קודם נישה, ואז מילוי הטווח שנבחר (לא רק "מתחת לתקרה") — תמהיל עוגן+תמיכה
+    function recommendCampaign(goal,niche,bmin,bmax){
       ensureBizData();
-      let cand=bizData.filter(x=>!niche||x.c.cat===niche);
-      if(!cand.length)cand=bizData.slice();
-      const score=x=>goal==='reach'?(x.e.sp.avgV||x.c.f*0.05):(x.c.engageRate*1000+x.c.rating);
+      let cand=bizData.filter(x=>!niche||x.c.cat===niche), fallback=false;
+      if(cand.length<2){cand=bizData.slice();fallback=true;}
+      const score=x=>goal==='reach'?(x.e.sp.avgV||x.c.f*0.05):(x.c.engageRate*1000+x.c.rating*10);
+      const mid=x=>(x.e.reelLow+x.e.reelHigh)/2;
       cand=cand.slice().sort((a,b)=>score(b)-score(a));
-      const sel=[]; let mid=0;
-      for(const x of cand){ const m=(x.e.reelLow+x.e.reelHigh)/2; if(mid+m<=bud&&sel.length<8){sel.push(x);mid+=m;} }
-      if(!sel.length){ const cheap=cand.slice().sort((a,b)=>a.e.reelLow-b.e.reelLow)[0]; if(cheap)sel.push(cheap); }
-      campaign=sel.map(x=>x.c.h); BIZ.niche=niche||''; BIZ.recNote=true;
+      const sel=[]; let tot=0; const cap=bmax*0.95, maxN=bmax>=100000?12:8;
+      // מעבר 1: החזקים ביותר שנכנסים לתקרה
+      for(const x of cand){ const m=mid(x); if(tot+m<=cap&&sel.length<maxN){sel.push(x);tot+=m;} }
+      // מעבר 2: אם לא הגענו לרצפת המדרגה — ממלאים בזולים הבאים בתור
+      if(tot<bmin){ for(const x of cand){ if(sel.includes(x))continue; const m=mid(x); if(tot+m<=cap&&sel.length<maxN){sel.push(x);tot+=m;} if(tot>=bmin)break; } }
+      if(!sel.length){ const cheap=cand.slice().sort((a,b)=>mid(a)-mid(b))[0]; if(cheap)sel.push(cheap); }
+      campaign=sel.map(x=>x.c.h); BIZ.niche=niche||''; BIZ.recNote={n:sel.length,fallback,under:tot<bmin&&!fallback,niche};
       openBrowse();
       window.scrollTo(0,0);
     }
     function openBrowse(){ buildBizFilters(); buildBizResults(); renderCart();
-      if(BIZ.recNote){ const n=campaign.length, box=get("bizResults");
-        box.insertAdjacentHTML("afterbegin",`<div class="rec-note"><b>המלצת המערכת מוכנה — ${n} יוצרים בקמפיין שלכם.</b> ההרכב נבחר לפי היעד והתקציב שהגדרתם. אפשר להסיר ולהוסיף חופשי.</div>`); BIZ.recNote=false; }
+      const r=BIZ.recNote;
+      if(r){ const extra=r.fallback?` בתחום שבחרתם אין מספיק יוצרים במדד — הרחבנו לכל התחומים.`:(r.under?` בתחום הזה אין מספיק יוצרים למילוי מלוא התקציב — זו ההמלצה המקסימלית.`:"");
+        get("bizResults").insertAdjacentHTML("afterbegin",`<div class="rec-note"><b>המלצת המערכת מוכנה — ${r.n} יוצרים בקמפיין שלכם.</b> ההרכב נבחר לפי היעד והתקציב שהגדרתם.${extra} אפשר להסיר ולהוסיף חופשי.</div>`); BIZ.recNote=null; }
     }
     window.Radar.biz=()=>{get("biz").hidden=false;document.body.style.overflow='hidden';
       if(!wizDone&&!campaign.length)buildBizWizard(); else openBrowse();};
