@@ -779,14 +779,15 @@
       const pool=document.getElementById("valPool"), res=document.getElementById("valRes");
       if(!q){pool.innerHTML="";res.innerHTML="";return;}
       const handle=valExtractHandle(q);
+      if(cmpByH[handle]&&cmpByH[handle].grp==='politicians'){res.innerHTML=`<div class="valempty">🏛️ פוליטיקאים אינם כלולים בתמחור — הם למדד ולבידור בלבד.</div>`;pool.innerHTML="";return;}
       if(cmpByH[handle]){renderValueCard(cmpByH[handle]);return;}
-      const list=cmpRows.filter(c=>c.n.includes(q)||c.h.includes(handle)).sort((a,b)=>b.f-a.f).slice(0,8);
+      const list=cmpRows.filter(c=>c.grp!=='politicians'&&(c.n.includes(q)||c.h.includes(handle))).sort((a,b)=>b.f-a.f).slice(0,8);
       if(list.length===1){renderValueCard(list[0]);return;}
       res.innerHTML="";
       pool.innerHTML = list.length ? list.map(c=>`<button class="valpick" onclick="Radar.value('${c.h}')">${ava(c)}<div><div class="nm">${esc(c.n)}${vb(c.v)}</div><div class="gr">${kfmt(c.f)} עוקבים · מדד ${c.rating}</div></div></button>`).join("")
         : `<div class="valempty">לא נמצא בין ${cmpRows.length} המשפיענים במעקב שלנו.<br>בקרוב: הערכה לכל לינק בעולם (דורש חיבור שרת).</div>`;
     }
-    window.Radar.value=(h)=>{const c=cmpByH[h]; if(c){document.getElementById("valPool").innerHTML="";renderValueCard(c);}};
+    window.Radar.value=(h)=>{const c=cmpByH[h]; if(!c)return; get("valPool").innerHTML=""; if(c.grp==='politicians'){get("valRes").innerHTML=`<div class="valempty">🏛️ פוליטיקאים אינם כלולים בתמחור — הם למדד ולבידור בלבד.</div>`;return;} renderValueCard(c);};
     window.Radar.filter=(type,key)=>{const lbl=type==='grp'?(GRP[key]?.he||key):(NICHE_LBL[key]||key); const ic=type==='grp'?(GRP[key]?.ic||"⭐"):(NICHE_IC[key]||"⭐"); activeFilter={type,key,label:lbl,icon:ic}; buildHome(); window.scrollTo(0,0);};
     window.Radar.allCats=()=>{activeFilter=null; buildHome(); window.scrollTo(0,0);};
 
@@ -794,9 +795,11 @@
     let campaign=[], bizData=null;
     const BIZ={niche:'',fol:'',bud:'',eng:'',ver:false,q:''};
     const get=id=>document.getElementById(id);
-    function ensureBizData(){ if(!bizData) bizData=cmpRows.map(c=>({c,e:estimateValue(c)})); }
+    // פוליטיקה = בידור בלבד — לא בתמחור ולא בקמפיינים
+    const priceable=c=>c.grp!=='politicians';
+    function ensureBizData(){ if(!bizData) bizData=cmpRows.filter(priceable).map(c=>({c,e:estimateValue(c)})); }
     function buildBizFilters(){
-      const niches=[...new Set(cmpRows.map(c=>c.cat).filter(Boolean))];
+      const niches=[...new Set(cmpRows.filter(priceable).map(c=>c.cat).filter(Boolean))];
       get("bizFilters").innerHTML=`
         <input id="fQ" class="bzf" placeholder="🔍 חיפוש שם / @" value="${esc(BIZ.q)}">
         <select id="fNiche" class="bzf"><option value="">כל הנישות</option>${niches.map(n=>`<option ${BIZ.niche===n?'selected':''}>${esc(n)}</option>`).join("")}</select>
