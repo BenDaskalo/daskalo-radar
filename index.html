@@ -641,13 +641,39 @@
       NICHES.forEach(([k,ic,lbl])=>{if(all.some(c=>c.cat===k))tiles.push(["cat",k,lbl]);});
       tiles.forEach(([type,key,lbl])=>{const cnt=all.filter(c=>type==='grp'?c.grp===key:c.cat===key).length; if(!cnt)return; H+=`<button class="cat-tile" onclick="Radar.filter('${type}','${key}')"><span class="cl">${lbl}</span><span class="cc">${cnt} יוצרים</span></button>`;});
       H+=`</div></div>`;
-      // מדד קבוע: מובילי עליית העוקבים
-      H+=prow("מובילי עליית העוקבים","העלייה היומית הגדולה ביותר",[...all].filter(c=>c.growthDelta!=null&&c.growthDelta>0).sort((a,b)=>b.growthDelta-a.growthDelta).slice(0,10),c=>`+${fmt(c.growthDelta)} עוקבים`,true);
+      // ===== המדדים — מסודרים לפי עניין =====
+      // 1) טופ 10 מדד הרייטינג
+      H+=prow("טופ 10 · מדד הרייטינג","הציון החם של השבוע",top.slice(0,10),c=>`מדד ${c.rating}`,true);
+      // 2) עליית עוקבים
+      H+=prow("טופ 10 · עליית עוקבים","העלייה היומית הגדולה ביותר",[...all].filter(c=>c.growthDelta!=null&&c.growthDelta>0).sort((a,b)=>b.growthDelta-a.growthDelta).slice(0,10),c=>`+${fmt(c.growthDelta)} עוקבים`,true);
+      // 3) ירידת עוקבים
+      H+=prow("טופ 10 · ירידת עוקבים","האיבוד היומי הגדול ביותר",[...all].filter(c=>c.growthDelta!=null&&c.growthDelta<0).sort((a,b)=>a.growthDelta-b.growthDelta).slice(0,10),c=>`${fmt(c.growthDelta)} עוקבים`,true);
+      // 4) צמיחה באחוזים — הוגן לקטנים
+      H+=prow("מלכי הצמיחה באחוזים","העלייה היחסית הכי מהירה",[...all].filter(c=>c.growthPct!=null&&c.growthPct>0).sort((a,b)=>b.growthPct-a.growthPct).slice(0,10),c=>`+${c.growthPct.toFixed(2)}% ביום`,true);
+      // 5) מלכי הצפיות
+      H+=prow("מלכי הצפיות","ממוצע צפיות אמיתי ברילס",[...all].filter(c=>c.avgViews7>0).sort((a,b)=>b.avgViews7-a.avgViews7).slice(0,10),c=>`${kfmt(c.avgViews7)} צפיות`,true);
+      // 6) מלכי הוויראליות — צפיות ביחס לעוקבים
+      H+=prow("מלכי הוויראליות","נצפים הרבה מעבר לקהל שלהם",[...all].filter(c=>c.viewRate!=null&&c.avgViews7>1000).sort((a,b)=>b.viewRate-a.viewRate).slice(0,10),c=>`${Math.round(c.viewRate*100)}% מהעוקבים`,true);
+      // 7) עולים ויורדים במדד — מול השבוע הקודם
+      const prevRows=computeAnalysis(__end7-14*86400000,__end7-7*86400000);
+      const prevRank={}; prevRows.filter(c=>c.posts7>0).forEach(c=>prevRank[c.h]=c.ratingRank);
+      const movers=all.filter(c=>prevRank[c.h]!=null&&c.posts7>0).map(c=>({c,d:prevRank[c.h]-c.ratingRank})).filter(x=>x.d!==0);
+      const climb=movers.filter(x=>x.d>0).sort((a,b)=>b.d-a.d).slice(0,5).map(x=>x.c);
+      const fall=movers.filter(x=>x.d<0).sort((a,b)=>a.d-b.d).slice(0,5).map(x=>x.c);
+      const mvVal=c=>{const d=prevRank[c.h]-c.ratingRank;return d>0?`▲ עלה ${d} מקומות`:`▼ ירד ${-d} מקומות`;};
+      H+=prow("עולים ויורדים במדד","התזוזות הגדולות מול השבוע שעבר",[...climb,...fall],mvVal);
+      // 8) מחוללי השיחה
+      H+=prow("מחוללי השיחה","הכי הרבה תגובות לפוסט",[...all].filter(c=>c.avgC7>0).sort((a,b)=>b.avgC7-a.avgC7).slice(0,10),c=>`${fmt(c.avgC7)} תגובות לפוסט`,true);
+      // 9) הכי חרוצים
+      H+=prow("הכי חרוצים","הכי הרבה פרסומים בשבוע",[...all].filter(c=>c.posts7>0).sort((a,b)=>b.posts7-a.posts7).slice(0,10),c=>`${c.posts7} פרסומים בשבוע`,true);
+      // 10) מי נעלם — הכי הרבה זמן בלי פוסט
+      const lastPost={}; RAW.forEach(r=>{if(r.posts&&r.posts.length)lastPost[r.h]=Math.max(...r.posts.map(p=>Date.parse(p.d)||0));});
+      const gone=all.filter(c=>lastPost[c.h]).map(c=>({c,days:Math.floor((__end7-lastPost[c.h])/86400000)})).filter(x=>x.days>=14).sort((a,b)=>b.days-a.days).slice(0,10);
+      H+=prow("מי נעלם?","הכי הרבה זמן בלי פוסט",gone.map(x=>x.c),c=>`${Math.floor((__end7-lastPost[c.h])/86400000)} ימים בלי פוסט`,true);
       // שורות נושאיות
       H+=prow("חדשים בפלטפורמה","הצטרפו לאחרונה למדד",byNew(all).slice(0,14),c=>`${kfmt(c.f)} עוקבים`);
-      H+=prow("טופ 10 · מדד הרייטינג","הציון החם של השבוע",top.slice(0,10),c=>`מדד ${c.rating}`,true);
       H+=prow("בזינוק עכשיו","המומנטום הגבוה השבוע",withMom(all).sort((a,b)=>b.momentum-a.momentum).slice(0,14),c=>`▲ ${c.momentum}%`);
-      H+=prow("הכי מדוברים","הפוסטים שהתפוצצו",all.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes).slice(0,14),c=>`${kfmt(c.topLikes)} לייקים`);
+      H+=prow("הפוסט שהתפוצץ","השיאים של התקופה",all.filter(c=>c.topLikes!=null).sort((a,b)=>b.topLikes-a.topLikes).slice(0,14),c=>`${kfmt(c.topLikes)} לייקים`);
       H+=prow("מלכי המעורבות","הכי מחוברים לקהל",[...all].filter(c=>c.engageRate>0).sort((a,b)=>b.engageRate-a.engageRate).slice(0,14),c=>`${(c.engageRate*100).toFixed(1)}% מעורבות`);
       NICHES.forEach(([k,ic,lbl])=>{const list=sortR(all.filter(c=>c.cat===k)); if(list.length>=4)H+=prow(lbl,null,list.slice(0,16),c=>`${kfmt(c.f)} עוקבים`);});
       // השוואות חמות
